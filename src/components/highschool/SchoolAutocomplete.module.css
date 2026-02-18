@@ -1,0 +1,75 @@
+.autocompleteContainer {
+  position: relative;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #1a2b4c;
+}
+
+.input.invalid {
+  border-color: #e53e3e;
+}
+
+.suggestionsList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 250px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  z-index: 1000;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.suggestionItem {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.suggestionItem:last-child {
+  border-bottom: none;
+}
+
+.suggestionItem:hover {
+  background-color: #f0f7ff;
+}
+
+.errorText {
+  color: #e53e3e;
+  font-size: 14px;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .input {
+    font-size: 16px; /* iOS でのズーム防止 */
+  }
+
+  .suggestionsList {
+    max-height: 200px;
+  }
+
+  .suggestionItem {
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+}

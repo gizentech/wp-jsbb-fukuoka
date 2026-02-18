@@ -1,0 +1,160 @@
+.footer {
+  width: 100%;
+  background: #1a2b4c;
+  padding: 2rem 0 1rem;
+  margin-top: auto;
+}
+
+.footerInner {
+  width: 100%;
+  padding: 0 2rem;
+}
+
+.organizationSection {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  padding-bottom: 1.5rem;
+  text-align: left;
+}
+
+.organizationSubtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.4;
+}
+
+.organizationTitle {
+  color: #fff;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: 0.05em;
+}
+
+.organizationAddress {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  font-style: normal;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.footerContent {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto 1.5rem;
+}
+
+.footerSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.footerTitle {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.footerList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footerList li {
+  margin: 0;
+}
+
+.footerList a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+  display: inline-block;
+}
+
+.footerList a:hover {
+  color: #fff;
+  transform: translateX(4px);
+}
+
+.copyright {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+  margin-top: 1.5rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 960px) {
+  .footerContent {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  .organizationSubtitle {
+    font-size: 0.7rem;
+  }
+
+  .organizationTitle {
+    font-size: 1.5rem;
+  }
+
+  .organizationAddress {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer {
+    padding: 1.5rem 0 0.75rem;
+  }
+
+  .footerInner {
+    padding: 0 1rem;
+  }
+
+  .organizationSection {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .organizationSubtitle {
+    font-size: 0.65rem;
+  }
+
+  .organizationTitle {
+    font-size: 1.25rem;
+  }
+
+  .organizationAddress {
+    font-size: 0.8rem;
+  }
+
+  .footerContent {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .footerTitle {
+    font-size: 0.95rem;
+  }
+
+  .footerList a {
+    font-size: 0.85rem;
+  }
+
+  .copyright {
+    font-size: 0.7rem;
+    margin-top: 1rem;
+  }
+}

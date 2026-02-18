@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /members/
+
+Sitemap: https://kurume.jsbb-fukuoka.com/sitemap.xml

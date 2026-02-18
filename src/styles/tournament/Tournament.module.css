@@ -1,0 +1,371 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: linear-gradient(-55deg, #fff, #fef2d4 15%, #eefbf9 30%, #f0f7fb 45%, #f2fdff 55%, #eefafa 70%, #fef8e8 85%, #fff);
+}
+
+.main {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  flex: 1;
+}
+
+/* ヒーロー */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.heroLogoWrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 60px;
+  z-index: 1;
+}
+
+.heroLogo {
+  width: auto;
+  height: 70%;
+  max-height: 220px;
+  object-fit: contain;
+}
+
+/* タイトルカード */
+.titleCard {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 40px 0;
+}
+
+.titleInner {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  padding-bottom: 32px;
+}
+
+.logoWrap {
+  flex-shrink: 0;
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.titleInfo {
+  padding-top: 8px;
+}
+
+.tournamentName {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+  line-height: 1.3;
+}
+
+.tournamentSub {
+  font-size: 18px;
+  font-weight: 700;
+  color: #c8102e;
+  margin-bottom: 10px;
+}
+
+.tournamentMeta {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.8;
+}
+
+.tournamentBadge {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 4px 14px;
+  background: #c8102e;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border-radius: 3px;
+}
+
+/* セクションナビ */
+.sectionNav {
+  width: 100%;
+  background: #fff;
+  border-top: 0.5px solid #d0d0d0;
+  border-bottom: 0.5px solid #d0d0d0;
+}
+
+.sectionNavInner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  padding: 0 40px;
+}
+
+.navItem {
+  background: none;
+  border: none;
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  font-family: inherit;
+  white-space: nowrap;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.navItem::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 25%;
+  height: 50%;
+  width: 0.5px;
+  background: #d0d0d0;
+}
+
+.navItem:first-child::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 25%;
+  height: 50%;
+  width: 0.5px;
+  background: #d0d0d0;
+}
+
+.navChevron {
+  font-size: 10px;
+  color: #888;
+}
+
+.navItem:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* コンテンツ */
+.content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 40px 60px;
+}
+
+/* セクション */
+.section {
+  margin-bottom: 48px;
+  scroll-margin-top: 80px;
+}
+
+.sectionHeader {
+  margin-bottom: 24px;
+}
+
+.accent {
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: #c8102e;
+  margin-bottom: 6px;
+}
+
+.sectionTitle {
+  font-size: 28px;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.3;
+}
+
+.sectionSub {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+/* テーブル行 */
+.tableRows {
+  border-top: 1px solid #e8e8e8;
+}
+
+.tableRow {
+  display: flex;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid #e8e8e8;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.tableLabel {
+  width: 160px;
+  flex-shrink: 0;
+  color: #888;
+  font-size: 14px;
+}
+
+.tableValue {
+  color: #333;
+}
+
+/* 本文テキスト */
+.bodyText {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.9;
+}
+
+.bodyText p {
+  margin-bottom: 16px;
+}
+
+.bodyText p:last-child {
+  margin-bottom: 0;
+}
+
+/* 注記 */
+.note {
+  font-size: 13px;
+  color: #888;
+  margin-top: 16px;
+  line-height: 1.7;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .container {
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .main {
+    padding: 70px 0 0;
+    width: 100%;
+  }
+
+  .hero {
+    height: 200px;
+  }
+
+  .heroLogoWrap {
+    padding-left: 24px;
+  }
+
+  .titleCard {
+    margin: 0 auto;
+    padding: 24px 20px 0;
+  }
+
+  .titleInner {
+    gap: 20px;
+    padding-bottom: 24px;
+  }
+
+  .logoWrap {
+    width: 110px;
+    height: 110px;
+  }
+
+  .titleInfo {
+    padding-top: 0;
+  }
+
+  .tournamentName {
+    font-size: 22px;
+  }
+
+  .tournamentSub {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .tournamentMeta {
+    font-size: 13px;
+  }
+
+  .sectionNav {
+    display: none;
+  }
+
+  .content {
+    padding: 16px 20px 40px;
+  }
+
+  .section {
+    margin-bottom: 36px;
+  }
+
+  .sectionTitle {
+    font-size: 22px;
+  }
+
+  .tableRow {
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 0;
+  }
+
+  .tableLabel {
+    width: auto;
+    font-size: 12px;
+  }
+
+  .tableValue {
+    font-size: 14px;
+  }
+
+  .bodyText {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    height: 160px;
+  }
+
+  .tournamentName {
+    font-size: 19px;
+  }
+
+  .sectionTitle {
+    font-size: 20px;
+  }
+}

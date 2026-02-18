@@ -1,0 +1,125 @@
+/* styles/terms.module.css */
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  
+  .main {
+    flex: 1;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 60px;
+    width: 100%;
+  }
+  
+  .pageHeader {
+    position: relative;
+    max-width: 1080px;
+    margin: 0 auto;
+    height: 200px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url('/images/top0.webp');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    margin-bottom: 32px;
+  }
+  
+  .title {
+    font-size: 28px;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  
+  .section {
+    max-width: 1080px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sectionTitle {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #333;
+  }
+  
+  .content {
+    line-height: 1.8;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 0;
+      width: 100%;
+      overflow-x: hidden;
+    }
+  
+    .main {
+      padding: 70px 0 0;
+      width: 100%;
+    }
+  
+    .pageHeader {
+      height: 160px;
+      max-width: 100%;
+      margin: 0 auto 24px;
+    }
+  
+    .title {
+      font-size: 24px;
+    }
+  
+    .section {
+      margin: 0 auto 24px;
+      width: calc(100% - 32px);
+      border-radius: 12px;
+      padding: 20px 16px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    }
+  
+    .sectionTitle {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .pageHeader {
+      height: 120px;
+    }
+  
+    .title {
+      font-size: 20px;
+    }
+  }
+  /* styles/terms.module.css に追加 */
+.content p {
+    margin-bottom: 16px;
+  }
+  
+  .content a {
+    color: #0066cc;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .content a:hover {
+    color: #003366;
+    text-decoration: underline;
+  }
+  
+  .content strong {
+    font-weight: 600;
+  }

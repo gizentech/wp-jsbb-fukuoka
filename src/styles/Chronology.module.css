@@ -1,0 +1,412 @@
+/* styles/Chronology.module.css */
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .main {
+    width: 100%;
+    margin: 0 auto;
+    padding: 70px 0 0;
+    flex: 1;
+  }
+  
+  .pageHeader {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    height: 200px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url('/images/top2.webp');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    margin-bottom: 40px;
+  }
+  
+  .pageHeader h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+  
+  .pageHeader span {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  
+  .article {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+  
+  .articleTitle {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    line-height: 1.4;
+    position: relative;
+    padding-bottom: 16px;
+  }
+  
+  .articleTitle::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, #3b82f6, #f3f4f6);
+  }
+  
+  .articleContent {
+    line-height: 1.8;
+    margin-bottom: 30px;
+    color: #374151;
+  }
+  
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    font-size: 1.2rem;
+    color: #666;
+  }
+  
+  .error {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 30px;
+    text-align: center;
+    color: #666;
+    border: 1px solid #f1f1f1;
+    border-radius: 6px;
+    background-color: #fefefe;
+  }
+  
+  /* アコーディオンスタイル */
+  .chronologyWrapper {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  
+  .accordionContainer {
+    margin-bottom: 20px;
+  }
+  
+  .accordionItem {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .accordionItem:last-child {
+    border-bottom: none;
+  }
+  
+  .accordionHeader {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: #f9fafb;
+    padding: 15px 20px;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  
+  
+  .accordionHeader.expanded {
+    background: #eff6ff;
+    color: #1e40af;
+  }
+  
+  .decadeLabel {
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex: 1;
+  }
+  
+  .itemCount {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-right: 15px;
+    background: #fff;
+    padding: 2px 8px;
+    border-radius: 12px;
+  }
+  
+  .accordionHeader.expanded .itemCount {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+  
+  .accordionIcon {
+    width: 16px;
+    height: 16px;
+    position: relative;
+  }
+  
+  .accordionIcon::before,
+  .accordionIcon::after {
+    content: '';
+    position: absolute;
+    background-color: #6b7280;
+    transition: all 0.3s ease;
+  }
+  
+  .accordionIcon::before {
+    top: 7px;
+    left: 0;
+    width: 16px;
+    height: 2px;
+  }
+  
+  .accordionIcon::after {
+    top: 0;
+    left: 7px;
+    width: 2px;
+    height: 16px;
+  }
+  
+  .accordionHeader.expanded .accordionIcon::before {
+    background-color: #1e40af;
+  }
+  
+  .accordionHeader.expanded .accordionIcon::after {
+    opacity: 0;
+    transform: rotate(90deg);
+  }
+  
+  .accordionContent {
+    padding: 20px;
+    background: #fff;
+  }
+  
+  /* タイムライン表示のスタイル */
+  .timelineContainer {
+    position: relative;
+    margin: 10px 0;
+    padding-left: 60px;
+  }
+  
+  .timelineContainer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 20px;
+    width: 4px;
+    background: #e5e7eb;
+    border-radius: 2px;
+  }
+  
+  .timelineYear {
+    position: relative;
+    margin-bottom: 40px;
+  }
+  
+  .timelineYear:last-child {
+    margin-bottom: 0;
+  }
+  
+  .timelineYearLabel {
+    position: absolute;
+    left: -60px;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    background: #3b82f6;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    z-index: 2;
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+  }
+  
+  .timelineItems {
+    position: relative;
+    padding-top: 10px;
+  }
+  
+  .timelineItem {
+    position: relative;
+    margin-bottom: 24px;
+    padding-left: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px dashed #e5e7eb;
+  }
+  
+  .timelineItem:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+  
+  .timelineItem::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 8px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border: 3px solid #3b82f6;
+    border-radius: 50%;
+    z-index: 2;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+  
+  .timelineDate {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4b5563;
+    margin-bottom: 6px;
+    background: #f3f4f6;
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+  }
+  
+  .timelineContent {
+    color: #1f2937;
+    line-height: 1.6;
+    font-size: 1.05rem;
+  }
+  
+  .noData {
+    text-align: center;
+    padding: 20px 0;
+    color: #6b7280;
+    font-style: italic;
+  }
+  
+  /* リッチテキスト内のスタイル */
+  .articleContent h2 {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    color: #1f2937;
+  }
+  
+  .articleContent h3 {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 1.5rem 0 1rem;
+    color: #2563eb;
+  }
+  
+  .articleContent p {
+    margin-bottom: 1rem;
+  }
+  
+  .articleContent ul,
+  .articleContent ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .articleContent li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .articleContent img {
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem 0;
+    border-radius: 4px;
+  }
+  
+  /* レスポンシブデザイン */
+  @media (max-width: 960px) {
+    .pageHeader {
+      height: 160px;
+    }
+  
+    .pageHeader h1 {
+      font-size: 24px;
+    }
+    
+    .timelineContainer {
+      padding-left: 50px;
+    }
+    
+    .timelineYearLabel {
+      left: -50px;
+      width: 36px;
+      height: 36px;
+      font-size: 0.85rem;
+    }
+    
+    .decadeLabel {
+      font-size: 1rem;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .pageHeader {
+      height: 120px;
+      margin-bottom: 24px;
+    }
+  
+    .pageHeader h1 {
+      font-size: 20px;
+    }
+  
+    .articleTitle {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .accordionHeader {
+      padding: 12px 15px;
+    }
+    
+    .decadeLabel {
+      font-size: 0.9rem;
+    }
+    
+    .itemCount {
+      font-size: 0.75rem;
+      margin-right: 10px;
+      padding: 2px 6px;
+    }
+    
+    .timelineContainer {
+      padding-left: 40px;
+    }
+    
+    .timelineYearLabel {
+      left: -40px;
+      width: 30px;
+      height: 30px;
+      font-size: 0.75rem;
+    }
+    
+    .timelineItem {
+      padding-left: 15px;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .timelineContent {
+      font-size: 0.95rem;
+    }
+  }

@@ -1,0 +1,130 @@
+/* Tournaments.module.css */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden; /* 追加：横スクロール防止 */
+  padding-top: 70px;
+}
+
+.main {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  width: 100%;
+  box-sizing: border-box; /* 追加：paddingを幅に含める */
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.cardContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  position: relative;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+}
+
+.card:nth-child(1) .cardHeader {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('/images/application-bg.webp');
+}
+
+.card:nth-child(2) .cardHeader {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('/images/tournament-bg.webp');
+}
+
+.cardHeader h2 {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.cardHeader span {
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.categoryList {
+  padding: 20px;
+}
+
+.categoryItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.categoryItem:last-child {
+  border-bottom: none;
+}
+
+.categoryItem:hover {
+  background-color: #f5f5f5;
+}
+
+.arrow {
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-top: 50px; /* 調整：SPでのpadding-topを小さく */
+  }
+  
+  .main {
+    padding: 20px; /* padding-topを削除し、単一の値に */
+  }
+
+  .title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+
+  .cardContainer {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+
+  .cardHeader {
+    height: 150px;
+  }
+
+  .cardHeader h2 {
+    font-size: 1.5rem;
+  }
+
+  .categoryItem {
+    padding: 14px 16px;
+  }
+}

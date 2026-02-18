@@ -1,0 +1,112 @@
+/* styles/EntryDetail.module.css */
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .main {
+    width: 100%;
+    margin: 0 auto;
+    padding: 100px 0 0;
+    flex: 1;
+  }
+  
+  .pageHeader {
+    position: relative;
+    max-width: 1080px;
+    margin: 0 auto;
+    height: 200px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url('/images/tournament-bg.webp');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    margin-bottom: 32px;
+  }
+  
+  .pageHeader h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  
+  .content {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 16px;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .meta {
+    display: flex;
+    justify-content: space-between;
+    padding: 24px 32px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .round, .classes {
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .description {
+    padding: 24px 32px;
+    border-bottom: 1px solid #eee;
+    line-height: 1.6;
+  }
+  
+  .download {
+    display: flex;
+    justify-content: center;
+    padding: 24px 32px;
+  }
+  
+  .downloadButton {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .downloadButton:hover {
+    background-color: #0056b3;
+  }
+  
+  @media (max-width: 960px) {
+    .pageHeader {
+      height: 160px;
+    }
+  
+    .pageHeader h1 {
+      font-size: 24px;
+    }
+  
+    .meta, .description, .download {
+      padding: 20px 24px;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .pageHeader {
+      height: 120px;
+      margin-bottom: 24px;
+    }
+  
+    .pageHeader h1 {
+      font-size: 20px;
+    }
+  
+    .meta {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }

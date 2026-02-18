@@ -1,0 +1,481 @@
+/* styles/Ekimae.module.css - 駅前不動産旗専用スタイル */
+
+/* TournamentDetail.module.cssのスタイルを継承しつつ、シャドウを全て削除 */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #ffffffff; /* 黄色背景 */
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.titleSection {
+  position: relative;
+  width: 100vw;
+  background: #1a1a1a;
+  box-shadow: none; /* シャドウ削除 */
+  margin-bottom: 2rem;
+  height: 300px;
+  overflow: hidden;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+.titleBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.titleBackgroundImage {
+  object-fit: cover;
+  filter: blur(5px) brightness(0.6);
+  transform: scale(1.05);
+  width: 100%;
+  height: 100%;
+}
+
+.titleContainer {
+  position: relative;
+  display: flex;
+  justify-content: flex-start; /* 左揃えに変更 */
+  align-items: center;
+  width: 100%;
+  height: 120%;
+  z-index: 2;
+  padding: 0 4rem;
+}
+
+.titleWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start; /* 左揃えに変更 */
+  text-align: left; /* 左揃えに変更 */
+}
+
+.title1 {
+  font-size: 5rem; /* さらに大きく */
+  font-weight: bold;
+  color: white; /* 白文字 */
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  padding: 0;
+  text-align: left; /* 左揃え */
+}
+
+.title2 {
+  font-size: 4rem; /* さらに大きく */
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.9); /* 白文字 */
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  padding: 0;
+  text-align: left; /* 左揃え */
+}
+
+/* バナーセクション - シャドウ削除 */
+.bannerSection {
+  width: 100%;
+  max-width: 800px; /* 大会概要と同じ幅に変更 */
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+
+.bannerLink {
+  display: block;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.bannerLink:hover {
+  opacity: 0.9;
+}
+
+.bannerImage {
+  width: 100%;
+  height: auto;
+  border-radius: 0; /* 角を削除 */
+  box-shadow: none; /* シャドウ削除 */
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.tournamentDescription {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+
+.descriptionTitle {
+  font-size: 1.5rem;
+  margin: 0 0 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #000; /* 黒に変更 */
+  color: #333;
+}
+
+.descriptionText {
+  line-height: 1.6;
+  color: #333;
+}
+
+.allUpdatesContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.updateItem {
+  width: 100%;
+  background: white; /* 白背景 */
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* シャドウを戻す */
+  position: relative;
+  box-sizing: border-box;
+}
+
+.updateItem:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: -2rem;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #ddd;
+}
+
+.updateHeader {
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 0.5rem;
+}
+
+.updateTitle {
+  font-size: 1.8rem;
+  color: #333;
+  margin: 0;
+}
+
+.updateDate {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+}
+
+.tournamentPeriod {
+  background: #f8f8f8; /* 元の色に戻す */
+  border-radius: 0; /* 角を削除 */
+  padding: 1rem;
+  margin: 1.5rem 0;
+}
+
+.periodTitle {
+  font-size: 0.95rem;
+  font-weight: bold;
+  margin: 0 0 0.3rem;
+  color: #444;
+}
+
+.periodDate {
+  font-size: 1rem;
+  margin: 0;
+  color: #333;
+}
+
+/* PDFヘッダー画像 */
+.pdfHeaderImage {
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+.headerImage {
+  width: 100%;
+  height: auto;
+}
+
+/* PDFプレビューコンテナ */
+.pdfPreviewContainer {
+  width: 100%;
+  max-width: 600px;
+  margin: 1rem auto;
+  aspect-ratio: 210 / 297;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* シャドウを戻す */
+  background: #f5f5f5; /* 背景色を戻す */
+  position: relative;
+}
+
+.pdfCanvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.thumbnailLoading, .thumbnailError {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent; /* 背景色削除 */
+  color: #666;
+  font-size: 0.9rem;
+  border-radius: 0; /* 角を削除 */
+}
+
+.pdfLink {
+  display: inline-block;
+  width: 100%;
+  padding: 1rem 2rem;
+  margin: 0.5rem 0 1.5rem;
+  background: #ffd900; /* ページ背景と同色 */
+  color: #000; /* 黒文字 */
+  text-decoration: none;
+  text-align: center;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-radius: 0; /* 角を削除 */
+  box-sizing: border-box;
+}
+
+.pdfLink:hover {
+  background: #e6c300; /* ホバー時に少し暗く */
+  transform: translateY(-2px);
+  box-shadow: none; /* ホバー時のシャドウも削除 */
+}
+
+.detailContent {
+  margin-top: 2rem;
+}
+
+.detailTitle {
+  font-size: 1.5rem;
+  margin: 0 0 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #ddd;
+  color: #333;
+}
+
+.metaInfo {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.metaTitle {
+  font-size: 1.2rem;
+  margin: 0 0 1rem;
+  color: #333;
+}
+
+.noUpdates {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.error {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 1.5rem 1rem 3rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .titleSection {
+    height: auto;
+    min-height: 200px;
+    margin-bottom: 1.5rem;
+  }
+
+  .titleContainer {
+    flex-direction: column;
+    align-items: flex-start; /* 左揃え */
+    justify-content: flex-end; /* 下寄せ */
+    gap: 0.8rem;
+    padding: 1.5rem 1.5rem 2.5rem; /* 下のパディングを多めに */
+    height: auto;
+    min-height: 200px; /* 高さを確保 */
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .titleBackgroundImage {
+    object-fit: cover;
+    filter: blur(5px) brightness(0.6);
+    transform: scale(1.05) translateY(30px);
+    width: 100%;
+    height: 100%;
+  }
+
+  .title1 {
+    font-size: 2rem; /* 文字を大きく */
+    line-height: 1.3;
+    padding: 0;
+    text-align: left; /* 左揃え */
+  }
+
+  .title2 {
+    font-size: 1.5rem; /* 文字を大きく */
+    line-height: 1.3;
+    padding: 0;
+    text-align: left; /* 左揃え */
+  }
+
+  .bannerSection {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .bannerImage {
+    border-radius: 0; /* 角を削除 */
+  }
+
+  .updateHeader {
+    margin-bottom: 1rem;
+  }
+
+  .updateTitle {
+    font-size: 1.5rem;
+  }
+
+  .updateDate {
+    font-size: 0.8rem;
+    margin: 0.8rem 0;
+  }
+
+  .pdfLink {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    margin: 1rem 0;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .descriptionTitle, .detailTitle {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .tournamentPeriod {
+    padding: 0.8rem;
+    margin: 1rem 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .periodTitle, .periodDate {
+    font-size: 0.9rem;
+  }
+
+  .allUpdatesContainer {
+    gap: 3rem;
+    width: 100%;
+  }
+
+  .updateItem {
+    padding: 1rem;
+    border-radius: 0; /* 角を削除 */
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .updateItem:not(:last-child)::after {
+    bottom: -1.5rem;
+  }
+
+  .tournamentDescription {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 1rem;
+  }
+
+  .thumbnailLoading, .thumbnailError {
+    height: 150px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title1 {
+    font-size: 1.8rem; /* 文字を大きく */
+    text-align: left; /* 左揃え */
+  }
+
+  .title2 {
+    font-size: 1.3rem; /* 文字を大きく */
+    text-align: left; /* 左揃え */
+  }
+
+  .pdfLink {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .updateTitle {
+    font-size: 1.3rem;
+  }
+
+  .descriptionTitle, .detailTitle {
+    font-size: 1.2rem;
+  }
+
+  .main {
+    padding: 1.5rem 0.75rem 3rem;
+  }
+
+  .updateItem {
+    padding: 1rem 0.75rem;
+  }
+
+  .thumbnailLoading, .thumbnailError {
+    height: 120px;
+  }
+}

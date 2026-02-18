@@ -1,0 +1,169 @@
+/* styles/privacy.module.css */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 60px;
+  width: 100%;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.cardContainer {
+  display: grid;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+.card {
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  position: relative;
+  max-width: 1080px;
+  height: 200px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('/images/top0.webp');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+}
+
+.cardHeader h2 {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.cardHeader span {
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.categoryList {
+  padding: 20px;
+}
+
+.categoryItem {
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.categoryItem:last-child {
+  border-bottom: none;
+}
+
+.categoryItem h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.content {
+  color: #666;
+  line-height: 1.6;
+}
+
+.content p {
+  margin-bottom: 8px;
+}
+
+.officeInfo {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 16px;
+  font-style: normal;
+  line-height: 1.8;
+}
+
+.officeInfo a {
+  color: #0066cc;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.officeInfo a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 0;
+    padding-top: 40px;
+  }
+
+  .title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+
+  .cardContainer {
+    gap: 20px;
+  }
+
+  .cardHeader {
+    height: 150px;
+  }
+
+  .cardHeader h2 {
+    font-size: 1.5rem;
+  }
+
+  .categoryItem {
+    padding: 14px 16px;
+  }
+
+  .categoryItem h3 {
+    font-size: 1.1rem;
+  }
+
+  .officeInfo {
+    padding: 16px;
+  }
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  .card {
+    background: #2a2a2a;
+  }
+
+  .categoryItem {
+    border-bottom-color: #444;
+  }
+
+  .categoryItem h3 {
+    color: #fff;
+  }
+
+  .content {
+    color: #e0e0e0;
+  }
+
+  .officeInfo {
+    background: #222;
+    color: #e0e0e0;
+  }
+
+  .officeInfo a {
+    color: #66b3ff;
+  }
+}

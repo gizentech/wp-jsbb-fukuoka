@@ -1,0 +1,175 @@
+/* styles/Forms.module.css */
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .main {
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    width: 100%;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  
+  .cardContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin-top: 40px;
+  }
+  
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cardHeader {
+    position: relative;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+  }
+  
+  .card:nth-child(1) .cardHeader {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url('/images/registration-bg.jpg');
+  }
+  
+  .card:nth-child(2) .cardHeader {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url('/images/insurance-bg.jpg');
+  }
+  
+  .cardHeader h2 {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .cardHeader span {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  
+  .categoryList {
+    padding: 20px;
+  }
+  
+  .categoryItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+  }
+  
+  .categoryItem:last-child {
+    border-bottom: none;
+  }
+  
+  .categoryItem:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .downloadIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: #666;
+    transition: color 0.3s;
+  }
+  
+  .categoryItem:hover .downloadIcon {
+    color: #0066cc;
+  }
+  
+  .categoryItem:hover .downloadIcon svg {
+    animation: bounce 0.5s ease;
+  }
+  
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(2px);
+    }
+  }
+  
+  /* レスポンシブ対応 */
+  @media (max-width: 768px) {
+    .main {
+      padding: 20px;
+    }
+  
+    .title {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+  
+    .cardContainer {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  
+    .cardHeader {
+      height: 150px;
+    }
+  
+    .cardHeader h2 {
+      font-size: 1.5rem;
+    }
+  
+    .categoryItem {
+      padding: 14px 16px;
+    }
+  }
+  
+  /* ダークモード対応 */
+  @media (prefers-color-scheme: dark) {
+    .card {
+      background: #1a1a1a;
+    }
+  
+    .categoryItem {
+      color: #fff;
+      border-bottom-color: #333;
+    }
+  
+    .categoryItem:hover {
+      background-color: #252525;
+    }
+  
+    .downloadIcon {
+      color: #999;
+    }
+  
+    .categoryItem:hover .downloadIcon {
+      color: #66b3ff;
+    }
+  }

@@ -1,0 +1,25 @@
+.footer {
+  width: 100%;
+  background: #1a2b4c;
+  padding: 20px 0;
+  margin-top: auto;
+}
+
+.footerInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.copyright {
+  color: #fff;
+  font-size: 14px;
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .copyright {
+    font-size: 12px;
+  }
+}

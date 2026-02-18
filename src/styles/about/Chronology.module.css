@@ -1,0 +1,215 @@
+/* styles/about/Chronology.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 70px);
+  width: 100%;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.pageHeader {
+  position: sticky;
+  top: 70px;
+  z-index: 1;
+  background: white;
+  padding: 2rem 0;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #666;
+}
+
+.filterSection {
+  margin-bottom: 2rem;
+}
+
+.filterButtons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+}
+
+.filterButton {
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filterButton.active {
+  background: #333;
+  color: white;
+  border-color: #333;
+}
+
+.timeline {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  position: relative;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: #ddd;
+  top: 0;
+}
+
+.timelineItem {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.timelineItem:last-child {
+  margin-bottom: 0;
+}
+
+.timelineItem::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: white;
+  border: 2px solid #333;
+  border-radius: 50%;
+}
+
+.yearWrapper {
+  text-align: right;
+  padding-right: 2rem;
+}
+
+.year {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.events {
+  padding-left: 2rem;
+}
+
+.event {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+/* 昭和、平成、令和の年代ごとのスタイル */
+.showa::before {
+  border-color: #4a6fa5;
+}
+
+.heisei::before {
+  border-color: #47885e;
+}
+
+.reiwa::before {
+  border-color: #b5495b;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  .main {
+    padding: 1rem;
+  }
+
+  .pageHeader {
+    position: relative;
+    top: 0;
+    padding: 1.5rem 0;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .timeline {
+    padding: 1rem;
+  }
+
+  .timeline::before {
+    left: 2rem;
+  }
+
+  .timelineItem {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .timelineItem::before {
+    left: 2rem;
+  }
+
+  .yearWrapper {
+    text-align: left;
+    padding-right: 0;
+    padding-left: 4rem;
+  }
+
+  .events {
+    padding-left: 4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .filterButtons {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .filterButton {
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .timeline {
+    padding: 0.5rem;
+  }
+
+  .timeline::before {
+    left: 1rem;
+  }
+
+  .timelineItem::before {
+    left: 1rem;
+  }
+
+  .yearWrapper {
+    padding-left: 2.5rem;
+  }
+
+  .events {
+    padding-left: 2.5rem;
+  }
+}

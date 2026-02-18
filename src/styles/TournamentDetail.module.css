@@ -1,0 +1,598 @@
+/* styles/TournamentDetail.module.css */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #ffffff;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.titleSection {
+  position: relative;
+  width: 100vw;
+  background: #1a1a1a;
+  margin-bottom: 2rem;
+  height: 300px;
+  overflow: hidden;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+.titleBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.titleBackgroundImage {
+  object-fit: cover;
+  filter: blur(5px) brightness(0.6);
+  transform: scale(1.05);
+  width: 100%;
+  height: 100%;
+}
+
+.titleContainer {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 120%;
+  z-index: 2;
+  padding: 0 4rem;
+}
+
+.titleWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.title1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  padding: 0 20px;
+}
+
+.title2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  padding: 0 20px;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.pcSelect {
+  width: 230px;
+  margin-right: auto;
+  margin-left: 8rem;
+}
+
+.updateSelect {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  color: white;
+}
+
+.updateSelect:focus {
+  outline: none;
+  border-color: #4a4a4a;
+  box-shadow: 0 0 0 2px rgba(74, 74, 74, 0.2);
+}
+
+/* 選択された回数の表示コンテナ */
+.selectedUpdateContainer {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.updateHeader {
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 0.5rem;
+}
+
+.updateTitle {
+  font-size: 1.8rem;
+  color: #333;
+  margin: 0;
+}
+
+.updateDate {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+}
+
+/* PDFリンクのスタイル - 修正版 */
+.pdfLink {
+  display: inline-block;
+  width: 100%;
+  padding: 1rem 2rem;
+  margin: 0.5rem 0 1.5rem;
+  background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.pdfLink:hover {
+  background: linear-gradient(135deg, #3a3a3a, #1a1a1a);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.spMenu {
+  display: none;
+}
+
+.menuButton {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 1000;
+  background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
+  color: white;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.mobileMenu {
+  position: fixed;
+  bottom: 5rem;
+  right: 1rem;
+  width: 250px;
+  background: white;
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+}
+
+.mobileMenuItem {
+  width: 100%;
+  padding: 1rem;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #eee;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.mobileMenuItem:hover {
+  background: #f5f5f5;
+}
+
+.mobileMenuItem:last-child {
+  border-bottom: none;
+}
+
+/* 読み込みアニメーション */
+.loadingContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.loadingSpinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #333;
+  animation: spinner 1s ease-in-out infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* バナーセクション */
+.bannerSection {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+
+.bannerImage {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 大会概要エリア */
+.tournamentDescription {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+
+.descriptionTitle {
+  font-size: 1.5rem;
+  margin: 0 0 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #ddd;
+  color: #333;
+}
+
+.descriptionText {
+  line-height: 1.6;
+  color: #333;
+}
+
+/* 大会詳細 */
+.detailContent {
+  margin-top: 2rem;
+}
+
+.detailTitle {
+  font-size: 1.5rem;
+  margin: 0 0 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #ddd;
+  color: #333;
+}
+
+/* メタ情報 */
+.metaInfo {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.metaTitle {
+  font-size: 1.2rem;
+  margin: 0 0 1rem;
+  color: #333;
+}
+
+/* 期間情報 */
+.tournamentPeriod {
+  background: #f8f8f8;
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1.5rem 0;
+}
+
+.periodTitle {
+  font-size: 0.95rem;
+  font-weight: bold;
+  margin: 0 0 0.3rem;
+  color: #444;
+}
+
+.periodDate {
+  font-size: 1rem;
+  margin: 0;
+  color: #333;
+}
+
+/* 更新情報なしの場合 */
+.noUpdates {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+/* 全ての大会情報を縦に並べるためのスタイル */
+.allUpdatesContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem; /* 間隔を広げました (元は2.5rem) */
+}
+
+.updateItem {
+  width: 100%;
+  background: transparent;
+  border-radius: 8px;
+  padding: 1.5rem;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.updateItem:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: -2rem;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #ddd;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 1.5rem 1rem 3rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .titleSection {
+    height: auto;
+    min-height: 200px;
+    margin-bottom: 1.5rem;
+  }
+  
+  .titleContainer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 7rem 1.5rem 1.5rem;
+    height: auto;
+    min-height: 120px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .titleBackgroundImage {
+    object-fit: cover;
+    filter: blur(5px) brightness(0.6);
+    transform: scale(1.05) translateY(30px);
+    width: 100%;
+    height: 100%;
+  }
+
+  .title1 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+    padding: 0;
+  }
+
+  .title2 {
+    font-size: 1.1rem;
+    line-height: 1.3;
+    padding: 0;
+  }
+
+  .pcSelect {
+    display: none;
+  }
+
+  .spMenu {
+    display: block;
+  }
+
+  .updateHeader {
+    margin-bottom: 1rem;
+  }
+
+  .updateTitle {
+    font-size: 1.5rem;
+  }
+
+  .updateDate {
+    font-size: 0.8rem;
+    margin: 0.8rem 0;
+  }
+
+  .pdfLink {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    margin: 1rem 0;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .menuButton {
+    width: 40px;
+    height: 40px;
+    right: 0.8rem;
+    bottom: 0.8rem;
+  }
+
+  .mobileMenu {
+    width: calc(100% - 2rem);
+    right: 1rem;
+    bottom: 4rem;
+  }
+
+  .mobileMenuItem {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .descriptionTitle, .detailTitle {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .tournamentPeriod {
+    padding: 0.8rem;
+    margin: 1rem 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .periodTitle, .periodDate {
+    font-size: 0.9rem;
+  }
+  
+  .allUpdatesContainer {
+    gap: 3rem; /* SPでの間隔も調整 */
+    width: 100%;
+  }
+  
+  .updateItem {
+    padding: 1rem;
+    border-radius: 6px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .updateItem:not(:last-child)::after {
+    bottom: -1.5rem;
+  }
+  
+  .tournamentDescription {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 1rem;
+  }
+
+  .bannerSection {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .bannerImage {
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .title1 {
+    font-size: 1.3rem;
+  }
+
+  .title2 {
+    font-size: 1rem;
+  }
+
+  .mobileMenu {
+    width: calc(100% - 1rem);
+    right: 0.5rem;
+  }
+
+  .pdfLink {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .updateTitle {
+    font-size: 1.3rem;
+  }
+
+  .descriptionTitle, .detailTitle {
+    font-size: 1.2rem;
+  }
+  
+  .main {
+    padding: 1.5rem 0.75rem 3rem;
+  }
+  
+  .updateItem {
+    padding: 1rem 0.75rem;
+  }
+}
+
+/* PDFサムネイル関連のスタイル - 修正版 */
+.thumbnailLoading, .thumbnailError {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  color: #666;
+  font-size: 0.9rem;
+  border-radius: 8px;
+}
+
+/* 修正したPDFプレビューコンテナ */
+.pdfPreviewContainer {
+  width: 100%;
+  max-width: 600px;
+  margin: 1rem auto;
+  aspect-ratio: 297 / 210; /* A4の比率 */
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: transparent;
+  position: relative;
+}
+
+.pdfCanvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+@media (max-width: 768px) {
+  .thumbnailLoading, .thumbnailError {
+    height: 150px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .thumbnailLoading, .thumbnailError {
+    height: 120px;
+  }
+}

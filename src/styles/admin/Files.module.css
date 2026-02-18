@@ -1,0 +1,199 @@
+/* src/styles/admin/Files.module.css */
+.container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.container h1 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.container h2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.uploadSection {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  margin-bottom: 2rem;
+}
+
+.uploadForm {
+  max-width: 600px;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.formGroup input[type="text"],
+.formGroup select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.formGroup input[type="file"] {
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+.uploadForm button {
+  padding: 0.75rem 2rem;
+  background: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.uploadForm button:hover {
+  background: #0052a3;
+}
+
+.uploadForm button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.filesList {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.fileItem {
+  padding: 1.5rem;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.fileItem:last-child {
+  margin-bottom: 0;
+}
+
+.fileInfo {
+  margin-bottom: 1rem;
+}
+
+.fileInfo h3 {
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem;
+  color: #333;
+}
+
+.fileCategory {
+  display: inline-block;
+  background: #f0f0f0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  color: #666;
+  margin-right: 1rem;
+}
+
+.fileMeta {
+  font-size: 0.875rem;
+  color: #666;
+  margin-right: 1rem;
+}
+
+.fileActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.downloadButton,
+.deleteButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.downloadButton {
+  background: #28a745;
+  color: white;
+  text-decoration: none;
+}
+
+.downloadButton:hover {
+  background: #218838;
+}
+
+.deleteButton {
+  background: #dc3545;
+  color: white;
+}
+
+.deleteButton:hover {
+  background: #c82333;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .container h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .uploadSection,
+  .filesList {
+    padding: 1rem;
+  }
+
+  .fileItem {
+    padding: 1rem;
+  }
+
+  .fileActions {
+    flex-direction: column;
+  }
+
+  .downloadButton,
+  .deleteButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    border-radius: 0;
+  }
+
+  .formGroup label {
+    font-size: 0.9rem;
+  }
+}

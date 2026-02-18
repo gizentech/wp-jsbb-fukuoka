@@ -1,0 +1,153 @@
+.container {
+  margin-bottom: 40px;
+  padding: 20px 0;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.container:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.noData {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+}
+
+.content {
+  display: flex;
+  gap: 30px;
+}
+
+.chartContainer {
+  flex: 1;
+  max-width: 350px;
+  min-width: 250px;
+}
+
+.otherContainer {
+  flex: 1;
+  min-width: 300px;
+  border-left: 2px solid #e0e0e0;
+  padding-left: 30px;
+}
+
+.otherTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #555;
+}
+
+.otherList {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.otherItem {
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.otherItem:last-child {
+  margin-bottom: 0;
+}
+
+/* スクロールバーのスタイル */
+.otherList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.otherList::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.otherList::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.otherList::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* PDF出力用のコンパクトスタイル */
+@media print {
+  .container {
+    margin-bottom: 20px;
+    padding: 12px 0;
+    page-break-inside: avoid;
+  }
+
+  .title {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .content {
+    gap: 12px;
+  }
+
+  .chartContainer {
+    max-width: 250px;
+    min-width: 180px;
+  }
+
+  .otherContainer {
+    min-width: 180px;
+    padding-left: 12px;
+  }
+
+  .otherTitle {
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+
+  .otherList {
+    max-height: 250px;
+  }
+
+  .otherItem {
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    font-size: 10px;
+  }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+  }
+
+  .chartContainer {
+    max-width: 100%;
+    min-width: auto;
+  }
+
+  .otherContainer {
+    border-left: none;
+    border-top: 2px solid #e0e0e0;
+    padding-left: 0;
+    padding-top: 20px;
+  }
+
+  .otherList {
+    max-height: 300px;
+  }
+}

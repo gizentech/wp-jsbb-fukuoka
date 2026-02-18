@@ -1,0 +1,590 @@
+/* styles/Home.module.css */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: linear-gradient(-55deg, #fff, #fef2d4 15%, #eefbf9 30%, #f0f7fb 45%, #f2fdff 55%, #eefafa 70%, #fef8e8 85%, #fff);
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 0;
+}
+ 
+.introSection {
+  margin: 0;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: 80px 60px;
+  background: #F0252D;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.introContent {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.introLeft {
+  flex: 1;
+}
+
+.introImage {
+  width: 100%;
+  height: auto;
+}
+
+.introRight {
+  flex: 0 0 auto;
+}
+
+.introRight p {
+  color: #fff;
+  font-size: 1.1rem;
+  line-height: 2.2;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.introCards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  max-width: 1200px;
+  width: 100%;
+  margin-top: 60px;
+}
+
+.introCard {
+  display: flex;
+  flex-direction: column;
+}
+
+.introCardImage {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 16 / 9;
+}
+
+.introCardBgTrack {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  animation: scrollBg 20s linear infinite;
+}
+
+.introCardImage:hover .introCardBgTrack {
+  animation-play-state: paused;
+}
+
+.introCardBg {
+  height: 100%;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}
+
+@keyframes scrollBg {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.introCardLogoWrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.introCardLogo {
+  width: 60%;
+  height: auto;
+  transform: scale(1.5);
+}
+
+.introCardTitle {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-top: 16px;
+  letter-spacing: 0.05em;
+}
+
+.introCardSub {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-top: 0;
+  letter-spacing: 0.03em;
+}
+
+.newsSection {
+  margin: 0;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: 64px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.cardContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  width: 100%;
+  max-width: 800px;
+}
+ 
+.card {
+  background: #fff;
+  width: 100%;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+ 
+.cardHeader {
+  position: relative;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  margin-bottom: 0;
+  border-radius: 0; /* 上部のみ角丸に */
+}
+ 
+.card:nth-child(1) .cardHeader {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('/images/tournament-bg.webp');
+}
+ 
+.card:nth-child(2) .cardHeader {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('/images/top2.webp');
+}
+ 
+.cardHeader h2 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+ 
+.cardHeader span {
+  font-size: 14px;
+  text-transform: uppercase;
+}
+ 
+.list,
+.newsList {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #eee;
+}
+
+/* 校区対抗とナイターを含む行のラッパー */
+.list {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.listItem,
+.newsItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  text-decoration: none;
+  color: inherit;
+  background: #fff;
+  transition: background-color 0.3s ease;
+  border-bottom: 1px solid #eee;
+  width: 100%;
+}
+
+/* 校区対抗とナイターを横並びにする */
+.listItem:nth-child(6),
+.listItem:nth-child(7) {
+  width: 50%;
+  border-bottom: 1px solid #eee;
+  box-sizing: border-box;
+}
+
+.listItem:nth-child(6) {
+  border-right: 0.5px solid #eee;
+}
+
+.listItem:nth-child(7) {
+  border-left: 0.5px solid #eee;
+}
+
+.listItem:last-child,
+.newsItem:last-child {
+  border-bottom: none;
+}
+
+.listItem:hover,
+.newsItem:hover {
+  background: #f8f8f8;
+}
+ 
+.categoryInfo,
+.newsInfo {
+  flex: 1;
+}
+ 
+.categoryTitle,
+.newsTitle {
+  font-size: 18px;
+  font-weight: 500;
+}
+ 
+.arrow {
+  color: #999;
+  font-size: 24px;
+  margin-left: 16px;
+}
+ 
+.topicContainer {
+  margin: 64px 0;
+}
+ 
+.topicContainer h2 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 32px;
+}
+ 
+.loadingText,
+.errorMessage {
+  text-align: center;
+  padding: 24px;
+  font-size: 16px;
+}
+ 
+.errorMessage {
+  color: #e53e3e;
+}
+ 
+@media (max-width: 960px) {
+  .main {
+    padding: 106px 16px 0;
+  }
+ 
+  .cardContainer {
+    gap: 32px;
+  }
+ 
+  .cardHeader {
+    height: 160px;
+  }
+ 
+  .cardHeader h2 {
+    font-size: 24px;
+  }
+}
+ 
+@media (max-width: 768px) {
+  .cardContainer {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .introSection {
+    padding: 60px 24px;
+  }
+
+  .introContent {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .introRight p {
+    font-size: 0.95rem;
+    line-height: 2;
+  }
+
+  .introCards {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-top: 40px;
+  }
+
+  .topicContainer {
+    margin: 40px 0;
+  }
+}
+ 
+@media (max-width: 640px) {
+  .main {
+    padding: 70px 16px 0;
+  }
+
+  .cardHeader {
+    height: 120px;
+    margin-bottom: 0;
+    border-radius: 0; /* こちらも上部のみ角丸に修正 */
+  }
+  .cardHeader h2 {
+    font-size: 20px;
+  }
+
+  .listItem,
+  .newsItem {
+    padding: 20px 24px;
+  }
+
+  .categoryTitle,
+  .newsTitle {
+    font-size: 16px;
+  }
+
+  .arrow {
+    font-size: 20px;
+    margin-left: 12px;
+  }
+
+  .topicContainer h2 {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+}
+
+/* 申込書セクション用のスタイル */
+.applicationSection {
+  max-width: 1080px;
+  margin: 48px auto 0;
+  padding: 0 16px;
+}
+ 
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 24px;
+}
+ 
+.sectionHeader h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+ 
+/* 申込書リストのスタイル */
+.applicationList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+ 
+.applicationCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+ 
+.applicationCard:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+ 
+.applicationInfo {
+  flex: 1;
+}
+ 
+.applicationTitle {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+ 
+.applicationTitle a {
+  color: inherit;
+  text-decoration: none;
+}
+ 
+.applicationTitle a:hover {
+  text-decoration: underline;
+}
+ 
+.tournamentName {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+}
+ 
+.tournamentName a {
+  color: #3182ce;
+  text-decoration: none;
+}
+ 
+.tournamentName a:hover {
+  text-decoration: underline;
+}
+ 
+.uploadDate {
+  font-size: 12px;
+  color: #888;
+}
+ 
+.downloadButton {
+  background: #3182ce;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+ 
+.downloadButton:hover {
+  background: #2c5282;
+}
+ 
+.moreLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #3182ce;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+ 
+.moreLink:hover {
+  text-decoration: underline;
+}
+ 
+.moreLink .arrow {
+  font-size: 18px;
+  margin-left: 8px;
+}
+ 
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .applicationCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .downloadButton {
+    align-self: flex-start;
+  }
+}
+ 
+@media (max-width: 640px) {
+  .applicationSection {
+    padding: 0 12px;
+  }
+  
+  .sectionHeader h2 {
+    font-size: 20px;
+  }
+  
+  .applicationTitle {
+    font-size: 16px;
+  }
+}
+
+/* 最新情報のスタイル修正 */
+.itemContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.itemDate {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.itemTitle {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* 一覧リンク用のスタイル */
+.viewMoreLinks {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 32px;
+  border-top: 1px solid #eee;
+}
+
+.viewMoreLink {
+  display: flex;
+  align-items: center;
+  color: #3182ce;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.viewMoreLink:hover {
+  color: #2c5282;
+  text-decoration: underline;
+}
+
+.viewMoreLink:after {
+  content: "→";
+  margin-left: 8px;
+}
+
+/* モバイル対応 */
+@media (max-width: 640px) {
+  .itemDate {
+    font-size: 12px;
+  }
+  
+  .itemTitle {
+    font-size: 14px;
+  }
+  
+  .viewMoreLinks {
+    padding: 12px 24px;
+  }
+  
+  .viewMoreLink {
+    font-size: 13px;
+  }
+}

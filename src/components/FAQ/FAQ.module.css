@@ -1,0 +1,89 @@
+.section {
+  padding: 60px 0;
+  background: #000;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
+
+.sectionInnerPad {
+  padding: 0 60px;
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ================= HEADER ================= */
+
+.header {
+  margin-bottom: 32px;
+}
+
+.redLine {
+  width: 40px;
+  height: 4px;
+  background: #d90000;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #fff;
+}
+
+/* ================= GRID ================= */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* ================= BUTTON ================= */
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 4;
+  border: 2px solid #fff;
+  background: #fff;
+  color: #000;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: background 0.2s, color 0.2s;
+}
+
+.button:hover {
+  background: #ddd;
+  color: #000;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+  .section {
+    padding: 40px 0;
+  }
+
+  .sectionInnerPad {
+    padding: 0 24px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

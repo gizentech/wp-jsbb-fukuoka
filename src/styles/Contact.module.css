@@ -1,0 +1,180 @@
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .main {
+    width: 100%;
+    margin: 0 auto;
+    padding: 70px 0 0;
+    flex: 1;
+  }
+
+  .pageHeader {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    height: 200px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url('/images/top2.webp');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    margin-bottom: 32px;
+  }
+
+  .pageHeader h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  .pageHeader span {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  
+  .formContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .formGroup label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .required {
+    color: #e53e3e;
+    margin-left: 4px;
+  }
+
+  .notice {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 12px 16px;
+    border-radius: 6px;
+    border-left: 4px solid #ffc107;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .formGroup input,
+  .formGroup textarea,
+  .formGroup select {
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .formGroup input:focus,
+  .formGroup textarea:focus,
+  .formGroup select:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+  }
+  
+  .submitButton {
+    background-color: #4299e1;
+    color: white;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submitButton:hover {
+    background-color: #3182ce;
+  }
+  
+  .submitButton:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+  }
+  
+  .successMessage {
+    margin-top: 16px;
+    padding: 12px;
+    background-color: #c6f6d5;
+    color: #2f855a;
+    border-radius: 6px;
+    text-align: center;
+  }
+  
+  .errorMessage {
+    margin-top: 16px;
+    padding: 12px;
+    background-color: #fed7d7;
+    color: #c53030;
+    border-radius: 6px;
+    text-align: center;
+  }
+  
+  @media (max-width: 960px) {
+    .pageHeader {
+      height: 160px;
+    }
+
+    .pageHeader h1 {
+      font-size: 24px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .main {
+      padding: 70px 0 0;
+    }
+
+    .pageHeader {
+      height: 120px;
+      margin-bottom: 24px;
+    }
+
+    .pageHeader h1 {
+      font-size: 20px;
+    }
+
+    .title {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+  
+    .formContainer {
+      padding: 20px;
+    }
+  }

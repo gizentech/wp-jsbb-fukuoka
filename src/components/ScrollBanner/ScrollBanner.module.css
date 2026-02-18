@@ -1,0 +1,52 @@
+/* components/ScrollBanner/ScrollBanner.module.css */
+.scrollBannerLink {
+  display: block;
+  text-decoration: none;
+  width: 100%;
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  z-index: 999;
+}
+
+.scrollBanner {
+  width: 100%;
+  background-color: #e60012;
+  overflow: hidden;
+  padding: 12px 0;
+}
+
+.scrollText {
+  display: flex;
+  white-space: nowrap;
+  animation: scroll 20s linear infinite;
+}
+
+.scrollText span {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0 60px;
+  display: inline-block;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.scrollBannerLink:hover .scrollText {
+  animation-play-state: paused;
+}
+
+@media (max-width: 768px) {
+  .scrollText span {
+    font-size: 0.9rem;
+    padding: 0 40px;
+  }
+}

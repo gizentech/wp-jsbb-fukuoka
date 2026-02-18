@@ -1,0 +1,138 @@
+/* styles/TournamentClassList.module.css */
+.wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .wrapper .main {
+    flex: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .wrapper .title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #333;
+  }
+  
+  .wrapper .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    font-size: 1.2rem;
+    color: #666;
+  }
+  
+  .wrapper .noData {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #666;
+    font-size: 1.1rem;
+  }
+  
+  .wrapper .tournamentGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+  }
+  
+  .wrapper .tournamentCard {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .wrapper .tournamentCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .wrapper .thumbnailWrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    background-color: #f5f5f5;
+  }
+  
+  .wrapper .thumbnail {
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  .wrapper .tournamentInfo {
+    padding: 1.5rem;
+  }
+  
+  .wrapper .tournamentTitle {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 0 0 0.75rem;
+    line-height: 1.4;
+    color: #333;
+  }
+  
+  .wrapper .tournamentTitle span {
+    display: block;
+    font-size: 0.95rem;
+    color: #666;
+    margin-top: 0.5rem;
+    font-weight: normal;
+  }
+  
+  .wrapper .latestUpdate {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .wrapper .latestUpdate::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+  }
+  
+  @media (max-width: 768px) {
+    .wrapper .main {
+      padding: 1.5rem 1rem;
+    }
+  
+    .wrapper .title {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+  
+    .wrapper .tournamentGrid {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+  
+    .wrapper .tournamentInfo {
+      padding: 1rem;
+    }
+  
+    .wrapper .tournamentTitle {
+      font-size: 1.1rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .wrapper .tournamentGrid {
+      grid-template-columns: 1fr;
+    }
+  }

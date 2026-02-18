@@ -1,0 +1,255 @@
+/* styles/ApplicationDetail.module.css */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  width: 100%;
+  margin: 0 auto;
+  padding: 100px 0 0;
+  flex: 1;
+}
+
+.pageHeader {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto;
+  height: 200px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('/images/top2.webp');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  margin-bottom: 40px;
+  border-radius: 8px;
+}
+
+.pageHeader h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.pageHeader span {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.article {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+}
+
+.articleHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.articleDate {
+  color: #666;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.articleDate::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm-1-13h2v5h-2zm0 6h2v2h-2z'/%3E%3C/svg%3E");
+  background-size: contain;
+}
+
+.articleCategory {
+  padding: 0.25rem 1rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  background-color: #f5f7fa;
+  border: 1px solid #e4e8f0;
+  color: #4a5568;
+}
+
+.articleCategory a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.articleCategory a:hover {
+  text-decoration: underline;
+}
+
+.tournamentClass {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  background: #e6f0ff;
+  border: 1px solid #cce0ff;
+  color: #2c5282;
+}
+
+.articleTitle {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  line-height: 1.4;
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.articleTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, #3b82f6, #f3f4f6);
+}
+
+.articleContent {
+  line-height: 1.8;
+  margin-bottom: 40px;
+  color: #374151;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error {
+  max-width: 600px;
+  margin: 80px auto;
+  padding: 30px;
+  text-align: center;
+  color: #666;
+  border: 1px solid #f1f1f1;
+  border-radius: 6px;
+  background-color: #fefefe;
+}
+
+.fileAttachments {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.fileAttachments h3 {
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+}
+
+.fileAttachments h3::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%231f2937' viewBox='0 0 24 24'%3E%3Cpath d='M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z'/%3E%3C/svg%3E");
+  background-size: contain;
+}
+
+.fileAttachments ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.fileAttachments li {
+  margin-bottom: 12px;
+}
+
+.fileAttachments a {
+  display: inline-flex;
+  align-items: center;
+  color: #3b82f6;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.fileAttachments a::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%233b82f6' viewBox='0 0 24 24'%3E%3Cpath d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z'/%3E%3C/svg%3E");
+  background-size: contain;
+}
+
+.fileAttachments a:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.backLink {
+  text-align: center;
+  margin: 32px auto;
+  max-width: 1080px;
+}
+
+.backLink a {
+  color: #333;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.backLink a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 960px) {
+  .pageHeader {
+    height: 160px;
+  }
+
+  .pageHeader h1 {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .pageHeader {
+    height: 120px;
+    margin-bottom: 24px;
+  }
+
+  .pageHeader h1 {
+    font-size: 20px;
+  }
+
+  .articleTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .articleHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

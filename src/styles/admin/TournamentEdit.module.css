@@ -1,0 +1,381 @@
+/* src/styles/admin/TournamentEdit.module.css */
+.container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+ }
+ 
+ .container h1 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 2rem;
+ }
+ 
+ /* 検索セクション */
+ .searchSection {
+  margin-bottom: 2rem;
+ }
+ 
+ .filterGroup {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+ }
+ 
+ .classFilter,
+ .searchSelect {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  flex: 1;
+ }
+ 
+ .searchButton {
+  padding: 0.75rem 2rem;
+  background: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 120px;
+ }
+ 
+ /* 一覧テーブル */
+ .updatesTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+ }
+ 
+ .updatesTable th,
+ .updatesTable td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+ }
+ 
+ .updatesTable th {
+  background: #f8f9fa;
+  font-weight: 500;
+ }
+ 
+ .selectedRow {
+  background: #f0f7ff;
+ }
+ 
+ .actionButtons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+ }
+ 
+ .editButton {
+  padding: 0.5rem 1rem;
+  background: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+ }
+ 
+ .deleteButton {
+  padding: 0.5rem 1rem;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+ }
+ 
+ .fileButton {
+  padding: 0.5rem 1rem;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+ }
+ 
+ .noFile {
+  color: #999;
+  font-size: 0.875rem;
+ }
+ 
+ /* 編集フォーム */
+ .editFormOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+ }
+ 
+ .editFormContainer {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+ }
+ 
+ .editFormHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+ }
+ 
+ .editFormHeader h2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0;
+  color: #333;
+ }
+ 
+ .closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #666;
+  cursor: pointer;
+  padding: 0.5rem;
+ }
+ 
+ .formGroup {
+  margin-bottom: 1.5rem;
+ }
+ 
+ .formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
+ }
+ 
+ .formGroup input,
+ .formGroup textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+ }
+ 
+ .formGroup textarea {
+  min-height: 120px;
+  resize: vertical;
+ }
+ 
+ .currentFile {
+  margin-bottom: 1rem;
+ }
+ 
+ .formButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+ }
+ 
+ .submitButton {
+  padding: 0.75rem 2rem;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 1;
+ }
+ 
+ .cancelButton {
+  padding: 0.75rem 2rem;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 1;
+ }
+ 
+ @media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+ 
+  .container h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+ 
+  .filterGroup {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+ 
+  .classFilter,
+  .searchSelect {
+    width: 100%;
+    font-size: 16px;
+  }
+ 
+  .searchButton {
+    width: 100%;
+    padding: 1rem;
+    font-size: 16px;
+  }
+ 
+  .updatesTable {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    border-radius: 0;
+    margin: 0 -1rem;
+    width: calc(100% + 2rem);
+  }
+ 
+  .updatesTable th,
+  .updatesTable td {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+ 
+  .actionButtons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+ 
+  .editButton,
+  .deleteButton {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 16px;
+  }
+ 
+  .editFormOverlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+ 
+  .editFormContainer {
+    padding: 1rem;
+    border-radius: 12px 12px 0 0;
+    max-height: 85vh;
+    width: 100%;
+  }
+ 
+  .editFormHeader {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 0.5rem 0;
+    margin-bottom: 1rem;
+    z-index: 1;
+  }
+ 
+  .closeButton {
+    padding: 0.75rem;
+    font-size: 1.5rem;
+  }
+ 
+  .formGroup {
+    margin-bottom: 1.25rem;
+  }
+ 
+  .formGroup label {
+    font-size: 0.9rem;
+  }
+ 
+  .formGroup input,
+  .formGroup textarea {
+    font-size: 16px;
+    padding: 0.875rem;
+  }
+ 
+  .formGroup input[type="file"] {
+    width: 100%;
+    padding: 0.5rem 0;
+    font-size: 14px;
+  }
+ 
+  .formButtons {
+    flex-direction: column;
+    gap: 0.75rem;
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding-top: 1rem;
+    margin-top: 1.5rem;
+  }
+ 
+  .submitButton,
+  .cancelButton {
+    width: 100%;
+    padding: 1rem;
+    font-size: 16px;
+  }
+ 
+  .fileButton {
+    width: 100%;
+    padding: 0.75rem;
+    text-align: center;
+  }
+ 
+  .currentFile {
+    margin-bottom: 0.75rem;
+  }
+ }
+ 
+ @media (max-width: 480px) {
+  .container {
+    border-radius: 0;
+    box-shadow: none;
+  }
+ 
+  .editFormContainer {
+    max-height: 100vh;
+    border-radius: 0;
+  }
+ 
+  .updatesTable th,
+  .updatesTable td {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+ 
+  .actionButtons {
+    min-width: 80px;
+  }
+ }
+ 
+ @media (hover: none) {
+  .editButton,
+  .fileButton,
+  .submitButton,
+  .cancelButton,
+  .deleteButton {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+ 
+  .editFormContainer {
+    -webkit-overflow-scrolling: touch;
+  }
+ }
