@@ -142,7 +142,7 @@ export default function ApplicationDetail({ application }) {
   if (router.isFallback) {
     return (
       <div className={styles.container}>
-        <Header />
+        <Header flush />
         <div className={styles.loading}>読み込み中...</div>
         <Footer />
       </div>
@@ -152,7 +152,7 @@ export default function ApplicationDetail({ application }) {
   if (!application) {
     return (
       <div className={styles.container}>
-        <Header />
+        <Header flush />
         <div className={styles.error}>申込書が見つかりませんでした</div>
         <Footer />
       </div>
@@ -165,7 +165,7 @@ export default function ApplicationDetail({ application }) {
         title={application.title}
         description={`${application.title}の詳細ページです`}
       />
-      <Header />
+      <Header flush />
       <main className={styles.main}>
         <div className={styles.pageHeader}>
           <h1>大会申込書</h1>

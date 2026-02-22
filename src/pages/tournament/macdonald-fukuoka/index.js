@@ -13,7 +13,7 @@ export default function MacdonaldFukuoka() {
         <meta name="description" content="高円宮賜杯 全日本学童軟式野球大会 マクドナルド・トーナメント 福岡県大会。全国大会への福岡県予選。2026年で第46回を迎えます。" />
         <link rel="preload" href="/fukuoka/topview/bg_mcd.png" as="image" />
       </Head>
-      <Header />
+      <Header flush />
       <div className={styles.container}>
         <main className={styles.main}>
           {/* ヒーロー */}
@@ -22,21 +22,21 @@ export default function MacdonaldFukuoka() {
             style={{ backgroundImage: 'url(/fukuoka/topview/bg_mcd.png)' }}
           >
             <div className={styles.heroOverlay} />
+            <div className={styles.heroLogoWrap}>
+              <Image
+                src="/fukuoka/topview/logo_mcd.png"
+                alt="マクドナルド・トーナメント"
+                width={160}
+                height={160}
+                className={styles.heroLogo}
+                priority
+              />
+            </div>
           </div>
 
           {/* タイトルカード */}
           <div className={styles.titleCard}>
             <div className={styles.titleInner}>
-              <div className={styles.logoWrap}>
-                <Image
-                  src="/fukuoka/topview/logo_mcd.png"
-                  alt="マクドナルド・トーナメント"
-                  width={160}
-                  height={160}
-                  className={styles.logo}
-                  priority
-                />
-              </div>
               <div className={styles.titleInfo}>
                 <h1 className={styles.tournamentName}>高円宮賜杯全日本学童軟式野球福岡県大会</h1>
                 <p className={styles.tournamentSub}>マクドナルド・トーナメント</p>

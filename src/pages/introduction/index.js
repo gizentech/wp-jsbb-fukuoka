@@ -40,7 +40,7 @@ const sections = [
 export default function IntroductionPage() {
   return (
     <div className={styles.container}>
-      <Header />
+      <Header flush />
 
       <div className={styles.hero}>
         <div className={styles.heroOverlay} />

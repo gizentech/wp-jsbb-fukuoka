@@ -9,7 +9,7 @@
 .main {
   width: 100%;
   margin: 0 auto;
-  padding: 70px 0 0;
+  padding: 56px 0 0;
   flex: 1;
 }
 
@@ -63,11 +63,19 @@
   letter-spacing: 0.1em;
 }
 
+/* サイドバー付きレイアウト */
+.bodyLayout {
+  display: flex;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+}
+
 /* コンテンツ */
 .content {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 24px 40px 60px;
+  flex: 1;
+  min-width: 0;
 }
 
 /* セクション */
@@ -150,7 +158,7 @@
   }
 
   .main {
-    padding: 70px 0 0;
+    padding: 56px 0 0;
     width: 100%;
   }
 
@@ -170,8 +178,14 @@
     font-size: 28px;
   }
 
+  .bodyLayout {
+    flex-direction: column;
+    gap: 0;
+    padding: 24px 20px 48px;
+  }
+
   .content {
-    padding: 16px 20px 40px;
+    padding: 0;
   }
 
   .section {

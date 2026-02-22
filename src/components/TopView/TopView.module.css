@@ -145,7 +145,8 @@
 
 @media (max-width: 768px) {
   .introSection {
-    padding: 60px 24px;
+    padding: 24px 24px;
+    min-height: 30vh;
   }
 
   .introContent {

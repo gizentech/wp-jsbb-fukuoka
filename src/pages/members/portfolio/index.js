@@ -32,7 +32,7 @@ export default function Portfolio() {
         <meta name="googlebot" content="noindex, nofollow" />
         <link rel="preload" href="/members/members-top.webp" as="image" />
       </Head>
-      <Header />
+      <Header flush />
       <div className={styles.container}>
         <main className={styles.main}>
           {/* ヒーロー */}

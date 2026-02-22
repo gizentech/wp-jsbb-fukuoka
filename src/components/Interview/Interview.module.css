@@ -1,0 +1,233 @@
+.section {
+  padding: 60px 60px; /* 高さを抑える */
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ================= HEADER ================= */
+
+.header {
+  margin-bottom: 32px;
+}
+
+.redLine {
+  width: 40px;
+  height: 4px;
+  background: #d90000;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: #666;
+}
+
+/* ================= GRID ================= */
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 0.8fr; /* 右を少し小さく */
+  gap: 32px;
+  align-items: start;
+}
+
+/* ================= LEFT ================= */
+
+.leftCard {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.leftImageWrap {
+  width: 85%;
+  aspect-ratio: 3 / 4; /* 縦4:横3 */
+  overflow: hidden;
+}
+
+.leftImageWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.leftContent {
+  padding-top: 16px;
+  width: 85%;
+}
+
+.leftTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.7rem;
+  color: #777;
+}
+
+.likes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.heartIcon {
+  color: #e0245e;
+  font-size: 0.75rem;
+}
+
+/* ================= RIGHT ================= */
+
+.rightGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px; /* 少し詰める */
+}
+
+.rightCard {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.rightImageWrap {
+  width: 90%; /* 少し縮小 */
+  aspect-ratio: 3 / 4; /* 縦4:横3 */
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.rightImageWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rightContent {
+  padding-top: 10px;
+}
+
+.rightTitle {
+  font-size: 0.8rem; /* 少し小さく */
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+/* ================= MOBILE (default hidden) ================= */
+
+.mobileSection {
+  display: none;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+  .section {
+    padding: 40px 0;
+    overflow: visible;
+  }
+
+  .inner {
+    overflow: visible;
+  }
+
+  .header {
+    padding: 0 24px;
+  }
+
+  .grid {
+    display: none;
+  }
+
+  .mobileSection {
+    display: block;
+    padding: 0 24px;
+  }
+
+  /* SP: featured card */
+  .mobileFeatured {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  .mobileFeaturedImageWrap {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+  }
+
+  .mobileFeaturedImageWrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .mobileFeaturedContent {
+    padding-top: 12px;
+  }
+
+  .mobileFeaturedTitle {
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  /* SP: horizontal scroll */
+  .mobileScroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .mobileScroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobileCard {
+    width: calc((100% - 12px) / 2);
+    min-width: calc((100% - 12px) / 2);
+    max-width: calc((100% - 12px) / 2);
+    flex-shrink: 0;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobileImageWrap {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+  }
+
+  .mobileImageWrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}

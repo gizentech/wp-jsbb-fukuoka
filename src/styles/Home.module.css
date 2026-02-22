@@ -296,7 +296,7 @@
  
 @media (max-width: 960px) {
   .main {
-    padding: 106px 16px 0;
+    padding: 0 16px 0;
   }
  
   .cardContainer {
@@ -345,7 +345,7 @@
  
 @media (max-width: 640px) {
   .main {
-    padding: 70px 16px 0;
+    padding: 0 16px 0;
   }
 
   .cardHeader {

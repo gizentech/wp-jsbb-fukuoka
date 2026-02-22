@@ -1,0 +1,467 @@
+/* styles/Column.module.css */
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(-55deg, #fff 0%, #fef2d4 15%, #eefbf9 30%, #f0f7fb 45%, #f2fdff 55%, #eefafa 70%, #fef8e8 85%, #fff 100%);
+}
+
+/* ===== ヒーロー（タイトル画像） ===== */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-image: url('/fukuoka/topview/top-pc.jpg');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* タイトルカード */
+.titleCard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 40px 0;
+}
+
+.titleInner {
+  padding-bottom: 32px;
+  border-bottom: 0.5px solid #d0d0d0;
+}
+
+.heroTitle {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+.heroTitleRed {
+  color: #1a1a1a;
+}
+
+.heroSubtitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 0.1em;
+}
+
+.main {
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 0 0;
+  flex: 1;
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 40px 60px;
+}
+
+/* PC: タブナビゲーション */
+.categoryFilter {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.categoryBtn {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  background: transparent;
+  border: 1px solid #1a1a1a;
+  border-radius: 0;
+  letter-spacing: 0.05em;
+  padding: 10px 28px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.categoryBtn.active {
+  background: #c8102e;
+  color: #fff;
+  border-color: #c8102e;
+}
+
+.categoryBtn:not(.active):hover {
+  background: #c8102e;
+  color: #fff;
+  border-color: #c8102e;
+  transform: translateY(-2px);
+}
+
+/* コラムコンテンツ */
+.list {
+  background: transparent;
+  border: none;
+  min-height: 400px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  grid-auto-flow: dense;
+}
+
+/* フェードインアニメーション */
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* PC: コラムアイテム（カード型） */
+.listItem {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  background-color: white;
+  border-radius: 0;
+  overflow: hidden;
+  animation: fadeSlideDown 0.4s ease forwards;
+  opacity: 0;
+  position: relative;
+  grid-column: span 1;
+}
+
+/* 1つ目のアイテムは2×2の大きなカード */
+.listItem:nth-child(1) {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* 2-5つ目のアイテムは1×1の通常サイズ */
+.listItem:nth-child(2),
+.listItem:nth-child(3),
+.listItem:nth-child(4),
+.listItem:nth-child(5) {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+.listItem:hover {
+  opacity: 0.8;
+}
+
+/* PCでは左ダッシュ非表示 */
+.leftDash {
+  display: none;
+}
+
+/* サムネイル画像（16:9の比率） */
+.columnThumbnail {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: top;
+}
+
+/* テキストコンテンツエリア */
+.columnContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  flex: 1;
+}
+
+.columnDate {
+  font-size: 0.75rem;
+  color: #888;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.columnMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.columnCategory {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.7rem;
+  border-radius: 0;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  color: #1a1a1a;
+  background: transparent;
+  border: 1px solid #1a1a1a;
+}
+
+.columnInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.columnTitle {
+  font-size: 0.9rem;
+  color: #333;
+  line-height: 1.5;
+  font-weight: 600;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 1つ目のアイテムのタイトルは大きく */
+.listItem:nth-child(1) .columnTitle {
+  font-size: 1.2rem;
+  -webkit-line-clamp: 4;
+}
+
+/* 2-5つ目のアイテムのタイトルは通常サイズ */
+.listItem:nth-child(2) .columnTitle,
+.listItem:nth-child(3) .columnTitle,
+.listItem:nth-child(4) .columnTitle,
+.listItem:nth-child(5) .columnTitle {
+  font-size: 0.85rem;
+  -webkit-line-clamp: 2;
+}
+
+.arrow {
+  display: none;
+}
+
+.noData {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  color: #999;
+  font-size: 1rem;
+}
+
+.error {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  color: #dc3545;
+  font-size: 1rem;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  margin: 1rem 0;
+}
+
+.errorMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.retryButton {
+  padding: 8px 16px;
+  background-color: #c62828;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  margin-top: 1rem;
+}
+
+.retryButton:hover {
+  background-color: #b71c1c;
+}
+
+/* ページネーション */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 40px;
+}
+
+.pageBtn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  background: transparent;
+  border: 1px solid #d0d0d0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pageBtn:hover:not(:disabled) {
+  background: #c8102e;
+  color: #fff;
+  border-color: #c8102e;
+}
+
+.pageBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pageBtnActive {
+  background: #c8102e;
+  color: #fff;
+  border-color: #c8102e;
+}
+
+/* ===== 768px未満：SP表示 ===== */
+@media (max-width: 767px) {
+  .hero {
+    height: 200px;
+    background-image: url('/fukuoka/topview/top.webp');
+  }
+
+  .titleCard {
+    padding: 24px 20px 0;
+  }
+
+  .titleInner {
+    padding-bottom: 20px;
+  }
+
+  .heroTitle {
+    font-size: 28px;
+  }
+
+  .heroSubtitle {
+    font-size: 13px;
+  }
+
+  .main {
+    padding: 56px 0 0;
+  }
+
+  .content {
+    padding: 16px 20px 40px;
+  }
+
+  /* PCもSPも同じフィルター表示 */
+  .categoryFilter {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .categoryBtn {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
+
+  /* SP: コラムコンテンツ */
+  .list {
+    border-top: none;
+    min-height: 400px;
+    background: transparent;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* SP: コラムアイテム（カード型） */
+  .listItem {
+    display: flex;
+    flex-direction: column;
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .listItem:nth-child(1) {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .listItem:nth-child(2),
+  .listItem:nth-child(3),
+  .listItem:nth-child(4),
+  .listItem:nth-child(5) {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .listItem:hover {
+    opacity: 0.8;
+  }
+
+  /* SP: 左ダッシュ非表示 */
+  .leftDash {
+    display: none;
+  }
+
+  .columnThumbnail {
+    aspect-ratio: 16 / 9;
+  }
+
+  .columnContent {
+    padding: 0.8rem;
+  }
+
+  .columnDate {
+    font-size: 0.7rem;
+  }
+
+  .columnMeta {
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .columnCategory {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.65rem;
+  }
+
+  .columnTitle {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+  }
+
+  .listItem:nth-child(1) .columnTitle {
+    font-size: 0.95rem;
+    -webkit-line-clamp: 3;
+  }
+
+  .listItem:nth-child(2) .columnTitle,
+  .listItem:nth-child(3) .columnTitle,
+  .listItem:nth-child(4) .columnTitle,
+  .listItem:nth-child(5) .columnTitle {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+  }
+}
+
+@media (max-width: 479px) {
+  .columnDate {
+    font-size: 0.75rem;
+  }
+
+  .columnTitle {
+    font-size: 0.85rem;
+  }
+}

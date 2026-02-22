@@ -1,85 +1,159 @@
 /* styles/NewsDetail.module.css */
+
 .container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(-55deg, #fff 0%, #fef2d4 15%, #eefbf9 30%, #f0f7fb 45%, #f2fdff 55%, #eefafa 70%, #fef8e8 85%, #fff 100%);
+}
+
+/* ===== ヒーロー（タイトル画像） ===== */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-image: url('/fukuoka/topview/top-pc.jpg');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* タイトルカード */
+.titleCard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 40px 0;
+}
+
+.titleInner {
+  padding-bottom: 32px;
+  border-bottom: 0.5px solid #d0d0d0;
+}
+
+.heroTitle {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+.heroTitleRed {
+  color: #c8102e;
+}
+
+.heroSubtitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 0.1em;
 }
 
 .main {
   width: 100%;
   margin: 0 auto;
-  padding: 100px 0 0;
+  padding: 56px 0 0;
   flex: 1;
 }
 
-.pageHeader {
-  position: relative;
-  max-width: 1080px;
+.content {
+  max-width: 1200px;
   margin: 0 auto;
-  height: 200px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url('/images/top2.webp');
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  margin-bottom: 40px;
-  border-radius: 8px;
+  padding: 24px 40px 60px;
 }
 
-.pageHeader h1 {
-  font-size: 28px;
-  margin-bottom: 8px;
-  letter-spacing: 0.05em;
-}
-
-.pageHeader span {
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
+/* 記事セクション */
 .article {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 0 20px 60px;
+  width: 100%;
+  background: transparent;
+  padding: 0;
 }
 
 .articleHeader {
+  margin-bottom: 2rem;
+}
+
+.articleTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1.5;
+  color: #333;
+  margin: 0 0 1rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e0e0e0;
+  position: relative;
+}
+
+.articleTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 30%;
+  height: 4px;
+  background: #99c744;
+}
+
+.metaInfo {
   display: flex;
+  gap: 1rem;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
+  margin: 1rem 0;
 }
 
 .articleDate {
-  color: #666;
+  color: #555;
   font-size: 0.9rem;
-  display: inline-flex;
-  align-items: center;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
-.articleDate::before {
-  content: '';
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  margin-right: 6px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm-1-13h2v5h-2zm0 6h2v2h-2z'/%3E%3C/svg%3E");
-  background-size: contain;
-}
-
+/* カテゴリーバッジ */
 .articleCategory {
-  padding: 0.25rem 1rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  background-color: #f5f7fa;
-  border: 1px solid #e4e8f0;
-  color: #4a5568;
+  display: inline-block;
+  padding: 0.3rem 1rem;
+  font-size: 0.75rem;
+  border-radius: 20px;
+  font-weight: 600;
+  text-align: center;
+  min-width: 100px;
+  white-space: nowrap;
+  color: white;
+}
+
+.categoryInfomation {
+  background-color: #99c744;
+}
+
+.categoryEsClass {
+  background-color: #7fb830;
+}
+
+.categoryJhsClass {
+  background-color: #6aad2a;
+}
+
+.categoryAClass {
+  background-color: #88b83a;
+}
+
+.categoryBClass {
+  background-color: #a8d24e;
+}
+
+.categoryCClass {
+  background-color: #74a635;
+}
+
+.categoryDefault {
+  background-color: #82b536;
 }
 
 .importantBadge {
@@ -93,39 +167,256 @@
   border-radius: 4px;
 }
 
-.importantBadge::before {
-  content: '';
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  margin-right: 4px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15c-.83 0-1.5-.67-1.5-1.5S11.17 14 12 14s1.5.67 1.5 1.5S12.83 17 12 17zm1-4h-2V7h2v6z'/%3E%3C/svg%3E");
-  background-size: contain;
+.imageWrapper {
+  margin: 2rem 0;
+  text-align: center;
 }
 
-.articleTitle {
-  font-size: 1.8rem;
+/* リッチテキストエリア */
+.articleContent {
+  margin-top: 2rem;
+  line-height: 1.7;
+  color: #333;
+}
+
+.articleContent h2 {
+  font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 2rem;
   line-height: 1.4;
+  color: #333;
+  margin: 2.5rem 0 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e0e0e0;
   position: relative;
-  padding-bottom: 16px;
 }
 
-.articleTitle::after {
+.articleContent h2::after {
   content: '';
   position: absolute;
-  bottom: 0;
+  bottom: -2px;
+  left: 0;
+  width: 25%;
+  height: 4px;
+  background: #99c744;
+}
+
+.articleContent h3 {
+  font-size: 1.35rem;
+  margin: 1.5rem 0 1rem;
+  padding: 0 0 0.3rem 1rem;
+  font-weight: bold;
+  line-height: 1.2;
+  color: #333;
+  position: relative;
+}
+
+.articleContent h3::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 5px;
+  background: linear-gradient(to bottom, #99c744 0%, #99c744 50%, #7fb830 50%, #7fb830 100%);
+}
+
+.articleContent h3::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
   left: 0;
   width: 100%;
   height: 1px;
-  background: linear-gradient(to right, #3b82f6, #f3f4f6);
+  background-color: #cccccc;
 }
 
-.articleContent {
-  line-height: 1.8;
-  margin-bottom: 40px;
-  color: #374151;
+.articleContent h4 {
+  font-size: 1.2rem;
+  margin: 1.5rem 0 1rem;
+  padding-left: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #333;
+  position: relative;
+  border-left: 4px solid #99c744;
+}
+
+.articleContent h5 {
+  font-size: 1rem;
+  margin: 1rem 0 0.75rem;
+  font-weight: bold;
+  line-height: 1.4;
+  color: #333;
+  padding: 0.25rem 0.5rem;
+  background: #f5f5f5;
+  border-radius: 3px;
+}
+
+.articleContent h6 {
+  font-size: 0.95rem;
+  margin: 1rem 0 0.75rem;
+  font-weight: bold;
+  line-height: 1.4;
+  color: #333;
+}
+
+.articleContent p {
+  margin: 1rem 0;
+  line-height: 1.7;
+  color: #333;
+}
+
+.articleContent strong {
+  font-weight: bold;
+}
+
+.articleContent em {
+  font-style: italic;
+}
+
+.articleContent ul,
+.articleContent ol {
+  list-style: none;
+  padding-left: 0;
+  margin: 1.5rem 0;
+}
+
+.articleContent li {
+  position: relative;
+  padding-left: 1.8rem;
+  margin: 1rem 0;
+  line-height: 1.7;
+}
+
+.articleContent li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.53em;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background-color: #99c744aa;
+}
+
+.articleContent a {
+  color: #5bb531;
+  text-decoration: underline;
+}
+
+.articleContent a:hover {
+  text-decoration: none;
+}
+
+.articleContent img {
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+  display: block;
+}
+
+.articleContent figure {
+  margin: 1rem 0;
+}
+
+.articleContent figcaption {
+  color: #666;
+  font-size: 0.875rem;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.articleContent table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.articleContent th,
+.articleContent td {
+  border: 1px solid #9c9c9c7a;
+  padding: 0.65rem 0.75rem;
+}
+
+.articleContent th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+  white-space: nowrap;
+  min-width: 6em;
+}
+
+.articleContent th p,
+.articleContent td p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+.articleContent blockquote {
+  border-left: 4px solid #99c744;
+  margin: 1.5rem 0;
+  padding: 0.5rem 0 0.5rem 1rem;
+  color: #666;
+}
+
+.articleContent pre {
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.articleContent code {
+  background-color: #f5f5f5;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.articleContent hr {
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  margin: 2rem 0;
+}
+
+.articleContent dl {
+  margin: 1rem 0;
+}
+
+.articleContent dt {
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.articleContent dd {
+  margin-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 一覧に戻るリンク */
+.backLink {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  color: #5bb531;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #5bb531;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  background-color: #5bb531;
+  color: #fff;
 }
 
 .loading {
@@ -186,7 +477,7 @@
 .fileAttachments a {
   display: inline-flex;
   align-items: center;
-  color: #3b82f6;
+  color: #5bb531;
   font-size: 0.9rem;
   text-decoration: none;
   transition: all 0.2s ease;
@@ -198,43 +489,123 @@
   width: 16px;
   height: 16px;
   margin-right: 8px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%233b82f6' viewBox='0 0 24 24'%3E%3Cpath d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%235bb531' viewBox='0 0 24 24'%3E%3Cpath d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z'/%3E%3C/svg%3E");
   background-size: contain;
 }
 
 .fileAttachments a:hover {
-  color: #2563eb;
+  color: #4a8d28;
   text-decoration: underline;
 }
 
-@media (max-width: 960px) {
-  .pageHeader {
-    height: 160px;
+/* ===== SP: 768px未満 ===== */
+@media (max-width: 767px) {
+  .hero {
+    height: 200px;
+    background-image: url('/fukuoka/topview/top.webp');
   }
 
-  .pageHeader h1 {
-    font-size: 24px;
-  }
-}
-
-@media (max-width: 640px) {
-  .pageHeader {
-    height: 120px;
-    margin-bottom: 24px;
+  .titleCard {
+    padding: 24px 20px 0;
   }
 
-  .pageHeader h1 {
-    font-size: 20px;
+  .titleInner {
+    padding-bottom: 20px;
+  }
+
+  .heroTitle {
+    font-size: 28px;
+  }
+
+  .heroSubtitle {
+    font-size: 13px;
+  }
+
+  .main {
+    padding: 56px 0 0;
+  }
+
+  .content {
+    padding: 16px 20px 40px;
+  }
+
+  .article {
+    padding: 0;
   }
 
   .articleTitle {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    line-height: 1.6;
   }
 
-  .articleHeader {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+  .metaInfo {
+    gap: 0.5rem;
+  }
+
+  .articleCategory {
+    padding: 0.15rem 0.7rem;
+    font-size: 0.65rem;
+    min-width: auto;
+  }
+
+  .categoryInfomation {
+    background-color: #f0a030;
+  }
+
+  .categoryEsClass {
+    background-color: #5bb531;
+  }
+
+  .categoryJhsClass {
+    background-color: #e06060;
+  }
+
+  .categoryAClass {
+    background-color: #4a90d9;
+  }
+
+  .categoryBClass {
+    background-color: #9c27b0;
+  }
+
+  .categoryCClass {
+    background-color: #ff9800;
+  }
+
+  .articleContent h2 {
+    font-size: 1.3rem;
+  }
+
+  .articleContent h3 {
+    font-size: 1.15rem;
+  }
+
+  .articleContent h4 {
+    font-size: 1.05rem;
+  }
+
+  .articleContent h5 {
+    font-size: 0.95rem;
+  }
+
+  .articleContent h6 {
+    font-size: 0.9rem;
+  }
+
+  .articleContent table {
+    display: table;
+    width: 100%;
+    table-layout: auto;
+    word-break: break-word;
+  }
+}
+
+@media (max-width: 479px) {
+  .articleTitle {
+    font-size: 1.1rem;
+  }
+
+  .articleDate {
+    font-size: 0.8rem;
   }
 }

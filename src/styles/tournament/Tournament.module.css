@@ -20,7 +20,7 @@
   height: 320px;
   background-size: cover;
   background-position: center;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .heroOverlay {
@@ -33,17 +33,18 @@
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-start;
   padding-left: 60px;
+  padding-bottom: 0;
   z-index: 1;
 }
 
 .heroLogo {
-  width: auto;
-  height: 70%;
-  max-height: 220px;
+  width: 580px;
+  height: auto;
   object-fit: contain;
+  transform: translateY(20px);
 }
 
 /* タイトルカード */
@@ -276,7 +277,7 @@
   }
 
   .main {
-    padding: 70px 0 0;
+    padding: 56px 0 0;
     width: 100%;
   }
 

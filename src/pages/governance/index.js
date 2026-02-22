@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
+import AboutSidebar from '../../components/AboutSidebar/AboutSidebar'
 import styles from '../../styles/governance/Governance.module.css'
 
 export default function Governance() {
@@ -10,7 +11,7 @@ export default function Governance() {
         <title>スポーツ団体ガバナンスコード | 一般社団法人 福岡県軟式野球連盟</title>
         <meta name="description" content="一般社団法人 福岡県軟式野球連盟のスポーツ団体ガバナンスコード（一般スポーツ団体向け）です。" />
       </Head>
-      <Header />
+      <Header flush />
       <div className={styles.container}>
         <main className={styles.main}>
           {/* ヒーロー */}
@@ -18,15 +19,9 @@ export default function Governance() {
             <div className={styles.heroOverlay} />
           </div>
 
-          {/* タイトルカード */}
-          <div className={styles.titleCard}>
-            <div className={styles.titleInner}>
-              <h1 className={styles.pageTitle}><span className={styles.pageTitleRed}>一般社団法人福岡県軟式野球連盟</span>ガバナンスコード</h1>
-              <p className={styles.pageSub}>GOVERNANCE CODE</p>
-            </div>
-          </div>
-
-          <div className={styles.content}>
+          <div className={styles.bodyLayout}>
+            <AboutSidebar />
+            <div className={styles.content}>
             {/* PDF セクション */}
             <section className={styles.section}>
               <div className={styles.sectionHeader}>
@@ -59,6 +54,7 @@ export default function Governance() {
                 </a>
               </div>
             </section>
+            </div>
           </div>
         </main>
       </div>

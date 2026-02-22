@@ -1,0 +1,49 @@
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  padding-top: 8px;
+}
+
+.menuLabel {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: 0.04em;
+  margin-bottom: 24px;
+  padding-bottom: 0;
+}
+
+.menuList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menuList li {
+  border: none;
+}
+
+.menuLink {
+  display: block;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #555;
+  text-decoration: none;
+  line-height: 1.5;
+  transition: color 0.2s ease;
+}
+
+.menuLink:hover {
+  color: #c8102e;
+}
+
+.menuLink.active {
+  color: #c8102e;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+}

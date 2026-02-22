@@ -3,6 +3,7 @@ import emailjs from '@emailjs/browser';
 import styles from '../styles/Contact.module.css';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
+import AboutSidebar from '../components/AboutSidebar/AboutSidebar';
 
 export default function Contact() {
   const formRef = useRef();
@@ -58,18 +59,21 @@ export default function Contact() {
 
   return (
     <div className={styles.container}>
-      <Header />
+      <Header flush />
       <main className={styles.main}>
-        <div className={styles.pageHeader}>
-          <h1>お問い合わせ</h1>
-          <span>CONTACT</span>
+        {/* ヒーロー */}
+        <div className={styles.hero}>
+          <div className={styles.heroOverlay} />
         </div>
 
-        <div className={styles.formContainer}>
-          <p className={styles.notice}>
-            ※選手登録や出場申請は問い合わせでは受け付けておりません。
-          </p>
-          <form ref={formRef} onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.bodyLayout}>
+          <AboutSidebar />
+          <div className={styles.content}>
+            <div className={styles.formContainer}>
+            <p className={styles.notice}>
+              ※選手登録や出場申請は問い合わせでは受け付けておりません。
+            </p>
+            <form ref={formRef} onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.formGroup}>
               <label htmlFor="category">お問い合わせ種別 <span className={styles.required}>*</span></label>
               <select
@@ -153,6 +157,8 @@ export default function Contact() {
               </p>
             )}
           </form>
+            </div>
+          </div>
         </div>
       </main>
       <Footer />

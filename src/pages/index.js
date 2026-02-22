@@ -1,11 +1,15 @@
 import React from 'react'
+import fs from 'fs'
+import path from 'path'
 import styles from '../styles/Home.module.css'
 import Header from '../components/Header/Header'
 import Footer from '../components/Footer/Footer'
 import HeroSlider from '../components/HeroSlider/HeroSlider'
 import TopView from '../components/TopView/TopView'
 import Column from '../components/Column/Column'
+import Interview from '../components/Interview/Interview'
 import FAQ from '../components/FAQ/FAQ'
+import Partners from '../components/Partners/Partners'
 
 export async function getServerSideProps() {
   try {
@@ -90,10 +94,69 @@ export async function getServerSideProps() {
       }
     }
 
+    // ------------------------------
+    // スポンサーCSV読み込み
+    // ------------------------------
+    let sponsors = []
+    try {
+      const csvPath = path.join(process.cwd(), 'public', 'fukuoka', 'partner', 'sponsor.csv')
+      const csvContent = fs.readFileSync(csvPath, 'utf-8')
+      const lines = csvContent.trim().split('\n')
+      const headers = lines[0].split(',')
+      sponsors = lines.slice(1).filter(line => line.trim()).map(line => {
+        const values = line.split(',')
+        const obj = {}
+        headers.forEach((h, i) => { obj[h.trim()] = (values[i] || '').trim() })
+        return obj
+      })
+    } catch (e) {
+      console.error('Sponsor CSV Error:', e)
+    }
+
+    // ------------------------------
+    // コラムとインタビューの分離
+    // ------------------------------
+    const columnPosts = instagramPosts.filter(post => {
+      const caption = (post.caption || '').toLowerCase();
+      return !caption.includes('インタビュー') && !caption.includes('interview');
+    });
+
+    const interviewPosts = instagramPosts.filter(post => {
+      const caption = (post.caption || '').toLowerCase();
+      return caption.includes('インタビュー') || caption.includes('interview');
+    });
+
+    // ------------------------------
+    // 最新情報TOP3（1ヵ月以内のNews + Instagram）
+    // ------------------------------
+    const oneMonthAgo = new Date()
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
+
+    const latestTop3 = [
+      ...newsData.map(n => ({
+        type: 'news',
+        title: n.title,
+        date: n.createdAt,
+        link: `/news/${n.id}`
+      })),
+      ...instagramPosts.map(p => ({
+        type: 'instagram',
+        title: (p.caption || '').split('\n')[0],
+        date: p.timestamp,
+        link: p.permalink || '#'
+      }))
+    ]
+      .filter(item => new Date(item.date) >= oneMonthAgo)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 3)
+
     return {
       props: {
         latestItems: newsData,
-        instagramPosts
+        columnPosts,
+        interviewPosts,
+        sponsors,
+        latestTop3
       }
     }
   } catch (error) {
@@ -101,7 +164,10 @@ export async function getServerSideProps() {
     return {
       props: {
         latestItems: [],
-        instagramPosts: []
+        columnPosts: [],
+        interviewPosts: [],
+        sponsors: [],
+        latestTop3: []
       }
     }
   }
@@ -109,17 +175,22 @@ export async function getServerSideProps() {
 
 export default function Home({
   latestItems = [],
-  instagramPosts = []
+  columnPosts = [],
+  interviewPosts = [],
+  sponsors = [],
+  latestTop3 = []
 }) {
   return (
     <div className={styles.container}>
       <Header />
 
       <main className={styles.main}>
-        <HeroSlider />
+        <HeroSlider latestTop3={latestTop3} />
         <TopView latestItems={latestItems} />
-        <Column articles={instagramPosts} />
+        <Column articles={columnPosts} />
+        <Interview articles={interviewPosts} />
         <FAQ />
+        <Partners sponsors={sponsors} />
       </main>
 
       <Footer />

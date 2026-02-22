@@ -1,598 +1,425 @@
 /* styles/TournamentDetail.module.css */
-.wrapper {
-  display: flex;
-  flex-direction: column;
+
+.container {
   min-height: 100vh;
-  background: #ffffff;
-  width: 100%;
-  overflow-x: hidden;
-}
-
-.titleSection {
-  position: relative;
-  width: 100vw;
-  background: #1a1a1a;
-  margin-bottom: 2rem;
-  height: 300px;
-  overflow: hidden;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-}
-
-.titleBackground {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  overflow: hidden;
-}
-
-.titleBackgroundImage {
-  object-fit: cover;
-  filter: blur(5px) brightness(0.6);
-  transform: scale(1.05);
-  width: 100%;
-  height: 100%;
-}
-
-.titleContainer {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: 120%;
-  z-index: 2;
-  padding: 0 4rem;
-}
-
-.titleWrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  background: linear-gradient(-55deg, #fff 0%, #fef2d4 15%, #eefbf9 30%, #f0f7fb 45%, #f2fdff 55%, #eefafa 70%, #fef8e8 85%, #fff 100%);
 }
 
-.title1 {
-  font-size: 2rem;
-  font-weight: bold;
-  color: white;
-  margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  word-break: break-word;
-  overflow-wrap: break-word;
-  max-width: 100%;
-  padding: 0 20px;
+/* タイトルカード */
+.titleCard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 40px 0;
 }
 
-.title2 {
-  font-size: 2rem;
-  font-weight: bold;
-  color: rgba(255, 255, 255, 0.9);
-  margin: 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  word-break: break-word;
-  overflow-wrap: break-word;
-  max-width: 100%;
-  padding: 0 20px;
+.titleInner {
+  padding-bottom: 32px;
+  border-bottom: 0.5px solid #d0d0d0;
+}
+
+.heroTitle {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+.heroSubtitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 0.1em;
 }
 
 .main {
+  width: 100%;
+  margin: 0 auto;
+  padding: 56px 0 0;
   flex: 1;
-  width: 100%;
-  max-width: 800px;
+}
+
+.content {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem 4rem;
+  padding: 24px 40px 60px;
 }
 
-.pcSelect {
-  width: 230px;
-  margin-right: auto;
-  margin-left: 8rem;
-}
-
-.updateSelect {
+/* 記事セクション */
+.article {
   width: 100%;
-  padding: 0.75rem;
-  font-size: 0.95rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  color: white;
+  background: transparent;
+  padding: 0;
 }
 
-.updateSelect:focus {
-  outline: none;
-  border-color: #4a4a4a;
-  box-shadow: 0 0 0 2px rgba(74, 74, 74, 0.2);
-}
-
-/* 選択された回数の表示コンテナ */
-.selectedUpdateContainer {
-  width: 100%;
-  margin: 0 auto;
-}
-
-.updateHeader {
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 0.5rem;
-}
-
-.updateTitle {
-  font-size: 1.8rem;
+.articleTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1.5;
   color: #333;
-  margin: 0;
+  margin: 0 0 1rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e0e0e0;
+  position: relative;
 }
 
-.updateDate {
-  color: #666;
-  font-size: 0.9rem;
+.articleTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 30%;
+  height: 4px;
+  background: #c8102e;
+}
+
+.metaInfo {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
   margin: 1rem 0;
 }
 
-/* PDFリンクのスタイル - 修正版 */
-.pdfLink {
-  display: inline-block;
-  width: 100%;
-  padding: 1rem 2rem;
-  margin: 0.5rem 0 1.5rem;
-  background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
-  color: white;
-  text-decoration: none;
-  text-align: center;
+.articleDate {
+  color: #555;
+  font-size: 0.9rem;
   font-weight: 500;
-  transition: all 0.3s ease;
-  border-radius: 8px;
-  box-sizing: border-box;
+  letter-spacing: 0.5px;
 }
 
-.pdfLink:hover {
-  background: linear-gradient(135deg, #3a3a3a, #1a1a1a);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.spMenu {
-  display: none;
-}
-
-.menuButton {
-  position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  z-index: 1000;
-  background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
+.articleCategory {
+  display: inline-block;
+  padding: 0.3rem 1rem;
+  font-size: 0.75rem;
+  border-radius: 20px;
+  font-weight: 600;
+  text-align: center;
+  min-width: 100px;
+  white-space: nowrap;
   color: white;
-  border: none;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  background-color: #c8102e;
 }
 
-.mobileMenu {
-  position: fixed;
-  bottom: 5rem;
-  right: 1rem;
-  width: 250px;
-  background: white;
-  border-radius: 12px;
-  padding: 0.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  z-index: 999;
-}
-
-.mobileMenuItem {
-  width: 100%;
-  padding: 1rem;
-  text-align: left;
-  background: none;
-  border: none;
-  border-bottom: 1px solid #eee;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.mobileMenuItem:hover {
-  background: #f5f5f5;
-}
-
-.mobileMenuItem:last-child {
-  border-bottom: none;
-}
-
-/* 読み込みアニメーション */
-.loadingContainer {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-}
-
-.loadingSpinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  border-top-color: #333;
-  animation: spinner 1s ease-in-out infinite;
-  margin-bottom: 1rem;
-}
-
-@keyframes spinner {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.error {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 3rem;
-  font-size: 1.2rem;
-  color: #666;
-}
-
-/* バナーセクション */
-.bannerSection {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto 2rem;
-  padding: 0 1rem;
-}
-
-.bannerImage {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* 大会概要エリア */
-.tournamentDescription {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto 2rem;
-  padding: 0 1rem;
-}
-
-.descriptionTitle {
-  font-size: 1.5rem;
-  margin: 0 0 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #ddd;
-  color: #333;
-}
-
-.descriptionText {
-  line-height: 1.6;
-  color: #333;
-}
-
-/* 大会詳細 */
-.detailContent {
+/* リッチテキスト */
+.articleContent {
   margin-top: 2rem;
+  line-height: 1.7;
+  color: #333;
 }
 
-.detailTitle {
+.articleContent h2 {
   font-size: 1.5rem;
-  margin: 0 0 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #ddd;
-  color: #333;
-}
-
-/* メタ情報 */
-.metaInfo {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid #eee;
-}
-
-.metaTitle {
-  font-size: 1.2rem;
-  margin: 0 0 1rem;
-  color: #333;
-}
-
-/* 期間情報 */
-.tournamentPeriod {
-  background: #f8f8f8;
-  border-radius: 4px;
-  padding: 1rem;
-  margin: 1.5rem 0;
-}
-
-.periodTitle {
-  font-size: 0.95rem;
   font-weight: bold;
-  margin: 0 0 0.3rem;
-  color: #444;
-}
-
-.periodDate {
-  font-size: 1rem;
-  margin: 0;
+  line-height: 1.4;
   color: #333;
-}
-
-/* 更新情報なしの場合 */
-.noUpdates {
-  text-align: center;
-  padding: 2rem;
-  color: #666;
-}
-
-/* 全ての大会情報を縦に並べるためのスタイル */
-.allUpdatesContainer {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 4rem; /* 間隔を広げました (元は2.5rem) */
-}
-
-.updateItem {
-  width: 100%;
-  background: transparent;
-  border-radius: 8px;
-  padding: 1.5rem;
+  margin: 2.5rem 0 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e0e0e0;
   position: relative;
-  box-sizing: border-box;
 }
 
-.updateItem:not(:last-child)::after {
+.articleContent h2::after {
   content: '';
   position: absolute;
-  bottom: -2rem;
+  bottom: -2px;
+  left: 0;
+  width: 25%;
+  height: 4px;
+  background: #c8102e;
+}
+
+.articleContent h3 {
+  font-size: 1.35rem;
+  margin: 1.5rem 0 1rem;
+  padding: 0 0 0.3rem 1rem;
+  font-weight: bold;
+  line-height: 1.2;
+  color: #333;
+  position: relative;
+}
+
+.articleContent h3::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 5px;
+  background: linear-gradient(to bottom, #c8102e 0%, #c8102e 50%, #a00d24 50%, #a00d24 100%);
+}
+
+.articleContent h3::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
   left: 0;
   width: 100%;
   height: 1px;
-  background: #ddd;
+  background-color: #cccccc;
 }
 
-@media (max-width: 768px) {
-  .main {
-    padding: 1.5rem 1rem 3rem;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
-  .titleSection {
-    height: auto;
-    min-height: 200px;
-    margin-bottom: 1.5rem;
-  }
-  
-  .titleContainer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.8rem;
-    padding: 7rem 1.5rem 1.5rem;
-    height: auto;
-    min-height: 120px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  .titleBackgroundImage {
-    object-fit: cover;
-    filter: blur(5px) brightness(0.6);
-    transform: scale(1.05) translateY(30px);
-    width: 100%;
-    height: 100%;
-  }
-
-  .title1 {
-    font-size: 1.5rem;
-    line-height: 1.3;
-    padding: 0;
-  }
-
-  .title2 {
-    font-size: 1.1rem;
-    line-height: 1.3;
-    padding: 0;
-  }
-
-  .pcSelect {
-    display: none;
-  }
-
-  .spMenu {
-    display: block;
-  }
-
-  .updateHeader {
-    margin-bottom: 1rem;
-  }
-
-  .updateTitle {
-    font-size: 1.5rem;
-  }
-
-  .updateDate {
-    font-size: 0.8rem;
-    margin: 0.8rem 0;
-  }
-
-  .pdfLink {
-    padding: 0.75rem;
-    font-size: 0.9rem;
-    margin: 1rem 0;
-    width: 100%;
-    box-sizing: border-box;
-    text-align: center;
-  }
-
-  .menuButton {
-    width: 40px;
-    height: 40px;
-    right: 0.8rem;
-    bottom: 0.8rem;
-  }
-
-  .mobileMenu {
-    width: calc(100% - 2rem);
-    right: 1rem;
-    bottom: 4rem;
-  }
-
-  .mobileMenuItem {
-    padding: 0.8rem;
-    font-size: 0.9rem;
-  }
-
-  .descriptionTitle, .detailTitle {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-  }
-
-  .tournamentPeriod {
-    padding: 0.8rem;
-    margin: 1rem 0;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .periodTitle, .periodDate {
-    font-size: 0.9rem;
-  }
-  
-  .allUpdatesContainer {
-    gap: 3rem; /* SPでの間隔も調整 */
-    width: 100%;
-  }
-  
-  .updateItem {
-    padding: 1rem;
-    border-radius: 6px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  .updateItem:not(:last-child)::after {
-    bottom: -1.5rem;
-  }
-  
-  .tournamentDescription {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    padding: 0 1rem;
-  }
-
-  .bannerSection {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    padding: 0 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .bannerImage {
-    border-radius: 6px;
-  }
-}
-
-@media (max-width: 480px) {
-  .title1 {
-    font-size: 1.3rem;
-  }
-
-  .title2 {
-    font-size: 1rem;
-  }
-
-  .mobileMenu {
-    width: calc(100% - 1rem);
-    right: 0.5rem;
-  }
-
-  .pdfLink {
-    width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
-  }
-  
-  .updateTitle {
-    font-size: 1.3rem;
-  }
-
-  .descriptionTitle, .detailTitle {
-    font-size: 1.2rem;
-  }
-  
-  .main {
-    padding: 1.5rem 0.75rem 3rem;
-  }
-  
-  .updateItem {
-    padding: 1rem 0.75rem;
-  }
-}
-
-/* PDFサムネイル関連のスタイル - 修正版 */
-.thumbnailLoading, .thumbnailError {
-  width: 100%;
-  height: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f0f0f0;
-  color: #666;
-  font-size: 0.9rem;
-  border-radius: 8px;
-}
-
-/* 修正したPDFプレビューコンテナ */
-.pdfPreviewContainer {
-  width: 100%;
-  max-width: 600px;
-  margin: 1rem auto;
-  aspect-ratio: 297 / 210; /* A4の比率 */
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 8px;
-  background: transparent;
+.articleContent h4 {
+  font-size: 1.2rem;
+  margin: 1.5rem 0 1rem;
+  padding-left: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #333;
   position: relative;
+  border-left: 4px solid #c8102e;
 }
 
-.pdfCanvas {
+.articleContent h5 {
+  font-size: 1rem;
+  margin: 1rem 0 0.75rem;
+  font-weight: bold;
+  line-height: 1.4;
+  color: #333;
+  padding: 0.25rem 0.5rem;
+  background: #f5f5f5;
+  border-radius: 3px;
+}
+
+.articleContent h6 {
+  font-size: 0.95rem;
+  margin: 1rem 0 0.75rem;
+  font-weight: bold;
+  line-height: 1.4;
+  color: #333;
+}
+
+.articleContent p {
+  margin: 1rem 0;
+  line-height: 1.7;
+  color: #333;
+}
+
+.articleContent strong {
+  font-weight: bold;
+}
+
+.articleContent em {
+  font-style: italic;
+}
+
+.articleContent ul,
+.articleContent ol {
+  list-style: none;
+  padding-left: 0;
+  margin: 1.5rem 0;
+}
+
+.articleContent li {
+  position: relative;
+  padding-left: 1.8rem;
+  margin: 1rem 0;
+  line-height: 1.7;
+}
+
+.articleContent li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.53em;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background-color: #c8102eaa;
+}
+
+.articleContent a {
+  color: #c8102e;
+  text-decoration: underline;
+}
+
+.articleContent a:hover {
+  text-decoration: none;
+}
+
+.articleContent img {
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+  display: block;
+}
+
+.articleContent figure {
+  margin: 1rem 0;
+}
+
+.articleContent figcaption {
+  color: #666;
+  font-size: 0.875rem;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.articleContent table {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
+  border-collapse: collapse;
+  margin: 1rem 0;
 }
 
-@media (max-width: 768px) {
-  .thumbnailLoading, .thumbnailError {
-    height: 150px;
-    font-size: 0.8rem;
+.articleContent th,
+.articleContent td {
+  border: 1px solid #9c9c9c7a;
+  padding: 0.65rem 0.75rem;
+}
+
+.articleContent th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+  white-space: nowrap;
+  min-width: 6em;
+}
+
+.articleContent th p,
+.articleContent td p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+.articleContent blockquote {
+  border-left: 4px solid #c8102e;
+  margin: 1.5rem 0;
+  padding: 0.5rem 0 0.5rem 1rem;
+  color: #666;
+}
+
+.articleContent pre {
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.articleContent code {
+  background-color: #f5f5f5;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.articleContent hr {
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  margin: 2rem 0;
+}
+
+/* 戻るリンク */
+.backLink {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  color: #c8102e;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #c8102e;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  background-color: #c8102e;
+  color: #fff;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* ===== SP ===== */
+@media (max-width: 767px) {
+  .titleCard {
+    padding: 24px 20px 0;
+  }
+
+  .titleInner {
+    padding-bottom: 20px;
+  }
+
+  .heroTitle {
+    font-size: 28px;
+  }
+
+  .main {
+    padding: 56px 0 0;
+  }
+
+  .content {
+    padding: 16px 20px 40px;
+  }
+
+  .article {
+    padding: 0;
+  }
+
+  .articleTitle {
+    font-size: 1.25rem;
+    line-height: 1.6;
+  }
+
+  .metaInfo {
+    gap: 0.5rem;
+  }
+
+  .articleCategory {
+    padding: 0.15rem 0.7rem;
+    font-size: 0.65rem;
+    min-width: auto;
+  }
+
+  .articleContent h2 {
+    font-size: 1.3rem;
+  }
+
+  .articleContent h3 {
+    font-size: 1.15rem;
+  }
+
+  .articleContent h4 {
+    font-size: 1.05rem;
+  }
+
+  .articleContent h5 {
+    font-size: 0.95rem;
+  }
+
+  .articleContent h6 {
+    font-size: 0.9rem;
+  }
+
+  .articleContent table {
+    display: table;
+    width: 100%;
+    table-layout: auto;
+    word-break: break-word;
   }
 }
 
-@media (max-width: 480px) {
-  .thumbnailLoading, .thumbnailError {
-    height: 120px;
+@media (max-width: 479px) {
+  .articleTitle {
+    font-size: 1.1rem;
+  }
+
+  .articleDate {
+    font-size: 0.8rem;
   }
 }

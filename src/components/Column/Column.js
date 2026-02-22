@@ -30,8 +30,8 @@ export default function Column({ articles = [] }) {
         <div className={styles.header}>
           <div>
             <div className={styles.redLine}></div>
-            <h2 className={styles.title}>コラム／インタビュー</h2>
-            <span className={styles.subtitle}>ARTICLES / INTERVIEWS</span>
+            <h2 className={styles.title}>コラム</h2>
+            <span className={styles.subtitle}>ARTICLES</span>
           </div>
         </div>
 
@@ -59,7 +59,7 @@ export default function Column({ articles = [] }) {
             </div>
           </Link>
 
-          {/* RIGHT 4 CARDS */}
+          {/* RIGHT 4 CARDS (PC) */}
           <div className={styles.rightGrid}>
             {sideArticles.map((article) => (
               <Link
@@ -83,6 +83,50 @@ export default function Column({ articles = [] }) {
             ))}
           </div>
 
+        </div>
+
+        {/* SP: featured + horizontal scroll */}
+        <div className={styles.mobileSection}>
+          <Link
+            href={`/column/${featured.id}`}
+            className={styles.mobileFeatured}
+          >
+            <div className={styles.mobileFeaturedImageWrap}>
+              <img src={featured.image} alt="" />
+            </div>
+            <div className={styles.mobileFeaturedContent}>
+              <h3 className={styles.mobileFeaturedTitle}>
+                {getFirstLine(featured.caption)}
+              </h3>
+              <p className={styles.meta}>
+                <span className={styles.likes}><FaHeart className={styles.heartIcon} /> {featured.likeCount}</span>
+                <span>{formatDate(featured.timestamp)}</span>
+              </p>
+            </div>
+          </Link>
+
+          <div className={styles.mobileScroll}>
+            {sideArticles.map((article) => (
+              <Link
+                key={article.id}
+                href={`/column/${article.id}`}
+                className={styles.mobileCard}
+              >
+                <div className={styles.mobileImageWrap}>
+                  <img src={article.image} alt="" />
+                </div>
+                <div className={styles.rightContent}>
+                  <h4 className={styles.rightTitle}>
+                    {getFirstLine(article.caption)}
+                  </h4>
+                  <p className={styles.meta}>
+                    <span className={styles.likes}><FaHeart className={styles.heartIcon} /> {article.likeCount}</span>
+                    <span>{formatDate(article.timestamp)}</span>
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </section>

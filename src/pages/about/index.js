@@ -1,121 +1,58 @@
-// src/pages/about/index.js
-import Image from 'next/image'
-import styles from '../../styles/about/About.module.css'
+import Head from 'next/head'
+import Link from 'next/link'
+import { FaChevronRight } from 'react-icons/fa'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
-import Link from 'next/link'
-import PhoneLink from '../../components/PhoneLink'
+import styles from '../../styles/about/About.module.css'
+
+const menuItems = [
+  { title: '概要', href: '/about' },
+  { title: 'ご挨拶', href: '/about/history' },
+  { title: '沿革', href: '/about/chronology' },
+  { title: '役員', href: '/about/officers' },
+  { title: '全国大会での軌跡', href: '/about/achievements' },
+  { title: 'ガバナンスコード', href: '/governance' },
+  { title: 'お問い合わせ', href: '/contact' },
+  { title: 'ご協賛について', href: '/about/sponsorship' },
+  { title: 'パートナー', href: '/about/partners' },
+  { title: '関連団体', href: '/about/affiliated' },
+  { title: 'スポーツ・ハラスメント', href: '/jspo-no' },
+]
 
 export default function About() {
-  const officeInfo = {
-    address: '〒830-0003 久留米市東櫛原町173 久留米市野球場内',
-    tel: '0942-38-8333',
-    fax: '0942-27-6332',
-    email: 'zennan-fukuoka@aqua.plala.or.jp'
-  }
-
-  const executives = [
-    { 
-      position: '最高顧問', 
-      name: '原口　剣生',
-      image: null
-    },
-    { 
-      position: '名誉顧問', 
-      name: '原口　新五',
-      image: null
-    },
-    { 
-      position: '名誉会長', 
-      name: '石原　廣士',
-      image: null  
-    },
-    { 
-      position: '名誉会長', 
-      name: '古賀　正弘',
-      image: null
-    },
-    { 
-      position: '会長', 
-      name: '吉田　茂',
-      image: null
-    },
-    { 
-      position: '副会長', 
-      name: '古屋　博',
-      image: null
-    },
-    { 
-      position: '副会長', 
-      name: '江口　和規', 
-      image: null
-    },
-    { 
-      position: '理事長', 
-      name: '中村　敏治',
-      image: null
-    }
-  ]
-
-  const aboutLinks = [
-  ]
-
   return (
     <>
-      <Header />
+      <Head>
+        <title>連盟概要 | 一般社団法人 福岡県軟式野球連盟</title>
+        <meta name="description" content="福岡県軟式野球連盟の連盟概要ページです。概要、ご挨拶、沿革、役員、ガバナンスコードなどの情報をご覧いただけます。" />
+      </Head>
+      <Header flush />
       <div className={styles.container}>
         <main className={styles.main}>
-          <div className={styles.pageHeader}>
-            <h1 className={styles.title}>連盟概要</h1>
-            <nav className={styles.aboutNav}>
-              {aboutLinks.map((link, index) => (
-                <Link 
-                  key={index} 
-                  href={link.href} 
-                  className={styles.aboutLink}
-                >
-                  {link.text}
-                </Link>
-              ))}
-            </nav>
+          {/* ヒーロー */}
+          <div className={styles.hero}>
+            <div className={styles.heroOverlay} />
           </div>
 
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>連盟事務局</h2>
-            <div className={styles.officeInfo}>
-              <p className={styles.address}>{officeInfo.address}</p>
-              <p className={styles.contact}>
-                <span>TEL: <PhoneLink phoneNumber={officeInfo.tel} /></span>
-                <span>FAX: {officeInfo.fax}</span>
-              </p>
-              <p className={styles.email}>
-                MAIL: <a href={`mailto:${officeInfo.email}`}>{officeInfo.email}</a>
-              </p>
+          {/* タイトルカード */}
+          <div className={styles.titleCard}>
+            <div className={styles.titleInner}>
+              <h1 className={styles.pageTitle}>連盟概要</h1>
+              <p className={styles.pageSub}>ABOUT</p>
             </div>
-          </section>
+          </div>
 
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>連盟役員</h2>
-            <div className={styles.executivesList}>
-              {executives.map((executive, index) => (
-                <div key={index} className={styles.executiveItem}>
-                  <div className={styles.executiveImage}>
-                    <Image
-                      src={executive.image || '/images/default-profile.png'}
-                      alt={`${executive.name}の写真`}
-                      width={80}
-                      height={80}
-                      className={styles.profileImage}
-                    />
-                  </div>
-                  <div className={styles.executiveInfo}>
-                    <span className={styles.position}>{executive.position}</span>
-                    <span className={styles.name}>{executive.name}</span>
-                  </div>
-                </div>
+          {/* カードメニュー */}
+          <div className={styles.content}>
+            <div className={styles.cardGrid}>
+              {menuItems.map((item) => (
+                <Link key={item.title} href={item.href} className={styles.card}>
+                  <span className={styles.cardTitle}>{item.title}</span>
+                  <FaChevronRight className={styles.cardArrow} />
+                </Link>
               ))}
             </div>
-          </section>
+          </div>
         </main>
       </div>
       <Footer />

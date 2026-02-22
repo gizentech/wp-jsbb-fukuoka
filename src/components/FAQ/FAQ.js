@@ -4,8 +4,8 @@ import styles from './FAQ.module.css'
 export default function FAQ() {
   const items = [
     { label: 'ガバナンスコード', href: '/governance' },
-    { label: 'お問い合わせ', href: '#' },
-    { label: '全国での軌跡', href: '#' },
+    { label: 'お問い合わせ', href: '/contact' },
+    { label: '全国での軌跡', href: '/about/achievements' },
   ]
 
   return (

@@ -130,7 +130,7 @@ export default function Applications({ applications: initialApplications, error:
         title="大会申込書一覧"
         description="野球大会の申込書一覧ページです"
       />
-      <Header />
+      <Header flush />
       <main className={styles.main}>
         <div className={styles.pageHeader}>
           <h1>大会申込書</h1>

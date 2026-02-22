@@ -1,0 +1,182 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Page 1: ヒーロー（他ページと同じ形式） ===== */
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-color: #1c968f;
+  background-image: url('/fukuoka/topview/top.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* サイドバー付きレイアウト */
+.bodyLayout {
+  display: flex;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ===== Page 2: 2カラム（#1c968f背景） ===== */
+
+.twoColSection {
+  width: 100%;
+  padding: 80px 60px;
+  background: #1c968f;
+  display: flex;
+  justify-content: center;
+}
+
+.twoColInner {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.twoColText {
+  flex: 1;
+}
+
+.twoColTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.05em;
+  margin-bottom: 24px;
+}
+
+.twoColBody {
+  font-size: 0.95rem;
+  line-height: 2;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 16px;
+  letter-spacing: 0.03em;
+}
+
+.twoColImage {
+  flex: 0 0 auto;
+  max-width: 320px;
+}
+
+.introImage {
+  width: 100%;
+  height: auto;
+}
+
+/* ===== Page 3以降: 白背景 ===== */
+
+.actionSection {
+  width: 100%;
+  padding: 80px 60px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.actionLabel {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1c968f;
+  letter-spacing: 0.15em;
+  margin-bottom: 8px;
+}
+
+.actionTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #222;
+  letter-spacing: 0.05em;
+  margin-bottom: 24px;
+}
+
+.actionBody {
+  font-size: 1rem;
+  line-height: 2;
+  color: #333;
+  letter-spacing: 0.03em;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* ===== モバイル ===== */
+
+@media (max-width: 768px) {
+  .bodyLayout {
+    flex-direction: column;
+    gap: 0;
+    padding: 24px 20px 48px;
+  }
+
+  .content {
+    padding: 0;
+  }
+
+  .hero {
+    height: 200px;
+  }
+
+  .twoColSection {
+    padding: 60px 24px;
+  }
+
+  .twoColInner {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .twoColImage {
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .introImage {
+    max-width: 240px;
+  }
+
+  .twoColTitle {
+    font-size: 1.2rem;
+  }
+
+  .twoColBody {
+    font-size: 0.9rem;
+    line-height: 1.9;
+  }
+
+  .actionSection {
+    padding: 60px 24px;
+  }
+
+  .actionTitle {
+    font-size: 1.3rem;
+  }
+
+  .actionBody {
+    font-size: 0.9rem;
+  }
+}

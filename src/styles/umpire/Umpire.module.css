@@ -1,0 +1,194 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: linear-gradient(-55deg, #fff, #fef2d4 15%, #eefbf9 30%, #f0f7fb 45%, #f2fdff 55%, #eefafa 70%, #fef8e8 85%, #fff);
+}
+
+.main {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  flex: 1;
+}
+
+/* ヒーロー */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-image: url('/members/members-top.webp');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: none;
+}
+
+/* タイトルカード */
+.titleCard {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 40px 0;
+}
+
+.titleInner {
+  padding-bottom: 32px;
+  border-bottom: 0.5px solid #d0d0d0;
+}
+
+.pageTitle {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+.pageSub {
+  font-size: 13px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 0.1em;
+}
+
+/* サイドバー付きレイアウト */
+.bodyLayout {
+  display: flex;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+}
+
+/* コンテンツ */
+.content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+}
+
+.bodyLayout .content {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+/* カードグリッド */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px 28px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-color: #c8102e;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: 0.03em;
+}
+
+.cardArrow {
+  font-size: 12px;
+  color: #aaa;
+  transition: color 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.card:hover .cardArrow {
+  color: #c8102e;
+  transform: translateX(2px);
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .container {
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .main {
+    padding: 56px 0 0;
+    width: 100%;
+  }
+
+  .hero {
+    height: 200px;
+  }
+
+  .titleCard {
+    padding: 24px 20px 0;
+  }
+
+  .titleInner {
+    padding-bottom: 20px;
+  }
+
+  .pageTitle {
+    font-size: 28px;
+  }
+
+  .content {
+    padding: 24px 20px 48px;
+  }
+
+  .bodyLayout {
+    flex-direction: column;
+    gap: 0;
+    padding: 24px 20px 48px;
+  }
+
+  .bodyLayout .content {
+    padding: 0;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .card {
+    padding: 24px 20px;
+  }
+
+  .cardTitle {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    height: 160px;
+  }
+
+  .pageTitle {
+    font-size: 24px;
+  }
+}

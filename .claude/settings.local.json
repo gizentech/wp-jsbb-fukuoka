@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import base64; print\\(base64.b64decode\\(''N2E5NjE4OGRlMTI1NDk2NmVjNzY3MjA1NTJlNzVjOWIwM2E3NWM1YmI4ZjVkYTg0ZWYxNTI5YTZiNDRmMjQ5N0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t''\\).decode\\(\\)\\)\")",
+      "Bash(npm install:*)",
+      "Bash(iconv:*)",
+      "Bash(find:*)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(node --input-type=module -e:*)",
+      "Bash(npx next build:*)",
+      "Bash(npm run build:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git rm:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}

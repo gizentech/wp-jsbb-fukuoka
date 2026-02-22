@@ -13,7 +13,7 @@ export default function FukuokaToyotaCup() {
         <meta name="description" content="福岡トヨタ杯 福岡県学童軟式野球春季大会。全日本軟式野球福岡県連盟とともに開催する春の学童野球大会。2026年で第10回を迎えます。" />
         <link rel="preload" href="/fukuoka/topview/fukuoka-toyota-bg.png" as="image" />
       </Head>
-      <Header />
+      <Header flush />
       <div className={styles.container}>
         <main className={styles.main}>
           {/* ヒーロー */}
@@ -26,8 +26,8 @@ export default function FukuokaToyotaCup() {
               <Image
                 src="/fukuoka/topview/fukuoka-toyota-logo.png"
                 alt="福岡トヨタ杯"
-                width={400}
-                height={300}
+                width={560}
+                height={420}
                 className={styles.heroLogo}
                 priority
               />
@@ -39,11 +39,7 @@ export default function FukuokaToyotaCup() {
             <div className={styles.titleInner}>
               <div className={styles.titleInfo}>
                 <h1 className={styles.tournamentName}>福岡トヨタ杯</h1>
-                <p className={styles.tournamentSub}>福岡県学童軟式野球春季大会</p>
-                <p className={styles.tournamentMeta}>
-                  主催：一般社団法人 全日本軟式野球福岡県連盟
-                </p>
-                <span className={styles.tournamentBadge}>2026年 第10回</span>
+                <p className={styles.tournamentName}>福岡県学童軟式野球春季大会</p>
               </div>
             </div>
           </div>
