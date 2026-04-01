@@ -1,55 +1,44 @@
 // pages/members/index.js
-import { useState } from 'react'
-import Head from 'next/head'
+import { useState, useEffect } from 'react'
+import Meta from '../../components/Meta/Meta.js'
 import Link from 'next/link'
 import Image from 'next/image'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import styles from '../../styles/members/MemberList.module.css'
-import { fetchMembers } from '../../lib/wp-api'
+import { fetchMembers } from '../../lib/wp-api-client'
 
-export async function getStaticProps() {
-  try {
-    // WordPress REST APIからメンバー一覧を取得
-    const wpMembers = await fetchMembers(100);
+export default function MemberList() {
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const members = wpMembers.map(member => ({
-      id: member.id,
-      slug: member.slug,
-      name: member.title?.rendered || '',
-      nameEn: member.meta?._member_name_en || '',
-      role: member.meta?._member_role || '',
-      organization: member.meta?._member_organization || '',
-      // アイキャッチ画像（カスタムAPIまたは標準API）
-      photo: member.featured_image || member._embedded?.['wp:featuredmedia']?.[0]?.source_url || '/members/default.jpg',
-      joinYear: member.meta?._member_join_year || '',
-      joinMonth: member.meta?._member_join_month || ''
-    }));
-
-    return {
-      props: {
-        members
-      },
-      revalidate: 60
-    };
-  } catch (error) {
-    console.error('Error fetching members:', error);
-    return {
-      props: {
-        members: []
-      },
-      revalidate: 60
-    };
-  }
-}
-
-export default function MemberList({ members = [] }) {
+  useEffect(() => {
+    async function loadMembers() {
+      try {
+        const wpMembers = await fetchMembers(100);
+        const membersData = wpMembers.map(member => ({
+          id: member.id,
+          slug: member.slug,
+          name: member.title?.rendered || '',
+          nameEn: member.meta?._member_name_en || '',
+          role: member.meta?._member_role || '',
+          organization: member.meta?._member_organization || '',
+          photo: member.featured_image || member._embedded?.['wp:featuredmedia']?.[0]?.source_url || '/members/default.jpg',
+          joinYear: member.meta?._member_join_year || '',
+          joinMonth: member.meta?._member_join_month || ''
+        }));
+        setMembers(membersData);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching members:', err);
+        setLoading(false);
+      }
+    }
+    loadMembers();
+  }, []);
   return (
     <>
-      <Head>
-        <title>メンバー一覧 | 一般社団法人 福岡県軟式野球連盟</title>
-        <meta name="description" content="福岡県軟式野球連盟のメンバー一覧ページです" />
-      </Head>
+      <Meta title="メンバー" description="福岡県軟式野球連盟のメンバー紹介ページです。" urlPath="/members" noindex />
       <Header flush />
 
       <div className={styles.container}>
@@ -70,6 +59,9 @@ export default function MemberList({ members = [] }) {
           </div>
 
           <div className={styles.content}>
+            {loading ? (
+              <div className={styles.loading}>読み込み中...</div>
+            ) : (
             <div className={styles.memberGrid}>
               {members.map((member) => (
                 <Link
@@ -95,6 +87,7 @@ export default function MemberList({ members = [] }) {
                 </Link>
               ))}
             </div>
+            )}
           </div>
         </main>
 

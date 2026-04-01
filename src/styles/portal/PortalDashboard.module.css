@@ -1,0 +1,240 @@
+/* Portal Dashboard */
+
+.dashboard {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ウェルカム */
+.welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  border-radius: 16px;
+  padding: 24px 32px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border-bottom: 3px solid #c8102e;
+}
+
+.welcomeInfo {
+  flex: 1;
+}
+
+.teamName {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+}
+
+.email {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 0;
+}
+
+.logoutButton {
+  padding: 8px 20px;
+  background: white;
+  color: #666;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logoutButton:hover {
+  background: #f5f5f5;
+  border-color: #bbb;
+}
+
+/* セクション */
+.section {
+  margin-bottom: 32px;
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #c8102e;
+}
+
+.loadingText {
+  color: #888;
+  text-align: center;
+  padding: 24px;
+}
+
+.emptyState {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  color: #888;
+}
+
+/* 大会カード */
+.tournamentGrid {
+  display: grid;
+  gap: 16px;
+}
+
+.tournamentCard {
+  background: white;
+  border-radius: 0;
+  padding: 24px;
+  padding-right: 48px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  position: relative;
+}
+
+.tournamentCard:hover {
+  box-shadow: 0 4px 16px rgba(200, 16, 46, 0.12);
+  transform: translateY(-2px);
+}
+
+.tournamentName {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+}
+
+.tournamentDesc {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.tournamentMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.deadline {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.statusBadge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.status_active {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status_closed {
+  background: #fce4ec;
+  color: #c62828;
+}
+
+.status_draft {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.cardArrow {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #ccc;
+  transition: color 0.2s;
+}
+
+.tournamentCard:hover .cardArrow {
+  color: #c8102e;
+}
+
+/* 更新履歴 */
+.activityList {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.activityItem {
+  display: flex;
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.activityItem:last-child {
+  border-bottom: none;
+}
+
+.activityIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.activityIconMaterial {
+  font-size: 20px;
+}
+
+.activityIcon_submission_upload { background: #e3f2fd; }
+.activityIcon_submission_approved { background: #e8f5e9; }
+.activityIcon_submission_rejected { background: #fce4ec; }
+.activityIcon_submission_cancelled { background: #f3f4f6; }
+.activityIcon_order_placed { background: #fff3e0; }
+.activityIcon_order_cancelled { background: #f3f4f6; }
+.activityIcon_order_updated { background: #e3f2fd; }
+.activityIcon_team_updated { background: #f3e5f5; }
+
+.activityBody {
+  flex: 1;
+}
+
+.activityDesc {
+  font-size: 0.9rem;
+  color: #1a1a1a;
+  margin: 0 0 2px;
+}
+
+.activityDate {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* レスポンシブ */
+@media (max-width: 767px) {
+  .welcome {
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px 24px;
+    text-align: center;
+  }
+
+  .logoutButton {
+    width: 100%;
+  }
+
+  .teamName {
+    font-size: 1.2rem;
+  }
+}

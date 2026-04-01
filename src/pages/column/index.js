@@ -1,10 +1,11 @@
 // pages/column/index.js
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import styles from '../../styles/Column.module.css'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import Link from 'next/link'
 import Meta from '../../components/Meta/Meta'
+import { fetchInstagramPosts } from '../../lib/wp-api-client'
 
 const ITEMS_PER_PAGE = 10;
 
@@ -26,78 +27,36 @@ const determineCategory = (caption) => {
   return 'column';
 };
 
-export async function getStaticProps() {
-  try {
-    const ACCESS_TOKEN = process.env.INSTAGRAM_ACCESS_TOKEN;
-
-    if (!ACCESS_TOKEN) {
-      console.error('Instagram Access Token is not set');
-      return {
-        props: {
-          columns: [],
-          error: 'Instagram認証情報が設定されていません'
-        },
-        revalidate: 60
-      };
-    }
-
-    // Instagram Graph APIからメディア一覧を10件ずつ全件取得
-    let allItems = [];
-    let url = `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,permalink,timestamp&limit=15&access_token=${ACCESS_TOKEN}`;
-
-    while (url) {
-      const res = await fetch(url);
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error(`Instagram API Error: ${res.status} ${res.statusText}`, errorText);
-        break;
-      }
-
-      const data = await res.json();
-      const items = data.data || [];
-      allItems = allItems.concat(items);
-
-      // 次のページがあればURLを取得
-      url = data.paging?.next || null;
-    }
-
-    // レスポンスをマッピング
-    const columnsData = allItems.map(item => ({
-      id: item.id,
-      title: item.caption ? item.caption.split('\n')[0].substring(0, 100) : '無題',
-      caption: item.caption || '',
-      category: determineCategory(item.caption),
-      mediaType: item.media_type,
-      mediaUrl: item.media_url,
-      permalink: item.permalink,
-      createdAt: item.timestamp || new Date().toISOString()
-    }));
-
-    return {
-      props: {
-        columns: columnsData,
-        error: null
-      },
-      revalidate: 60
-    };
-
-  } catch (error) {
-    console.error('Error fetching Instagram media:', error);
-    return {
-      props: {
-        columns: [],
-        error: 'データの読み込みに失敗しました。ページを更新してください。'
-      },
-      revalidate: 60
-    };
-  }
-}
-
-export default function Column({ columns: initialColumns, error: initialError }) {
-  const [columns] = useState(initialColumns || []);
-  const [error] = useState(initialError || null);
+export default function Column() {
+  const [columns, setColumns] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    async function loadColumns() {
+      try {
+        const allItems = await fetchInstagramPosts();
+        const columnsData = allItems.map(item => ({
+          id: item.id,
+          title: item.caption ? item.caption.split('\n')[0].substring(0, 100) : '無題',
+          caption: item.caption || '',
+          category: determineCategory(item.caption),
+          mediaType: item.media_type,
+          mediaUrl: item.media_url,
+          permalink: item.permalink,
+          createdAt: item.timestamp || new Date().toISOString()
+        }));
+        setColumns(columnsData);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching Instagram media:', err);
+        setError('データの読み込みに失敗しました。ページを更新してください。');
+        setLoading(false);
+      }
+    }
+    loadColumns();
+  }, []);
 
   // 画像のみフィルタ
   const filteredColumns = useMemo(() =>
@@ -117,8 +76,11 @@ export default function Column({ columns: initialColumns, error: initialError })
   return (
     <div className={styles.container}>
       <Meta
-        title="メディア一覧"
-        description="野球連盟からのメディア一覧ページです"
+        title="メディア・コラム"
+        description="福岡県軟式野球連盟のメディア・コラム記事一覧。福岡の軟式野球に関する話題やインタビューをお届けします。"
+        keywords="福岡県軟式野球連盟,コラム,メディア,軟式野球,福岡,野球,インタビュー"
+        urlPath="/column"
+        breadcrumbs={[{ name: 'メディア', path: '/column' }]}
       />
       <Header flush />
 
@@ -137,7 +99,9 @@ export default function Column({ columns: initialColumns, error: initialError })
 
         <div className={styles.content}>
           {/* コラム一覧 */}
-          {error ? (
+          {loading ? (
+            <div className={styles.loading}>読み込み中...</div>
+          ) : error ? (
             <div className={styles.error}>
               <p className={styles.errorMessage}>
                 {error}

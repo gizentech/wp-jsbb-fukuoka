@@ -1,10 +1,11 @@
 // pages/column/[id].js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../../styles/ColumnDetail.module.css';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import Meta from '../../components/Meta/Meta';
+import { fetchInstagramPosts } from '../../lib/wp-api-client';
 
 // カテゴリー判定（キャプションから）
 const determineCategory = (caption) => {
@@ -15,97 +16,51 @@ const determineCategory = (caption) => {
   return 'column';
 };
 
-export const getStaticPaths = async () => {
-  try {
-    const ACCESS_TOKEN = process.env.INSTAGRAM_ACCESS_TOKEN;
-
-    if (!ACCESS_TOKEN) {
-      console.error('Instagram Access Token is not set');
-      return { paths: [], fallback: 'blocking' };
-    }
-
-    // Instagram Graph APIからメディア一覧を取得
-    const url = `https://graph.instagram.com/me/media?fields=id&access_token=${ACCESS_TOKEN}`;
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      console.error(`Instagram API Error: ${response.status}`);
-      return { paths: [], fallback: 'blocking' };
-    }
-
-    const data = await response.json();
-    const items = data.data || [];
-
-    // パスの生成
-    const paths = items.map((item) => ({
-      params: { id: item.id }
-    }));
-
-    return {
-      paths,
-      fallback: 'blocking'
-    };
-  } catch (error) {
-    console.error('Error generating paths:', error);
-    return { paths: [], fallback: 'blocking' };
-  }
-};
-
-export const getStaticProps = async ({ params }) => {
-  try {
-    const ACCESS_TOKEN = process.env.INSTAGRAM_ACCESS_TOKEN;
-
-    if (!ACCESS_TOKEN) {
-      console.error('Instagram Access Token is not set');
-      return {
-        notFound: true,
-        revalidate: 60
-      };
-    }
-
-    // Instagram Graph APIから個別メディアを取得
-    const url = `https://graph.instagram.com/${params.id}?fields=id,caption,media_type,media_url,permalink,timestamp&access_token=${ACCESS_TOKEN}`;
-
-    const res = await fetch(url);
-
-    if (!res.ok) {
-      console.error(`Instagram API Error: ${res.status} ${res.statusText}`);
-      return {
-        notFound: true,
-        revalidate: 60
-      };
-    }
-
-    const item = await res.json();
-
-    const column = {
-      id: item.id,
-      title: item.caption ? item.caption.split('\n')[0].substring(0, 100) : '無題',
-      content: item.caption || '',
-      category: determineCategory(item.caption),
-      mediaType: item.media_type,
-      mediaUrl: item.media_url,
-      permalink: item.permalink,
-      createdAt: item.timestamp || new Date().toISOString()
-    };
-
-    return {
-      props: { column },
-      revalidate: 60
-    };
-  } catch (error) {
-    console.error('Error fetching Instagram media detail:', error);
-    return {
-      notFound: true,
-      revalidate: 60
-    };
-  }
-};
-
-export default function ColumnDetail({ column }) {
+export default function ColumnDetail() {
   const router = useRouter();
+  const { id } = router.query;
+  const [column, setColumn] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  if (router.isFallback) {
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    fetchInstagramPosts()
+      .then((posts) => {
+        const item = posts.find((p) => String(p.id) === String(id));
+
+        if (!item) {
+          setError('データが見つかりませんでした');
+          setLoading(false);
+          return;
+        }
+
+        setColumn({
+          id: item.id,
+          title: item.caption ? item.caption.split('\n')[0].substring(0, 100) : '無題',
+          content: item.caption || '',
+          category: determineCategory(item.caption),
+          mediaType: item.media_type,
+          mediaUrl: item.media_url,
+          permalink: item.permalink,
+          createdAt: item.timestamp || new Date().toISOString()
+        });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching Instagram media detail:', err);
+        setError('データの取得に失敗しました');
+        setLoading(false);
+      });
+  }, [id]);
+
+  if (loading) {
     return (
       <div className={styles.container}>
         <Header flush />
@@ -115,11 +70,11 @@ export default function ColumnDetail({ column }) {
     );
   }
 
-  if (!column) {
+  if (error || !column) {
     return (
       <div className={styles.container}>
         <Header flush />
-        <div className={styles.error}>データが見つかりませんでした</div>
+        <div className={styles.error}>{error || 'データが見つかりませんでした'}</div>
         <Footer />
       </div>
     );
@@ -129,7 +84,10 @@ export default function ColumnDetail({ column }) {
     <div className={styles.container}>
       <Meta
         title={column.title}
-        description={`${column.title}の詳細ページです`}
+        description={`${column.title} - 福岡県軟式野球連盟のメディア・コラム`}
+        urlPath={`/column/${column.id}`}
+        breadcrumbs={[{ name: 'メディア', path: '/column' }, { name: column.title, path: `/column/${column.id}` }]}
+        ogType="article"
       />
       <Header flush />
 

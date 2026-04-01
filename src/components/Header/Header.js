@@ -1,18 +1,19 @@
 // Header.js
 import { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/router'
 import styles from './Header.module.css'
 import Link from 'next/link'
 import Image from 'next/image'
 
 const menuItems = [
-  { label: '軟式野球連盟とは', href: '/introduction' },
   { label: '大会情報', href: '/tournaments' },
   { label: 'お知らせ', href: '/news' },
   { label: '登録関係', href: '/registration' },
-  { label: 'コラム', href: '/column' },
+  { label: 'メディア', href: '/column' },
   { label: 'インタビュー', href: '/interview' },
+  { label: '加盟チーム', href: '/teams' },
   { label: 'スケジュール', href: '/schedule' },
-  { label: '審判', href: '/umpire', subItems: [
+  { label: '審判', href: '/umpire', pcDirectHref: '/umpire/umpire-info', subItems: [
     { label: '審判について', href: '/umpire/umpire-info' },
     { label: '審判派遣依頼', href: '/umpire/request' },
     { label: '審判員募集', href: '/umpire/recruit' },
@@ -33,6 +34,7 @@ const menuItems = [
     { label: '関連団体', href: '/about/affiliated' },
     { label: 'スポーツ・ハラスメント', href: '/jspo-no' },
   ]},
+  { label: '福岡県連ポータル', href: '/portal' },
 ]
 
 export default function Header({ visible = true, flush = false }) {
@@ -42,8 +44,21 @@ export default function Header({ visible = true, flush = false }) {
   const [megaClosing, setMegaClosing] = useState(false);
   const [visibleMega, setVisibleMega] = useState(null);
   const [openMobileSub, setOpenMobileSub] = useState(null);
-  const [savedScrollPosition, setSavedScrollPosition] = useState(0);
+  const savedScrollRef = useRef(0);
   const megaRef = useRef(null);
+  const router = useRouter();
+
+  const lockScroll = () => {
+    const currentScroll = window.scrollY;
+    savedScrollRef.current = currentScroll;
+    document.documentElement.classList.add('scroll-locked');
+    document.body.style.top = `-${currentScroll}px`;
+  };
+
+  const unlockScroll = () => {
+    document.documentElement.classList.remove('scroll-locked');
+    document.body.style.top = '';
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,13 +67,22 @@ export default function Header({ visible = true, flush = false }) {
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      // クリーンアップ時にスクロール位置を復元
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
+      unlockScroll();
     };
   }, []);
+
+  // ルート変更時にメニューを閉じてスクロールロックを解除
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setIsOpen(false);
+      setOpenMobileSub(null);
+      unlockScroll();
+    };
+    router.events.on('routeChangeStart', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, [router]);
 
   // メガメニュー外クリックで閉じる
   useEffect(() => {
@@ -81,27 +105,7 @@ export default function Header({ visible = true, flush = false }) {
   };
 
   const toggleMenu = () => {
-    const newIsOpen = !isOpen;
-    setIsOpen(newIsOpen);
-
-    if (newIsOpen) {
-      // 現在のスクロール位置を保存
-      const currentScroll = window.scrollY;
-      setSavedScrollPosition(currentScroll);
-
-      // メニューを開く際にスクロール位置を維持
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${currentScroll}px`;
-      document.body.style.width = '100%';
-    } else {
-      // メニューを閉じる際にスクロール位置を復元
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, savedScrollPosition);
-    }
+    setIsOpen(!isOpen);
   };
 
   const handleLinkClick = (e) => {
@@ -109,12 +113,6 @@ export default function Header({ visible = true, flush = false }) {
     if (openMega !== null) closeMega();
     if (isOpen) {
       setIsOpen(false);
-      // スクロール位置を復元
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, savedScrollPosition);
     }
   };
 
@@ -173,7 +171,7 @@ export default function Header({ visible = true, flush = false }) {
           <ul className={styles.pcMenu}>
             {menuItems.map((item, index) => (
               <li key={item.label}>
-                {item.subItems ? (
+                {item.subItems && !item.pcDirectHref ? (
                   <button
                     className={`${styles.megaTrigger} ${openMega === index ? styles.megaTriggerActive : ''}`}
                     onClick={(e) => handleMegaToggle(e, index)}
@@ -181,13 +179,22 @@ export default function Header({ visible = true, flush = false }) {
                     {item.label}
                   </button>
                 ) : (
-                  <Link href={item.href}>{item.label}</Link>
+                  <Link href={item.pcDirectHref || item.href}>{item.label}</Link>
                 )}
               </li>
             ))}
           </ul>
 
           <div className={styles.mobileMenu}>
+            <div className={styles.mobileMenuLogo}>
+              <Image
+                src="/fukuoka/logo.png"
+                alt="一般社団法人 福岡県軟式野球連盟"
+                width={4000}
+                height={400}
+                className={styles.mobileMenuLogoImage}
+              />
+            </div>
             <ul className={styles.mobileMenuList}>
               {menuItems.map((item, index) => (
                 <li key={item.label} className={styles.mobileMenuItem}>
@@ -237,7 +244,7 @@ export default function Header({ visible = true, flush = false }) {
               <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
             </svg>
           </a>
-          <Link href="/login" className={styles.iconLink} aria-label="ログイン">
+          <Link href="/teams/login" className={styles.iconLink} aria-label="ログイン">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="8" r="4"/>
               <path d="M20 21a8 8 0 1 0-16 0"/>

@@ -41,6 +41,15 @@
   color: #000;
 }
 
+/* ================= PREPARING ================= */
+
+.preparing {
+  text-align: center;
+  padding: 40px 20px;
+  color: #888;
+  font-size: 15px;
+}
+
 /* ================= GRID ================= */
 
 .grid {

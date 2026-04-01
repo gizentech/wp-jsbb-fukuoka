@@ -1,73 +1,67 @@
 // pages/interview/index.js
-import { useState, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import styles from '../../styles/Interview.module.css'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import Link from 'next/link'
 import Meta from '../../components/Meta/Meta'
-import { fetchInterviews } from '../../lib/wp-api'
+import { fetchInterviews, fetchMemberById } from '../../lib/wp-api-client'
 
 const ITEMS_PER_PAGE = 10;
 
-const formatDate = (date) => {
-  if (!date) return '';
-  return new Date(date).toLocaleDateString('ja-JP', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  });
-};
-
-export async function getStaticProps() {
-  try {
-    // WordPress REST APIからインタビュー一覧を取得
-    const wpInterviews = await fetchInterviews(100);
-
-    const interviewsData = wpInterviews.map(interview => ({
-      id: interview.id,
-      slug: interview.slug,
-      title: interview.title?.rendered || '無題',
-      excerpt: interview.excerpt?.rendered?.replace(/<[^>]*>/g, '') || '',
-      content: interview.content?.rendered || '',
-      // アイキャッチ画像
-      featuredImage: interview._embedded?.['wp:featuredmedia']?.[0]?.source_url || null,
-      createdAt: interview.date || new Date().toISOString()
-    }));
-
-    return {
-      props: {
-        interviews: interviewsData,
-        error: null
-      },
-      revalidate: 60
-    };
-
-  } catch (error) {
-    console.error('Error fetching interviews from WordPress:', error);
-    return {
-      props: {
-        interviews: [],
-        error: 'データの読み込みに失敗しました。ページを更新してください。'
-      },
-      revalidate: 60
-    };
-  }
-}
-
-export default function Interview({ interviews: initialInterviews, error: initialError }) {
-  const [interviews] = useState(initialInterviews || []);
-  const [error] = useState(initialError || null);
+export default function Interview() {
+  const [interviews, setInterviews] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // アイキャッチ画像があるもののみ表示
-  const filteredInterviews = useMemo(() =>
-    interviews.filter(item => item.featuredImage),
-    [interviews]
-  );
+  useEffect(() => {
+    async function loadInterviews() {
+      try {
+        const wpInterviews = await fetchInterviews(100);
+        const interviewsData = [];
 
-  const totalPages = Math.ceil(filteredInterviews.length / ITEMS_PER_PAGE);
+        for (const interview of wpInterviews) {
+          const memberIds = interview.meta?._interview_members || [];
+          const memberNames = [];
+
+          for (const memberId of memberIds) {
+            try {
+              const member = await fetchMemberById(memberId);
+              if (member) {
+                memberNames.push(member.title?.rendered || '');
+              }
+            } catch (err) {
+              console.error(`Failed to fetch member ${memberId}:`, err);
+            }
+          }
+
+          interviewsData.push({
+            id: interview.id,
+            slug: interview.slug,
+            title: interview.title?.rendered || '',
+            excerpt: interview.excerpt?.rendered?.replace(/<[^>]*>/g, '') || '',
+            content: interview.content?.rendered || '',
+            featuredImage: interview._embedded?.['wp:featuredmedia']?.[0]?.source_url || '/ogp.webp',
+            createdAt: interview.date || new Date().toISOString(),
+            memberNames
+          });
+        }
+
+        setInterviews(interviewsData);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching interviews:', err);
+        setError('データの読み込みに失敗しました。ページを更新してください。');
+        setLoading(false);
+      }
+    }
+    loadInterviews();
+  }, []);
+
+  const totalPages = Math.ceil(interviews.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentItems = filteredInterviews.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentItems = interviews.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -77,8 +71,11 @@ export default function Interview({ interviews: initialInterviews, error: initia
   return (
     <div className={styles.container}>
       <Meta
-        title="インタビュー一覧"
-        description="野球連盟からのインタビュー一覧ページです"
+        title="インタビュー"
+        description="福岡県軟式野球連盟のインタビュー記事一覧。福岡の軟式野球選手・審判員・関係者へのインタビューをお届けします。"
+        keywords="福岡県軟式野球連盟,インタビュー,軟式野球,福岡,野球選手,審判員"
+        urlPath="/interview"
+        breadcrumbs={[{ name: 'インタビュー', path: '/interview' }]}
       />
       <Header flush />
 
@@ -97,7 +94,9 @@ export default function Interview({ interviews: initialInterviews, error: initia
 
         <div className={styles.content}>
           {/* インタビュー一覧 */}
-          {error ? (
+          {loading ? (
+            <div className={styles.loading}>読み込み中...</div>
+          ) : error ? (
             <div className={styles.error}>
               <p className={styles.errorMessage}>
                 {error}
@@ -114,18 +113,19 @@ export default function Interview({ interviews: initialInterviews, error: initia
               <div className={styles.list}>
                 {currentItems.length > 0 ? (
                   currentItems.map((item, index) => (
-                    <Link
+                    <div
                       key={item.id}
-                      href={`/interview/${item.slug}`}
                       className={styles.listItem}
                       style={{ animationDelay: `${index * 0.05}s` }}
                     >
                       {/* 上部: サムネイル画像 */}
-                      <img
-                        src={item.featuredImage}
-                        alt={item.title}
-                        className={styles.columnThumbnail}
-                      />
+                      <Link href={`/interview/${item.slug}`} className={styles.cardLink}>
+                        <img
+                          src={item.featuredImage}
+                          alt={item.title}
+                          className={styles.columnThumbnail}
+                        />
+                      </Link>
 
                       {/* 下部: テキストコンテンツ */}
                       <div className={styles.columnContent}>
@@ -133,15 +133,19 @@ export default function Interview({ interviews: initialInterviews, error: initia
                           <span className={styles.columnCategory}>
                             インタビュー
                           </span>
-                          <time className={styles.columnDate}>
-                            {formatDate(item.createdAt)}
-                          </time>
+                          {item.memberNames && item.memberNames.length > 0 && (
+                            <span className={styles.memberNames}>
+                              {item.memberNames.join('　')}
+                            </span>
+                          )}
                         </div>
                         <div className={styles.columnInfo}>
-                          <h3 className={styles.columnTitle}>{item.title}</h3>
+                          <Link href={`/interview/${item.slug}`} className={styles.cardTitleLink}>
+                            <h3 className={styles.columnTitle}>{item.title}</h3>
+                          </Link>
                         </div>
                       </div>
-                    </Link>
+                    </div>
                   ))
                 ) : (
                   <p className={styles.noData}>

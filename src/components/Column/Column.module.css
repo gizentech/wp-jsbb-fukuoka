@@ -3,7 +3,7 @@
 }
 
 .inner {
-  max-width: 1200px;
+  max-width: var(--max-width);
   margin: 0 auto;
 }
 
@@ -55,6 +55,7 @@
   width: 85%;
   aspect-ratio: 3 / 4; /* 縦4:横3 */
   overflow: hidden;
+  position: relative;
 }
 
 .leftImageWrap img {
@@ -94,6 +95,27 @@
   font-size: 0.75rem;
 }
 
+/* ================= IMPRESSIONS OVERLAY ================= */
+
+.impressionsOverlay {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.eyeIcon {
+  font-size: 0.7rem;
+}
+
 /* ================= RIGHT ================= */
 
 .rightGrid {
@@ -114,6 +136,7 @@
   aspect-ratio: 3 / 4; /* 縦4:横3 */
   overflow: hidden;
   margin: 0 auto;
+  position: relative;
 }
 
 .rightImageWrap img {
@@ -176,6 +199,7 @@
     width: 100%;
     aspect-ratio: 3 / 4;
     overflow: hidden;
+    position: relative;
   }
 
   .mobileFeaturedImageWrap img {
@@ -223,6 +247,7 @@
     width: 100%;
     aspect-ratio: 3 / 4;
     overflow: hidden;
+    position: relative;
   }
 
   .mobileImageWrap img {

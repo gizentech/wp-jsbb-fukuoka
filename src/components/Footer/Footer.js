@@ -1,8 +1,9 @@
+import { useState, useRef, useEffect } from 'react'
 import styles from './Footer.module.css'
 import Link from 'next/link'
 
 const menuItems = [
-  { label: '軟式野球連盟とは', href: '/introduction' },
+  // { label: '軟式野球連盟とは', href: '/introduction' },
   { label: '大会情報', href: '/tournaments' },
   { label: 'お知らせ', href: '/news' },
   { label: '登録関係', href: '/registration' },
@@ -33,6 +34,25 @@ const menuItems = [
 ]
 
 export default function Footer() {
+  const [openSub, setOpenSub] = useState(null)
+  const navRef = useRef(null)
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (openSub !== null && navRef.current && !navRef.current.contains(e.target)) {
+        setOpenSub(null)
+      }
+    }
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [openSub])
+
+  const handleToggle = (e, index) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setOpenSub(openSub === index ? null : index)
+  }
+
   return (
     <footer className={styles.footer}>
       <div className={styles.footerInner}>
@@ -44,32 +64,92 @@ export default function Footer() {
           </address>
         </div>
 
-        <div className={styles.footerContent}>
-          {menuItems.map((item) => (
-            <div key={item.label} className={styles.footerSection}>
-              <h3 className={styles.footerTitle}>
-                <Link href={item.href}>{item.label}</Link>
-              </h3>
-              {item.subItems && (
-                <ul className={styles.footerList}>
+        {/* PC用: 横並びメニュー + サブメニューは行の下に全幅展開 */}
+        <nav className={styles.footerNavPc} ref={navRef}>
+          <ul className={styles.menuList}>
+            {menuItems.map((item, index) => (
+              <li key={item.label} className={styles.menuItem}>
+                {item.subItems ? (
+                  <button
+                    className={`${styles.menuButton} ${openSub === index ? styles.menuButtonActive : ''}`}
+                    onClick={(e) => handleToggle(e, index)}
+                  >
+                    {item.label}
+                    <span className={styles.arrow}>
+                      {openSub === index ? '▲' : '▼'}
+                    </span>
+                  </button>
+                ) : (
+                  <Link href={item.href} className={styles.menuLink}>
+                    {item.label}
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          {menuItems.map((item, index) => (
+            item.subItems ? (
+              <div key={item.label} className={`${styles.subMenu} ${openSub === index ? styles.subMenuOpen : ''}`}>
+                <ul className={styles.subMenuList}>
                   {item.subItems.map((sub) => (
                     <li key={sub.label}>
-                      <Link href={sub.href}>{sub.label}</Link>
+                      <Link href={sub.href} className={styles.subMenuLink}>
+                        {sub.label}
+                      </Link>
                     </li>
                   ))}
                 </ul>
-              )}
-            </div>
+              </div>
+            ) : null
           ))}
+        </nav>
 
-          <div className={styles.footerSection}>
-            <h3 className={styles.footerTitle}>その他</h3>
-            <ul className={styles.footerList}>
-              <li><Link href="/privacy">プライバシーポリシー</Link></li>
-              <li><Link href="/terms">ホームページについて</Link></li>
-            </ul>
-            <p className={styles.copyright}>© 2025 FUKUOKA SOFTBALL BASEBALL ASSOCIATION All Rights Reserved.</p>
-          </div>
+        {/* SP用: 縦並びメニュー + サブメニューは各ボタン直下に展開 */}
+        <nav className={styles.footerNavSp}>
+          <ul className={styles.spMenuList}>
+            {menuItems.map((item, index) => (
+              <li key={item.label}>
+                {item.subItems ? (
+                  <>
+                    <button
+                      className={`${styles.spMenuButton} ${openSub === index ? styles.menuButtonActive : ''}`}
+                      onClick={(e) => handleToggle(e, index)}
+                    >
+                      {item.label}
+                      <span className={styles.arrow}>
+                        {openSub === index ? '▲' : '▼'}
+                      </span>
+                    </button>
+                    <div className={`${styles.subMenu} ${openSub === index ? styles.subMenuOpen : ''}`}>
+                      <ul className={styles.spSubMenuList}>
+                        {item.subItems.map((sub) => (
+                          <li key={sub.label}>
+                            <Link href={sub.href} className={styles.subMenuLink}>
+                              {sub.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
+                ) : (
+                  <Link href={item.href} className={styles.spMenuLink}>
+                    {item.label}
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className={styles.bottomSection}>
+          <ul className={styles.policyList}>
+            <li><Link href="/privacy">プライバシーポリシー</Link></li>
+            <li><Link href="/terms">ホームページについて</Link></li>
+            <li><Link href="/portal/admin">ポータル管理</Link></li>
+          </ul>
+          <p className={styles.copyright}>© 2025 FUKUOKA RUBBER BASEBALL ASSOCIATION All Rights Reserved.</p>
         </div>
       </div>
     </footer>

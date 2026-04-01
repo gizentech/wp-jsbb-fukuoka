@@ -20,7 +20,7 @@ export default function SecondPage({ latestItems = [], error = null }) {
               latestItems.map((item) => (
                 <Link
                   key={`${item.type}-${item.id}`}
-                  href={item.type === 'news' ? `/news/${item.id}` : `/application/${item.id}`}
+                  href={`/news/${item.id}`}
                   className={styles.newsItem}
                 >
                   <div className={styles.itemContent}>

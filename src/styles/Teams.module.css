@@ -1,0 +1,169 @@
+/* styles/Teams.module.css — 加盟チーム一覧ページ */
+
+/* ===== ヒーロー ===== */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-image: url('/fukuoka/topview/top.webp');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* 注釈 */
+.note {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+/* 統計 */
+.stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.statItem {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.statItem strong {
+  font-size: 1.1rem;
+  color: #1a1a1a;
+}
+
+/* ===== 支部リスト ===== */
+.branchList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.branchGroup {
+  overflow: hidden;
+}
+
+/* 支部ヘッダー */
+.branchHeader {
+  width: 100%;
+  display: block;
+  padding: 12px 20px;
+  background: #c8102e;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: default;
+}
+
+.branchTitle {
+  display: inline;
+}
+
+.branchCount {
+  display: none;
+}
+
+.arrow {
+  display: none;
+}
+
+/* 支部ボディ */
+.branchBody {
+  padding: 12px 20px 20px;
+}
+
+/* クラスグループ（将来用） */
+.classGroup {
+  margin-bottom: 20px;
+}
+
+.classGroup:last-child {
+  margin-bottom: 0;
+}
+
+.classTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #c8102e;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* チームリスト */
+.teamList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.teamName {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: #333;
+  text-decoration: none;
+  padding: 4px 0;
+  transition: color 0.2s;
+}
+
+.separator {
+  color: #ccc;
+  margin: 0 4px;
+  user-select: none;
+}
+
+.teamName:hover {
+  color: #c8102e;
+  text-decoration: underline;
+}
+
+/* 空状態 */
+.empty {
+  text-align: center;
+  color: #999;
+  font-size: 0.95rem;
+  padding: 2rem 0;
+}
+
+/* ===== SP ===== */
+@media (max-width: 767px) {
+  .hero {
+    height: 200px;
+    background-image: url('/fukuoka/topview/top.webp');
+  }
+
+  .note {
+    font-size: 0.8rem;
+  }
+
+  .stats {
+    margin-bottom: 20px;
+  }
+
+  .branchHeader {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+
+  .branchBody {
+    padding: 12px 16px 16px;
+  }
+
+  .teamList {
+    gap: 6px 12px;
+  }
+
+  .teamName {
+    font-size: 0.85rem;
+  }
+}

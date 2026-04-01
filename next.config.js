@@ -1,13 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   images: {
-    domains: [
-      'firebasestorage.googleapis.com',
-      'jsbb-kurume.cdn.newt.so',
-      'jsbb-kurume.assets.newt.so',
-      'jsbb-fukuoka.com'
-    ],
-    unoptimized: true, // 本番環境でも画像最適化を無効化
+    unoptimized: true,
   },
   trailingSlash: true,
 };

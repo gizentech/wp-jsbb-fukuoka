@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import Head from 'next/head'
+import Meta from '../../components/Meta/Meta.js'
 import { FaChevronDown } from 'react-icons/fa'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
@@ -36,7 +37,7 @@ export async function getStaticProps() {
         title: page?.title || '登録関係書類',
         content: page?.content || '',
       },
-      revalidate: 60,
+
     }
   } catch (error) {
     console.error('Failed to fetch registration page:', error)
@@ -45,7 +46,7 @@ export async function getStaticProps() {
         title: '登録関係書類',
         content: '',
       },
-      revalidate: 60,
+
     }
   }
 }
@@ -56,9 +57,8 @@ export default function Registration({ title, content }) {
 
   return (
     <>
+      <Meta title={title || '登録関係'} description="福岡県軟式野球連盟の登録関係書類ダウンロードページ。全軟登録票、県連加入申込書、チームスポーツ保険、県連登録名簿などの書類をダウンロードできます。" keywords="福岡県軟式野球連盟,チーム登録,登録書類,全軟登録票,県連加入,軟式野球,福岡,野球チーム登録,福岡県野球登録,チーム登録方法,野球チーム申込,登録書類ダウンロード,野球チーム加入,軟式野球チーム登録,学童野球登録,少年野球登録,中学野球登録,高校野球登録,社会人野球登録,女子野球登録,スポーツ保険,チームスポーツ保険,野球保険,登録名簿,チーム名簿,福岡野球チーム,九州野球登録,Registration" urlPath="/registration" breadcrumbs={[{ name: '登録関係', path: '/registration' }]} />
       <Head>
-        <title>{`${title} | 一般社団法人 福岡県軟式野球連盟`}</title>
-        <meta name="description" content="福岡県軟式野球連盟の登録関係書類ダウンロードページ。全軟登録票、県連加入申込書、チームスポーツ保険、県連登録名簿などの書類をダウンロードできます。" />
         <link rel="preload" href="/images/registration-bg.webp" as="image" />
       </Head>
       <Header flush />

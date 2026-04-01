@@ -20,10 +20,80 @@ export default function Member0001() {
   return (
     <>
       <Head>
-        <title>MEMBER | 一般社団法人 福岡県軟式野球連盟</title>
-        <meta name="robots" content="noindex, nofollow" />
-        <meta name="googlebot" content="noindex, nofollow" />
+        <title>白石稜（しらいしりょう）- 福岡県軟式野球連盟 電光掲示板・メディア担当 | 野球大会運営のプロフェッショナル</title>
+        <meta name="description" content="白石稜（しらいしりょう・SHIRAISHI Ryo）は福岡県軟式野球連盟で電光掲示板運営とメディア制作を担当。福岡トヨタ杯、マクドナルドトーナメント、高円宮賜杯など数多くの野球大会で電光掲示板を操作。2019年2月入局。福岡県の野球大会運営を支える若手スタッフ。" />
+        <meta name="keywords" content="白石稜,しらいしりょう,SHIRAISHI Ryo,白石りょう,福岡県軟式野球連盟,電光掲示板,野球大会運営,スポーツメディア,福岡野球,久留米野球,野球連盟スタッフ,福岡トヨタ杯,マクドナルドトーナメント,高円宮賜杯,学童野球,少年野球,野球大会スタッフ,電光掲示板操作,スコアボード,野球イベント運営,福岡スポーツ,九州野球,野球メディア,スポーツ運営,大会運営者,野球関係者,福岡県野球,久留米市野球,軟式野球,野球写真,野球動画,スポーツ写真家,野球カメラマン,野球ビデオグラファー,スポーツイベント,福岡県,久留米市,吉備高原学園,2000年生まれ,野球業界,スポーツ業界,野球人,野球関係者福岡,Baseball Fukuoka,Kurume Baseball,Sports Management" />
+        <meta property="og:title" content="白石稜（しらいしりょう）- 福岡県軟式野球連盟 電光掲示板・メディア担当" />
+        <meta property="og:description" content="福岡県軟式野球連盟で電光掲示板運営とメディア制作を担当する白石稜のプロフィール。福岡の野球大会運営を支える若手プロフェッショナル。" />
+        <meta property="og:type" content="profile" />
+        <meta property="og:url" content="https://jsbb-fukuoka.com/members/0001/" />
+        <meta property="og:image" content="https://jsbb-fukuoka.com/members/0001.jpg" />
+        <meta property="profile:first_name" content="稜" />
+        <meta property="profile:last_name" content="白石" />
+        <meta property="profile:gender" content="male" />
+        <link rel="canonical" content="https://jsbb-fukuoka.com/members/0001/" />
         <link rel="preload" href="/members/members-top.webp" as="image" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": "白石稜",
+            "alternateName": ["しらいしりょう", "白石 稜", "SHIRAISHI Ryo", "Ryo Shiraishi"],
+            "givenName": "稜",
+            "familyName": "白石",
+            "gender": "Male",
+            "birthDate": "2000-11-24",
+            "jobTitle": ["電光掲示板担当", "メディア担当", "野球大会運営スタッフ"],
+            "description": "福岡県軟式野球連盟で電光掲示板運営とメディア制作を担当。福岡トヨタ杯、マクドナルドトーナメント、高円宮賜杯など数多くの野球大会で電光掲示板を操作。福岡県の野球大会運営を支える若手プロフェッショナル。",
+            "knowsAbout": ["野球大会運営", "電光掲示板操作", "スポーツメディア制作", "野球イベント運営", "スポーツ写真撮影", "野球動画制作"],
+            "worksFor": {
+              "@type": "SportsOrganization",
+              "name": "一般社団法人 福岡県軟式野球連盟",
+              "url": "https://jsbb-fukuoka.com"
+            },
+            "memberOf": [
+              {
+                "@type": "SportsOrganization",
+                "name": "公益財団法人 全日本軟式野球連盟"
+              },
+              {
+                "@type": "SportsOrganization",
+                "name": "一般社団法人 全日本野球協会"
+              }
+            ],
+            "alumniOf": {
+              "@type": "EducationalOrganization",
+              "name": "吉備高原学園高等学校"
+            },
+            "url": "https://jsbb-fukuoka.com/members/0001/",
+            "image": "https://jsbb-fukuoka.com/members/0001.jpg",
+            "sameAs": [
+              "https://www.instagram.com/okweb1/",
+              "https://www.instagram.com/jsbb.fukuoka.official/"
+            ],
+            "award": ["福岡トヨタ杯電光掲示板運営", "高円宮賜杯マクドナルドトーナメント電光掲示板運営", "高松宮賜杯全日本軟式野球大会電光掲示板運営"],
+            "performerIn": [
+              {
+                "@type": "SportsEvent",
+                "name": "福岡トヨタ杯 福岡県学童軟式野球春季大会"
+              },
+              {
+                "@type": "SportsEvent",
+                "name": "高円宮賜杯 全日本学童軟式野球福岡県大会 マクドナルド・トーナメント"
+              },
+              {
+                "@type": "SportsEvent",
+                "name": "高松宮賜杯全日本軟式野球大会"
+              }
+            ],
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "久留米市",
+              "addressRegion": "福岡県",
+              "addressCountry": "JP"
+            }
+          })}
+        </script>
       </Head>
       <Header flush />
       <div className={styles.container}>

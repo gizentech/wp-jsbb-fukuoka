@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   background: linear-gradient(-55deg, #fff 0%, #fef2d4 15%, #eefbf9 30%, #f0f7fb 45%, #f2fdff 55%, #eefafa 70%, #fef8e8 85%, #fff 100%);
+  overflow-x: hidden;
 }
 
 /* ===== ヒーロー（タイトル画像） ===== */
@@ -12,7 +13,7 @@
   position: relative;
   width: 100%;
   height: 320px;
-  background-image: url('/fukuoka/topview/top-pc.jpg');
+  background-image: url('/fukuoka/topview/top.webp');
   background-size: cover;
   background-position: center;
   overflow: hidden;
@@ -59,7 +60,7 @@
 .main {
   width: 100%;
   margin: 0 auto;
-  padding: 56px 0 0;
+  padding: 24px 0 0;
   flex: 1;
 }
 
@@ -69,7 +70,7 @@
   padding: 24px 40px 60px;
 }
 
-/* PC: タブナビゲーション */
+/* カテゴリーフィルター */
 .categoryFilter {
   display: flex;
   gap: 12px;
@@ -105,45 +106,6 @@
   transform: translateY(-2px);
 }
 
-/* SP: テキストフィルター（PCでは非表示） */
-.spFilterNavigation {
-  display: none;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 2px;
-  margin-bottom: 20px;
-  padding: 0 4px;
-}
-
-.filterItem {
-  display: inline-flex;
-  align-items: center;
-}
-
-.filterDivider {
-  color: #ccc;
-  font-size: 0.75rem;
-  margin: 0 0.1rem;
-}
-
-.filterText {
-  font-size: 0.8rem;
-  color: #999;
-  font-weight: 400;
-  cursor: pointer;
-  transition: color 0.3s ease;
-  white-space: nowrap;
-}
-
-.filterText.filterActive {
-  color: #55b344;
-  font-weight: 600;
-}
-
-.filterText:hover {
-  color: #55b344;
-}
-
 /* ニュースコンテンツ */
 .list {
   background: transparent;
@@ -163,10 +125,9 @@
   }
 }
 
-/* PC: ニュースアイテム（グリッド型） */
+/* PC: ニュースアイテム */
 .listItem {
-  display: grid;
-  grid-template-columns: 140px 200px 1fr 50px;
+  display: flex;
   align-items: center;
   gap: 2rem;
   padding: 1rem 0;
@@ -201,58 +162,31 @@
   letter-spacing: 0.5px;
 }
 
-.newsMeta {
-  display: flex;
-  align-items: center;
-}
-
 .newsCategory {
   display: inline-block;
-  padding: 0.3rem 1rem;
-  font-size: 0.75rem;
-  border-radius: 20px;
-  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.7rem;
+  border-radius: 0;
+  font-weight: 700;
   text-align: center;
-  min-width: 100px;
   white-space: nowrap;
-}
-
-/* カテゴリー別の色設定 */
-.categoryInfomation {
-  background-color: #99c744;
-  color: white;
-}
-
-.categoryEsClass {
-  background-color: #7fb830;
-  color: white;
-}
-
-.categoryJhsClass {
-  background-color: #6aad2a;
-  color: white;
-}
-
-.categoryAClass {
-  background-color: #88b83a;
-  color: white;
-}
-
-.categoryBClass {
-  background-color: #a8d24e;
-  color: white;
-}
-
-.categoryCClass {
-  background-color: #74a635;
-  color: white;
+  color: #1a1a1a;
+  background: transparent;
+  border: 1px solid #1a1a1a;
 }
 
 .newsInfo {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.newsMeta {
+  display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.8rem;
 }
 
 .newsTitle {
@@ -339,7 +273,7 @@
   }
 
   .titleCard {
-    padding: 24px 20px 0;
+    padding: 24px 10px 0;
   }
 
   .titleInner {
@@ -347,62 +281,49 @@
   }
 
   .heroTitle {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .heroSubtitle {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .main {
-    padding: 56px 0 0;
+    padding: 16px 0 0;
   }
 
   .content {
-    padding: 16px 20px 40px;
+    padding: 16px 10px 40px;
   }
 
-  /* SP: PCボタンフィルター非表示 */
+  /* SP: カテゴリーフィルター */
   .categoryFilter {
-    display: none;
-  }
-
-  /* SP: テキストフィルター表示 */
-  .spFilterNavigation {
     display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
   }
 
-  .filterItem {
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .filterDivider {
-    display: inline;
-    color: #ccc;
-    font-size: 0.7rem;
-    margin: 0 0.3rem;
-  }
-
-  .filterText {
-    font-size: 0.75rem;
+  .categoryBtn {
+    font-size: 11px;
+    padding: 6px 12px;
   }
 
   /* SP: ニュースコンテンツ */
   .list {
     border-top: none;
-    min-height: 400px;
+    min-height: 300px;
     background: transparent;
   }
 
-  /* SP: ニュースアイテム（フレックス型+左ダッシュ） */
+  /* SP: ニュースアイテム */
   .listItem {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    grid-template-columns: none;
-    gap: 0;
-    padding: 1.2rem 0.3rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    padding: 1rem 0;
     background-color: transparent;
     border-bottom: 1px solid #e8e8e8;
     min-height: auto;
@@ -422,59 +343,39 @@
     margin-right: 0.8rem;
   }
 
+  .newsMeta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
   .newsDate {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #555;
     font-weight: 400;
     letter-spacing: 0.5px;
     white-space: nowrap;
-    margin-right: 0.8rem;
-  }
-
-  .newsMeta {
-    gap: 0.4rem;
   }
 
   .newsCategory {
-    padding: 0.15rem 0.7rem;
+    padding: 0.15rem 0.5rem;
     font-size: 0.65rem;
-    min-width: auto;
-  }
-
-  .categoryInfomation {
-    background-color: #f0a030;
-  }
-
-  .categoryEsClass {
-    background-color: #5bb531;
-  }
-
-  .categoryJhsClass {
-    background-color: #e06060;
-  }
-
-  .categoryAClass {
-    background-color: #4a90d9;
-  }
-
-  .categoryBClass {
-    background-color: #9c27b0;
-  }
-
-  .categoryCClass {
-    background-color: #ff9800;
   }
 
   .newsInfo {
-    width: calc(100% - 24px);
+    width: 100%;
+    min-width: 0;
   }
 
   .newsTitle {
     width: 100%;
-    padding-left: 24px;
-    margin-top: 0.4rem;
-    font-size: 0.9rem;
+    padding-left: 0;
+    margin-top: 0;
+    font-size: 0.85rem;
     line-height: 1.5;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .importantBadge {
@@ -482,29 +383,33 @@
   }
 
   .arrow {
-    position: absolute;
-    right: 0.5rem;
-    flex-shrink: 0;
-    margin-left: auto;
-    color: #5bb531;
-    font-size: 1.1rem;
+    display: none;
   }
 }
 
 @media (max-width: 479px) {
-  .filterText {
-    font-size: 0.7rem;
+  .titleCard {
+    padding: 20px 8px 0;
   }
 
-  .filterDivider {
-    font-size: 0.65rem;
+  .content {
+    padding: 12px 8px 32px;
+  }
+
+  .heroTitle {
+    font-size: 22px;
+  }
+
+  .categoryBtn {
+    font-size: 10px;
+    padding: 5px 10px;
   }
 
   .newsDate {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
   }
 
   .newsTitle {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
   }
 }

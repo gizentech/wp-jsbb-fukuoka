@@ -1,0 +1,107 @@
+/* styles/TeamsAdmin.module.css */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: #f5f5f5;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnPrimary {
+  background: #c8102e;
+  color: #fff;
+  border-color: #c8102e;
+}
+
+.btnPrimary:hover {
+  background: #a50d25;
+}
+
+.message {
+  padding: 10px 16px;
+  background: #f0f7ff;
+  border: 1px solid #90caf9;
+  color: #1565c0;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid #e0e0e0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 700px;
+}
+
+.table thead {
+  background: #f5f5f5;
+}
+
+.table th {
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 700;
+  color: #333;
+  border-bottom: 2px solid #e0e0e0;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.table tbody tr:hover {
+  background: #fafafa;
+}
+
+.idCell {
+  font-family: monospace;
+  color: #888;
+  font-size: 12px;
+}
+
+.classSelect {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  font-family: inherit;
+  min-width: 100px;
+}
+
+@media (max-width: 768px) {
+  .toolbar {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}

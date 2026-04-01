@@ -6,7 +6,7 @@ export default function AdminLogin() {
   
   useEffect(() => {
     // 外部URLへのリダイレクト
-    window.location.href = 'https://app.newt.so/login';
+    window.location.href = 'https://wp.jsbb-fukuoka.com/wp-admin/';
   }, []);
 
   // リダイレクト中に表示する内容（ほぼ表示されない）

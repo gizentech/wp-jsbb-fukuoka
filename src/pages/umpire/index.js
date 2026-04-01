@@ -1,5 +1,5 @@
-import Head from 'next/head'
 import Link from 'next/link'
+import Meta from '../../components/Meta/Meta.js'
 import { FaChevronRight } from 'react-icons/fa'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
@@ -15,10 +15,13 @@ const menuItems = [
 export default function Umpire() {
   return (
     <>
-      <Head>
-        <title>審判 | 一般社団法人 福岡県軟式野球連盟</title>
-        <meta name="description" content="福岡県軟式野球連盟の審判に関する情報ページです。審判について、審判依頼、審判募集、規則関係の情報をご覧いただけます。" />
-      </Head>
+      <Meta
+        title="審判"
+        description="福岡県軟式野球連盟の審判に関する総合情報。審判員になるには？審判講習会の日程、審判派遣依頼、審判員募集、野球規則の解説など福岡の野球審判に関する情報をまとめています。"
+        keywords="福岡,野球,審判,審判員,審判講習会,審判派遣,審判募集,審判依頼,審判員登録,審判員になるには,野球審判,軟式野球審判,福岡県軟式野球連盟,福岡審判,九州審判,球審,塁審,審判規則,野球規則,審判育成,公認審判員,審判資格,やきゅう,ふくおか"
+        urlPath="/umpire"
+        breadcrumbs={[{ name: '審判', path: '/umpire' }]}
+      />
       <Header flush />
       <div className={styles.container}>
         <main className={styles.main}>

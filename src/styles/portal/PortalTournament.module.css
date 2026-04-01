@@ -1,0 +1,1010 @@
+/* Portal Tournament Detail */
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* 大会ヘッダー */
+.tournamentHeader {
+  background: white;
+  border-radius: 16px;
+  padding: 24px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border-bottom: 3px solid #c8102e;
+}
+
+.tournamentHeader h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+}
+
+.tournamentMeta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.statusBadge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.status_active {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status_closed {
+  background: #fce4ec;
+  color: #c62828;
+}
+
+.deadlineText {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.deadlineExpired {
+  color: #c62828;
+  font-weight: 600;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 16px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: #c8102e;
+}
+
+/* タブ */
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: white;
+  border-radius: 12px 12px 0 0;
+  padding: 8px 8px 0;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.02);
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tab:hover {
+  color: #333;
+}
+
+.tabActive {
+  color: #c8102e;
+  border-bottom-color: #c8102e;
+}
+
+.tabIcon {
+  font-size: 20px;
+}
+
+.tabContent {
+  background: white;
+  border-radius: 0 0 12px 12px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  min-height: 300px;
+  margin-bottom: 32px;
+}
+
+/* Material Icons */
+.docIconMaterial {
+  font-size: 24px;
+  color: #c8102e;
+  flex-shrink: 0;
+}
+
+.emptyIconMaterial {
+  font-size: 48px;
+  color: #ccc;
+  margin-bottom: 12px;
+}
+
+.btnIcon {
+  font-size: 18px;
+  vertical-align: middle;
+}
+
+.statusIcon {
+  font-size: 14px;
+  vertical-align: middle;
+  margin-right: 2px;
+}
+
+.activityIconMaterial {
+  font-size: 20px;
+}
+
+.cartTitleIcon {
+  font-size: 20px;
+  vertical-align: middle;
+}
+
+/* 書類ダウンロード */
+.documentList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.documentItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  transition: border-color 0.2s;
+}
+
+.documentItem:hover {
+  border-color: #c8102e;
+}
+
+.docIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.docInfo {
+  flex: 1;
+}
+
+.docName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+}
+
+.docCategory {
+  display: inline-block;
+  font-size: 0.75rem;
+  background: #f0f0f0;
+  color: #666;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.docDesc {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.downloadButton {
+  padding: 8px 16px;
+  background: #c8102e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.downloadButton:hover {
+  background: #a80d25;
+}
+
+/* 書類アップロード */
+.uploadSection {
+  margin-bottom: 32px;
+}
+
+.uploadForm {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.formLabel {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.formInput,
+.formSelect,
+.formTextarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.formInput:focus,
+.formSelect:focus,
+.formTextarea:focus {
+  outline: none;
+  border-color: #c8102e;
+}
+
+.formTextarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.fileInput {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  background: white;
+}
+
+.fileInput:hover {
+  border-color: #c8102e;
+}
+
+.submitButton {
+  padding: 12px 24px;
+  background: #c8102e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #a80d25;
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 提出状況テーブル */
+.submissionList {
+  margin-top: 24px;
+}
+
+.submissionItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.submissionItem:last-child {
+  border-bottom: none;
+}
+
+.subFileName {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.subDate {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.subStatus {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.subStatus_pending {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.subStatus_approved {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.subStatus_rejected {
+  background: #fce4ec;
+  color: #c62828;
+}
+
+.subStatus_cancelled {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.subComment {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+.adminComment {
+  font-size: 0.8rem;
+  color: #c8102e;
+  margin-top: 4px;
+  padding: 8px 12px;
+  background: #fff5f5;
+  border-radius: 6px;
+}
+
+/* ショップ */
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.productCard {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.productCard:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.productImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: #ccc;
+}
+
+.noImage {
+  font-size: 0.9rem;
+  color: #bbb;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.productBody {
+  padding: 16px;
+}
+
+.productName {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+}
+
+.productPrice {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #c8102e;
+  margin: 0 0 12px;
+}
+
+.productDesc {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0 0 12px;
+  line-height: 1.4;
+}
+
+.orderForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.orderRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.orderRow label {
+  font-size: 0.85rem;
+  color: #666;
+  min-width: 60px;
+}
+
+.orderRow select,
+.orderRow input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+/* ネーム入力 */
+.nameInputSection {
+  margin-top: 4px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.nameInputRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.nameIndex {
+  font-size: 0.8rem;
+  color: #999;
+  min-width: 20px;
+  text-align: right;
+}
+
+.nameInput {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.nameInput:focus {
+  outline: none;
+  border-color: #c8102e;
+}
+
+.namesPreview {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.addCartButton {
+  padding: 8px 16px;
+  background: #c8102e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 4px;
+}
+
+.addCartButton:hover {
+  background: #a80d25;
+}
+
+/* カート */
+.cartSection {
+  margin-top: 32px;
+  padding: 24px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.cartTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 16px;
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cartItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+}
+
+.cartItem:last-of-type {
+  border-bottom: none;
+}
+
+.cartItemName {
+  flex: 1;
+}
+
+.cartItemDetail {
+  color: #666;
+  margin: 0 12px;
+}
+
+.cartItemPrice {
+  font-weight: 600;
+  min-width: 80px;
+  text-align: right;
+}
+
+.removeButton {
+  padding: 4px 8px;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  color: #999;
+  margin-left: 8px;
+}
+
+.removeButton:hover {
+  border-color: #c62828;
+  color: #c62828;
+}
+
+.cartTotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0 0;
+  margin-top: 12px;
+  border-top: 2px solid #ddd;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.orderButton {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: #c8102e;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 16px;
+}
+
+.orderButton:hover:not(:disabled) {
+  background: #a80d25;
+}
+
+.orderButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 注文履歴 */
+.orderHistory {
+  margin-top: 32px;
+}
+
+.orderHistoryItem {
+  padding: 16px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.orderCancelled {
+  opacity: 0.6;
+  border-color: #ddd;
+}
+
+.orderHistoryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.orderHistoryActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.orderHistoryDate {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.orderHistoryTotal {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #c8102e;
+}
+
+.orderStatusBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.orderStatus_confirmed {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.orderStatus_cancelled {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.orderHistoryItems {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.orderActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.orderActionButton {
+  padding: 6px 14px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #333;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.orderActionButton:hover {
+  border-color: #c8102e;
+  color: #c8102e;
+}
+
+.orderActionDanger:hover {
+  border-color: #c62828;
+  color: #c62828;
+}
+
+/* 注文編集 */
+.editOrderSection {
+  margin-top: 12px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.editOrderItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 0.85rem;
+}
+
+.editOrderItem:last-child {
+  border-bottom: none;
+}
+
+.editOrderSize {
+  color: #888;
+}
+
+.editOrderQty {
+  width: 60px;
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.editOrderTotal {
+  font-weight: 700;
+  text-align: right;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #ddd;
+}
+
+.editOrderButtons {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.cancelEditButton {
+  padding: 10px 20px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.cancelEditButton:hover {
+  border-color: #999;
+}
+
+/* 履歴 */
+.activityList {
+  display: flex;
+  flex-direction: column;
+}
+
+.activityItem {
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.activityItem:last-child {
+  border-bottom: none;
+}
+
+.activityIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.activityIcon_submission_upload {
+  background: #e3f2fd;
+}
+
+.activityIcon_submission_approved {
+  background: #e8f5e9;
+}
+
+.activityIcon_submission_rejected {
+  background: #fce4ec;
+}
+
+.activityIcon_order_placed {
+  background: #fff3e0;
+}
+
+.activityIcon_order_cancelled {
+  background: #f3f4f6;
+}
+
+.activityIcon_order_updated {
+  background: #e3f2fd;
+}
+
+.activityIcon_team_updated {
+  background: #f3e5f5;
+}
+
+.activityBody {
+  flex: 1;
+}
+
+.activityDesc {
+  font-size: 0.9rem;
+  color: #1a1a1a;
+  margin: 0 0 2px;
+}
+
+.activityDate {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* 共通 */
+.emptyState {
+  text-align: center;
+  padding: 48px 24px;
+  color: #888;
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+.loadingText {
+  text-align: center;
+  padding: 32px;
+  color: #888;
+}
+
+.successMessage {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+.errorMessage {
+  background: #fff5f5;
+  color: #c62828;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+/* ショップリンク */
+.shopLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  text-decoration: none;
+  color: #1a1a1a;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  margin-bottom: 24px;
+}
+
+.shopLink:hover {
+  box-shadow: 0 4px 16px rgba(200, 16, 46, 0.12);
+  transform: translateY(-2px);
+}
+
+.shopLinkIcon {
+  font-size: 24px;
+  color: #c8102e;
+}
+
+.shopLinkArrow {
+  font-size: 20px;
+  color: #ccc;
+  margin-left: auto;
+}
+
+.shopLink:hover .shopLinkArrow {
+  color: #c8102e;
+}
+
+/* SP: セクション縦並び */
+.stackedSections {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stackedSection {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.stackedSectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.stackedSectionIcon {
+  font-size: 20px;
+  color: #c8102e;
+}
+
+.stackedSectionBody {
+  padding: 16px 20px;
+}
+
+/* レスポンシブ */
+@media (max-width: 767px) {
+  .tournamentHeader {
+    padding: 20px 20px;
+  }
+
+  .documentItem {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .downloadButton {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .productGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .submissionItem {
+    flex-wrap: wrap;
+  }
+
+  .cartItem {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .orderHistoryHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .editOrderItem {
+    flex-wrap: wrap;
+  }
+}

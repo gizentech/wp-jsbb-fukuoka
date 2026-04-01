@@ -1,0 +1,61 @@
+RewriteEngine On
+
+# HTTPS強制
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# www無しに統一
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# 動的ルートのリライト（CSR用）
+# /teams/123/ → /teams/view/index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^teams/[^/]+/?$ /teams/view/index.html [L]
+
+# /tournaments/123/ → /tournaments/view/index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^tournaments/[^/]+/?$ /tournaments/view/index.html [L]
+
+# /news/123/ → /news/view/index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^news/[^/]+/?$ /news/view/index.html [L]
+
+# /interview/slug/ → /interview/view/index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^interview/[^/]+/?$ /interview/view/index.html [L]
+
+# /column/id/ → /column/view/index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^column/[^/]+/?$ /column/view/index.html [L]
+
+# /members/slug/ → /members/view/index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^members/[^/]+/?$ /members/view/index.html [L]
+
+# 404
+ErrorDocument 404 /404/index.html
+
+# キャッシュ設定
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
+
+# セキュリティヘッダー
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

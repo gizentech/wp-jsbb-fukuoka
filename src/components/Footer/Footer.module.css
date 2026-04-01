@@ -7,21 +7,15 @@
 
 .footerInner {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 0 2rem;
 }
 
 .organizationSection {
-  max-width: 1200px;
-  margin: 0 auto 2rem;
+  margin-bottom: 2rem;
   padding-bottom: 1.5rem;
   text-align: left;
-}
-
-.organizationSubtitle {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.75rem;
-  margin: 0 0 0.25rem 0;
-  line-height: 1.4;
 }
 
 .organizationTitle {
@@ -40,83 +34,194 @@
   margin: 0;
 }
 
-.footerContent {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3rem;
-  max-width: 1200px;
-  margin: 0 auto 1.5rem;
+/* ===== PC用ナビ ===== */
+.footerNavPc {
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0;
 }
 
-.footerSection {
-  display: flex;
-  flex-direction: column;
-}
-
-.footerTitle {
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-.footerTitle a {
-  color: #fff;
-  text-decoration: none;
-  transition: all 0.3s;
-  display: inline-block;
-}
-
-.footerTitle a:hover {
-  color: rgba(255, 255, 255, 0.8);
-  transform: translateX(4px);
-}
-
-.footerList {
+.menuList {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  align-items: stretch;
 }
 
-.footerList li {
+.menuItem {
+}
+
+.menuLink {
+  display: block;
+  padding: 14px 18px;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+
+.menuLink:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menuButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 18px;
+  color: rgba(255, 255, 255, 0.85);
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+
+.menuButton:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menuButtonActive {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.arrow {
+  font-size: 0.55rem;
+  line-height: 1;
+}
+
+/* サブメニュー（下方向に展開） */
+.subMenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.subMenuOpen {
+  max-height: 600px;
+}
+
+.subMenuList {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+  display: flex;
+}
+
+.subMenuLink {
+  display: block;
+  padding: 8px 24px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+
+.subMenuLink:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ===== SP用ナビ（デフォルト非表示） ===== */
+.footerNavSp {
+  display: none;
+}
+
+.spMenuList {
+  list-style: none;
+  padding: 0;
   margin: 0;
 }
 
-.footerList a {
-  color: rgba(255, 255, 255, 0.8);
+.spMenuLink {
+  display: block;
+  padding: 12px 16px;
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
-  font-size: 0.9rem;
-  transition: all 0.3s;
-  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.footerList a:hover {
+.spMenuLink:hover {
   color: #fff;
-  transform: translateX(4px);
+}
+
+.spMenuButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  color: rgba(255, 255, 255, 0.85);
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.spSubMenuList {
+  list-style: none;
+  padding: 4px 0;
+  margin: 0;
+}
+
+.spSubMenuList .subMenuLink {
+  padding: 10px 32px;
+  white-space: normal;
+}
+
+/* 下部セクション */
+.bottomSection {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.policyList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.policyList a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: color 0.2s ease;
+}
+
+.policyList a:hover {
+  color: #fff;
 }
 
 .copyright {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.5);
   font-size: 0.75rem;
-  margin-top: 1.5rem;
-  line-height: 1.6;
+  margin: 0;
 }
 
+/* タブレット */
 @media (max-width: 960px) {
-  .footerContent {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-  }
-
-  .organizationSubtitle {
-    font-size: 0.7rem;
-  }
-
   .organizationTitle {
     font-size: 1.5rem;
   }
@@ -124,8 +229,20 @@
   .organizationAddress {
     font-size: 0.85rem;
   }
+
+  .menuLink,
+  .menuButton {
+    padding: 12px 14px;
+    font-size: 0.8rem;
+  }
+
+  .subMenuLink {
+    padding: 8px 20px;
+    font-size: 0.75rem;
+  }
 }
 
+/* スマホ */
 @media (max-width: 640px) {
   .footer {
     padding: 1.5rem 0 0.75rem;
@@ -140,10 +257,6 @@
     padding-bottom: 1rem;
   }
 
-  .organizationSubtitle {
-    font-size: 0.65rem;
-  }
-
   .organizationTitle {
     font-size: 1.25rem;
   }
@@ -152,20 +265,29 @@
     font-size: 0.8rem;
   }
 
-  .footerContent {
+  /* PCナビ非表示、SPナビ表示 */
+  .footerNavPc {
     display: none;
   }
 
-  .footerTitle {
-    font-size: 0.95rem;
+  .footerNavSp {
+    display: block;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   }
 
-  .footerList a {
-    font-size: 0.85rem;
+  .bottomSection {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 1rem;
+  }
+
+  .policyList {
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
   .copyright {
     font-size: 0.7rem;
-    margin-top: 1rem;
   }
 }

@@ -1,9 +1,13 @@
+/* src/styles/tournament/Tournament.module.css */
+
+/* ===== 個別大会ページ（fukuoka-toyota / macdonald-fukuoka 等） ===== */
+
 .container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   position: relative;
-  background: linear-gradient(-55deg, #fff, #fef2d4 15%, #eefbf9 30%, #f0f7fb 45%, #f2fdff 55%, #eefafa 70%, #fef8e8 85%, #fff);
+  background: #fff;
 }
 
 .main {
@@ -17,10 +21,13 @@
 .hero {
   position: relative;
   width: 100%;
-  height: 320px;
+  height: 480px;
   background-size: cover;
   background-position: center;
-  overflow: visible;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .heroOverlay {
@@ -30,226 +37,197 @@
 }
 
 .heroLogoWrap {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  padding-left: 60px;
-  padding-bottom: 0;
+  position: relative;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
 }
 
 .heroLogo {
-  width: 580px;
+  width: auto;
   height: auto;
+  max-width: 90%;
   object-fit: contain;
-  transform: translateY(20px);
+  filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.3));
 }
 
 /* タイトルカード */
 .titleCard {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 40px 40px 0;
 }
 
 .titleInner {
-  display: flex;
-  gap: 40px;
-  align-items: flex-start;
   padding-bottom: 32px;
-}
-
-.logoWrap {
-  flex-shrink: 0;
-  width: 160px;
-  height: 160px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background: #fff;
-  border: 1px solid #e8e8e8;
-}
-
-.logo {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  border-bottom: 0.5px solid #d0d0d0;
 }
 
 .titleInfo {
-  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .tournamentName {
   font-size: 32px;
   font-weight: 900;
-  letter-spacing: 0.05em;
-  margin-bottom: 4px;
+  letter-spacing: 0.06em;
   color: #1a1a1a;
-  line-height: 1.3;
+  line-height: 1.4;
+  margin: 0;
 }
 
 .tournamentSub {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  color: #c8102e;
-  margin-bottom: 10px;
+  color: #333;
+  margin: 4px 0 0;
+  line-height: 1.4;
 }
 
 .tournamentMeta {
-  font-size: 15px;
-  color: #555;
-  line-height: 1.8;
+  font-size: 14px;
+  color: #666;
+  margin: 8px 0 0;
+  line-height: 1.6;
 }
 
 .tournamentBadge {
   display: inline-block;
-  margin-top: 10px;
+  margin-top: 12px;
   padding: 4px 14px;
-  background: #c8102e;
-  color: #fff;
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  border-radius: 3px;
+  color: #c8102e;
+  background: rgba(200, 16, 46, 0.08);
+  border: 1px solid rgba(200, 16, 46, 0.2);
 }
 
 /* セクションナビ */
 .sectionNav {
-  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 10;
   background: #fff;
-  border-top: 0.5px solid #d0d0d0;
-  border-bottom: 0.5px solid #d0d0d0;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .sectionNavInner {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
-  display: flex;
   padding: 0 40px;
+  display: flex;
+  gap: 0;
 }
 
 .navItem {
-  background: none;
-  border: none;
-  padding: 14px 24px;
-  font-size: 15px;
-  font-weight: 700;
-  color: #1a1a1a;
-  cursor: pointer;
-  letter-spacing: 0.03em;
-  font-family: inherit;
-  white-space: nowrap;
-  text-decoration: none;
   display: flex;
   align-items: center;
   gap: 6px;
-  position: relative;
+  padding: 16px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+  white-space: nowrap;
 }
 
-.navItem::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 25%;
-  height: 50%;
-  width: 0.5px;
-  background: #d0d0d0;
-}
-
-.navItem:first-child::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 25%;
-  height: 50%;
-  width: 0.5px;
-  background: #d0d0d0;
+.navItem:hover {
+  color: #c8102e;
 }
 
 .navChevron {
   font-size: 10px;
-  color: #888;
-}
-
-.navItem:hover {
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  opacity: 0.5;
 }
 
 /* コンテンツ */
 .content {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 40px 60px;
+  padding: 48px 40px 80px;
 }
 
 /* セクション */
 .section {
-  margin-bottom: 48px;
-  scroll-margin-top: 80px;
+  margin-bottom: 56px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
 }
 
 .sectionHeader {
-  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
 }
 
 .accent {
-  display: block;
-  width: 40px;
-  height: 3px;
+  width: 4px;
+  height: 40px;
   background: #c8102e;
-  margin-bottom: 6px;
+  flex-shrink: 0;
 }
 
 .sectionTitle {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 900;
   color: #1a1a1a;
   line-height: 1.3;
+  margin: 0;
 }
 
 .sectionSub {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  color: #1a1a1a;
-  letter-spacing: 0.08em;
-  margin-top: 4px;
+  color: #999;
+  letter-spacing: 0.1em;
+  margin: 2px 0 0;
 }
 
-/* テーブル行 */
+/* テーブル形式の情報 */
 .tableRows {
-  border-top: 1px solid #e8e8e8;
+  display: flex;
+  flex-direction: column;
 }
 
 .tableRow {
   display: flex;
-  align-items: baseline;
-  padding: 10px 0;
-  border-bottom: 1px solid #e8e8e8;
-  font-size: 15px;
-  line-height: 1.6;
+  border-bottom: 1px solid #eee;
+  padding: 16px 0;
+}
+
+.tableRow:first-child {
+  border-top: 1px solid #eee;
 }
 
 .tableLabel {
-  width: 160px;
-  flex-shrink: 0;
-  color: #888;
+  min-width: 120px;
   font-size: 14px;
+  font-weight: 700;
+  color: #666;
+  flex-shrink: 0;
 }
 
 .tableValue {
+  font-size: 15px;
   color: #333;
+  line-height: 1.7;
 }
 
 /* 本文テキスト */
 .bodyText {
   font-size: 15px;
-  color: #333;
-  line-height: 1.9;
+  color: #555;
+  line-height: 2;
 }
 
 .bodyText p {
@@ -260,92 +238,78 @@
   margin-bottom: 0;
 }
 
-/* 注記 */
+/* 注釈 */
 .note {
   font-size: 13px;
   color: #888;
-  margin-top: 16px;
   line-height: 1.7;
+  margin-top: 20px;
 }
 
-/* レスポンシブ */
+/* 個別大会ページ用：大会名表示 */
+.bracketNameRow {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.25em;
+  overflow: hidden;
+}
+
+.bracketNameText {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* ===== レスポンシブ：個別大会ページ ===== */
 @media (max-width: 768px) {
-  .container {
-    padding: 0;
-    width: 100%;
-    overflow-x: hidden;
-  }
-
-  .main {
-    padding: 56px 0 0;
-    width: 100%;
-  }
-
   .hero {
-    height: 200px;
-  }
-
-  .heroLogoWrap {
-    padding-left: 24px;
+    height: 300px;
   }
 
   .titleCard {
-    margin: 0 auto;
     padding: 24px 20px 0;
   }
 
   .titleInner {
-    gap: 20px;
-    padding-bottom: 24px;
-  }
-
-  .logoWrap {
-    width: 110px;
-    height: 110px;
-  }
-
-  .titleInfo {
-    padding-top: 0;
+    padding-bottom: 20px;
   }
 
   .tournamentName {
-    font-size: 22px;
+    font-size: 24px;
   }
 
   .tournamentSub {
-    font-size: 15px;
-    margin-bottom: 6px;
+    font-size: 17px;
   }
 
-  .tournamentMeta {
+  .sectionNavInner {
+    padding: 0 16px;
+  }
+
+  .navItem {
+    padding: 14px 16px;
     font-size: 13px;
   }
 
-  .sectionNav {
-    display: none;
-  }
-
   .content {
-    padding: 16px 20px 40px;
-  }
-
-  .section {
-    margin-bottom: 36px;
+    padding: 32px 20px 48px;
   }
 
   .sectionTitle {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .tableRow {
     flex-direction: column;
-    gap: 2px;
-    padding: 10px 0;
+    gap: 4px;
+    padding: 12px 0;
   }
 
   .tableLabel {
-    width: auto;
-    font-size: 12px;
+    min-width: auto;
+    font-size: 13px;
   }
 
   .tableValue {
@@ -355,18 +319,344 @@
   .bodyText {
     font-size: 14px;
   }
+
+  .bracketNameRow {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .bracketNameText {
+    display: inline-block;
+    width: 100%;
+  }
 }
 
 @media (max-width: 480px) {
   .hero {
-    height: 160px;
+    height: 220px;
   }
 
   .tournamentName {
-    font-size: 19px;
+    font-size: 20px;
+  }
+
+  .tournamentSub {
+    font-size: 15px;
   }
 
   .sectionTitle {
-    font-size: 20px;
+    font-size: 18px;
+  }
+}
+
+/* ===== 大会一覧ページ ===== */
+
+/* タブバーのコンテナ（News.module.cssのcontent幅に合わせる） */
+.tabBar {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.tab {
+  padding: 14px 28px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #666;
+  background: #f5f5f5;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tabActive {
+  color: #fff !important;
+  background: #c8102e !important;
+}
+
+.tabBadge {
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 400;
+}
+
+/* 大会カードリスト：News.module.cssのリスト感に合わせる */
+.bracketList {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.bracketCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px 32px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  min-height: 100px;
+  overflow: hidden;
+}
+
+/* ホバー時の装飾 */
+.bracketCard::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  background-color: #c8102e;
+  transition: width 0.3s ease;
+}
+
+.bracketCard:hover {
+  background-color: rgba(200, 16, 46, 0.02);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  transform: translateX(4px);
+}
+
+.bracketCard:hover::after {
+  width: 6px;
+}
+
+/* 大会名表示：PCは横並び1行 */
+.tournamentNameContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* 大会名1と2の共通スタイル（1に統一） */
+.bracketName1,
+.bracketName2 {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  /* 改行を禁止し、溢れたら...にする */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+}
+
+/* アーカイブセクション */
+.archiveSection {
+  margin-top: 24px;
+}
+
+.archiveFilters {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 40px;
+  padding: 32px;
+  background: #f8f9fa;
+  border: 1px solid #eee;
+}
+
+.archiveFilterGroup {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.archiveFilterLabel {
+  font-size: 13px;
+  font-weight: 900;
+  color: #999;
+  padding-top: 10px;
+  min-width: 50px;
+}
+
+.archiveChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.archiveChip {
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.archiveChipActive {
+  background: #c8102e;
+  color: #fff;
+  border-color: #c8102e;
+}
+
+.archiveChipCount {
+  margin-left: 6px;
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.archiveSelect {
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  min-width: 200px;
+  background: #fff;
+}
+
+.archiveGroup {
+  margin-bottom: 60px;
+}
+
+.archiveGroupTitle {
+  font-size: 20px;
+  font-weight: 900;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #1a1a1a;
+}
+
+.archiveGroupAccent {
+  width: 5px;
+  height: 26px;
+  background: #c8102e;
+}
+
+.archiveGroupCount {
+  font-size: 14px;
+  color: #999;
+  font-weight: 400;
+}
+
+.archiveList {
+  display: grid;
+  gap: 12px;
+}
+
+.archiveCard {
+  padding: 24px;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.archiveCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.archiveDate {
+  font-size: 13px;
+  color: #888;
+}
+
+.archiveYear {
+  font-size: 11px;
+  font-weight: 700;
+  background: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+
+.archiveTitle {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.pdfButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pdfButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #333;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.pdfButton:hover {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+/* 不要になったエリアの非表示 */
+.bracketCardMeta {
+  display: none !important;
+}
+
+/* ===== 768px未満：SP表示 ===== */
+@media (max-width: 767px) {
+  .tabBar {
+    gap: 0;
+  }
+
+  .tab {
+    padding: 12px 10px;
+    font-size: 13px;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .bracketCard {
+    padding: 20px;
+    min-height: auto;
+  }
+
+  /* SP：2行に分ける */
+  .tournamentNameContainer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .bracketName1,
+  .bracketName2 {
+    font-size: 1.1rem;
+    max-width: 100%;
+    width: 100%;
+    /* 改行させずに1行ずつ表示 */
+    white-space: nowrap;
+    display: block;
+  }
+
+  .archiveFilters {
+    padding: 20px;
+  }
+
+  .archiveFilterGroup {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }

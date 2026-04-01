@@ -12,7 +12,7 @@
   position: relative;
   width: 100%;
   height: 320px;
-  background-image: url('/fukuoka/topview/top-pc.jpg');
+  background-image: url('/fukuoka/topview/top.webp');
   background-size: cover;
   background-position: center;
   overflow: hidden;
@@ -72,8 +72,14 @@
 /* 2カラムレイアウト */
 .twoColumn {
   display: flex;
+  flex-direction: row-reverse;
   gap: 40px;
   align-items: flex-start;
+}
+
+/* 画像なし：1カラム */
+.singleColumn {
+  display: block;
 }
 
 .columnLeft {
@@ -155,6 +161,7 @@
   text-align: center;
   transform: scale(0.8);
   transform-origin: top center;
+  background-color: #EFEFEF;
 }
 
 /* リッチテキストエリア */
@@ -379,6 +386,50 @@
   margin-bottom: 0.5rem;
 }
 
+/* ページタイトル行（INTERVIEW + プロフィールボタン） */
+.titleRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* PC: タイトル横のプロフィールボタン */
+.profileBtnWrap {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* SP用: 本文下のプロフィールボタン（PCでは非表示） */
+.profileBtnWrapSp {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.profileBtn {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: #c8102e;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.4rem 1rem;
+  border: 1px solid #c8102e;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.profileBtn:hover {
+  background: #c8102e;
+  color: #fff;
+}
+
 .loading {
   display: flex;
   justify-content: center;
@@ -522,6 +573,15 @@
     min-width: auto;
   }
 
+  /* 通常テキストのbrを非表示（ボールドは除く） */
+  .articleContent p br {
+    display: none;
+  }
+
+  .articleContent p strong br {
+    display: initial;
+  }
+
   .articleContent h2 {
     font-size: 1.3rem;
   }
@@ -542,11 +602,90 @@
     font-size: 0.9rem;
   }
 
+  .articleContent img {
+    max-width: 100%;
+    height: auto;
+  }
+
   .articleContent table {
     display: table;
     width: 100%;
     table-layout: auto;
     word-break: break-word;
+  }
+
+  /* SP: タイトル横のボタンを非表示 */
+  .profileBtnWrap {
+    display: none;
+  }
+
+  /* SP: 本文下のボタンを表示 */
+  .profileBtnWrapSp {
+    display: flex;
+  }
+
+  .profileBtn {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.8rem;
+  }
+}
+
+/* Coming Soon ページ */
+.comingSoonWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 60px 20px;
+}
+
+.comingSoonCard {
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+}
+
+.comingSoonTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 24px;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+}
+
+.comingSoonDescription {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.8;
+  margin: 0 0 40px;
+  font-weight: 400;
+}
+
+.comingSoonDivider {
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, #c8102e 50%, transparent 100%);
+  margin: 0 auto 32px;
+  border-radius: 2px;
+}
+
+.comingSoonSubtext {
+  font-size: 0.95rem;
+  color: #999;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  .comingSoonTitle {
+    font-size: 1.75rem;
+  }
+
+  .comingSoonDescription {
+    font-size: 1rem;
   }
 }
 
@@ -557,5 +696,30 @@
 
   .articleDate {
     font-size: 0.8rem;
+  }
+
+  .comingSoonWrapper {
+    min-height: auto;
+    padding: 20px 16px;
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+
+  .comingSoonTitle {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+  }
+
+  .comingSoonDescription {
+    font-size: 0.95rem;
+    margin-bottom: 32px;
+  }
+
+  .comingSoonDivider {
+    margin-bottom: 24px;
+  }
+
+  .comingSoonSubtext {
+    font-size: 0.85rem;
   }
 }

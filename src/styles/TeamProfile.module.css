@@ -1,0 +1,150 @@
+/* チームプロフィールページ */
+
+.backLink {
+  margin-bottom: 24px;
+}
+
+.backLink a {
+  color: #666;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.backLink a:hover {
+  color: #c8102e;
+}
+
+/* 画像 */
+.images {
+  margin-bottom: 24px;
+}
+
+.featured {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.gallery {
+  display: flex;
+  gap: 8px;
+}
+
+.galleryImg {
+  flex: 1;
+  min-width: 0;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+
+/* タグ・支部 */
+.info {
+  margin-bottom: 20px;
+}
+
+.tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  background: #f0f0f0;
+  color: #555;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 3px;
+}
+
+.meta {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+/* テーブル */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  width: 120px;
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 12px 14px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  word-break: break-all;
+}
+
+.table a {
+  color: #c8102e;
+  text-decoration: none;
+}
+
+.table a:hover {
+  text-decoration: underline;
+}
+
+.sns {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sns a {
+  font-size: 13px;
+}
+
+.empty {
+  text-align: center;
+  color: #999;
+  padding: 40px 0;
+  font-size: 14px;
+}
+
+.updated {
+  font-size: 12px;
+  color: #bbb;
+  margin-top: 20px;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .featured {
+    max-height: 200px;
+  }
+
+  .galleryImg {
+    height: 70px;
+  }
+
+  .table th {
+    width: 90px;
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+
+  .table td {
+    padding: 8px 6px;
+    font-size: 13px;
+  }
+}

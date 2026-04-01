@@ -1,0 +1,324 @@
+/* チーム情報編集ページ */
+
+.authBox {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 30px;
+  border: 1px solid #e0e0e0;
+  text-align: center;
+}
+
+.authTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.authInput {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  font-family: inherit;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.authInput:focus {
+  outline: none;
+  border-color: #c8102e;
+}
+
+.authBtn {
+  width: 100%;
+  padding: 12px;
+  background: #c8102e;
+  color: #fff;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+.authBtn:hover {
+  background: #a50d25;
+}
+
+.authBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.authError {
+  color: #d63638;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.editForm {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.teamName {
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 30px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #c8102e;
+}
+
+.fieldGroup {
+  margin-bottom: 20px;
+}
+
+.fieldLabel {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.fieldInput {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.fieldInput:focus {
+  outline: none;
+  border-color: #c8102e;
+}
+
+.fieldTextarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.fieldTextarea:focus {
+  outline: none;
+  border-color: #c8102e;
+}
+
+.fieldSelect {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  font-family: inherit;
+  min-width: 160px;
+}
+
+.snsRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.snsInput {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.snsRemove {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  color: #999;
+}
+
+.snsRemove:hover {
+  background: #fee;
+  color: #d63638;
+  border-color: #d63638;
+}
+
+.addBtn {
+  padding: 6px 14px;
+  border: 1px dashed #ccc;
+  background: #fafafa;
+  cursor: pointer;
+  font-size: 13px;
+  color: #666;
+  font-family: inherit;
+}
+
+.addBtn:hover {
+  border-color: #999;
+  background: #f0f0f0;
+}
+
+.imageSection {
+  margin-bottom: 20px;
+}
+
+.imagePreview {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.imageThumb {
+  position: relative;
+  display: inline-block;
+}
+
+.imageThumb img {
+  width: 140px;
+  height: 105px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.imageRemoveBtn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  background: #d63638;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+}
+
+.uploadBtn {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.uploadBtn:hover {
+  background: #f5f5f5;
+}
+
+.uploadBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.actions {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.saveBtn {
+  padding: 12px 30px;
+  background: #c8102e;
+  color: #fff;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+.saveBtn:hover {
+  background: #a50d25;
+}
+
+.saveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.statusMsg {
+  font-size: 14px;
+  color: #666;
+}
+
+.successMsg {
+  color: #46b450;
+}
+
+.errorMsg {
+  color: #d63638;
+}
+
+.lastUpdated {
+  font-size: 12px;
+  color: #999;
+  margin-top: 10px;
+}
+
+.requestLink {
+  display: block;
+  margin-top: 16px;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.requestLink:hover {
+  color: #c8102e;
+}
+
+.requestDesc {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 16px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.requestSuccess {
+  color: #46b450;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .authBox {
+    margin: 20px 15px;
+  }
+
+  .editForm {
+    padding: 0 5px;
+  }
+
+  .snsRow {
+    flex-direction: column;
+  }
+
+  .imageThumb img {
+    width: 100px;
+    height: 75px;
+  }
+}

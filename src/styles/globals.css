@@ -13,6 +13,17 @@ body {
   padding: 0;
 }
 
+html.scroll-locked,
+html.scroll-locked body {
+  overflow: hidden !important;
+  touch-action: none;
+}
+
+html.scroll-locked body {
+  position: fixed;
+  width: 100%;
+}
+
 body {
   font-family: "LINE Seed JP", "Noto Sans JP", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, "MS Pゴシック", "MS PGothic", sans-serif;
 }
@@ -20,4 +31,78 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* ===== グローバル テーブル ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+th,
+td {
+  border: 1px solid #d0d0d0;
+  padding: 0.65rem 0.85rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+th {
+  background-color: transparent;
+  font-weight: 700;
+  white-space: nowrap;
+  min-width: 6em;
+}
+
+/* テーブル横スクロールラッパー */
+.table-scroll {
+  position: relative;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.5rem 0;
+}
+
+.table-scroll table {
+  margin: 0;
+}
+
+.table-scroll th {
+  white-space: nowrap;
+}
+
+.table-scroll td {
+  white-space: nowrap;
+  height: 3.2em;
+  text-align: left;
+}
+
+/* 右端のスクロールヒント（フェード） */
+.table-scroll::after {
+  content: '';
+  position: sticky;
+  right: 0;
+  top: 0;
+  display: block;
+  width: 32px;
+  height: 100%;
+  margin-top: -100%;
+  pointer-events: none;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.85));
+  float: right;
+}
+
+/* SP: テーブル横スクロール対応 */
+@media (max-width: 767px) {
+  table {
+    font-size: 0.85rem;
+  }
+
+  th,
+  td {
+    padding: 0.5rem 0.6rem;
+  }
 }

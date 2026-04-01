@@ -1,125 +1,187 @@
 /* styles/terms.module.css */
 .container {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: linear-gradient(-55deg, #fff, #fef2d4 15%, #eefbf9 30%, #f0f7fb 45%, #f2fdff 55%, #eefafa 70%, #fef8e8 85%, #fff);
+}
+
+.main {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  flex: 1;
+}
+
+/* ヒーロー */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-image: url('/fukuoka/topview/top.webp');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* タイトルカード */
+.titleCard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 40px 0;
+}
+
+.titleInner {
+  padding-bottom: 32px;
+  border-bottom: 0.5px solid #d0d0d0;
+}
+
+.pageTitle {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+.pageSub {
+  font-size: 13px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 0.1em;
+}
+
+/* コンテンツレイアウト */
+.bodyLayout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* セクション */
+.section {
+  margin-bottom: 48px;
+}
+
+.sectionTitle {
+  font-size: 22px;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.3;
+  margin-bottom: 16px;
+  padding-top: 16px;
+  border-top: 3px solid #c8102e;
+  border-top-width: 3px;
+  border-image: linear-gradient(to right, #c8102e 40px, transparent 40px) 1;
+}
+
+.section:first-child .sectionTitle {
+  margin-top: 0;
+}
+
+/* テーブル */
+.infoTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  color: #333;
+}
+
+.infoTable th,
+.infoTable td {
+  padding: 14px 16px;
+  border: 1px solid #ddd;
+  text-align: left;
+  vertical-align: top;
+}
+
+.infoTable th {
+  background: #f5f5f5;
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+  width: 140px;
+}
+
+.infoTable td {
+  line-height: 1.7;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .container {
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
   }
-  
+
   .main {
-    flex: 1;
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 60px;
+    padding: 56px 0 0;
     width: 100%;
   }
-  
-  .pageHeader {
-    position: relative;
-    max-width: 1080px;
-    margin: 0 auto;
+
+  .hero {
     height: 200px;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-      url('/images/top0.webp');
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    margin-bottom: 32px;
+    background-image: url('/fukuoka/topview/top.webp');
   }
-  
-  .title {
+
+  .titleCard {
+    padding: 24px 20px 0;
+  }
+
+  .titleInner {
+    padding-bottom: 20px;
+  }
+
+  .pageTitle {
     font-size: 28px;
-    margin-bottom: 8px;
-    color: #fff;
   }
-  
-  .section {
-    max-width: 1080px;
-    margin: 0 auto;
-    background: white;
-    border-radius: 12px;
-    padding: 32px;
-    margin-bottom: 40px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  .bodyLayout {
+    padding: 24px 20px 48px;
   }
-  
+
   .sectionTitle {
+    font-size: 18px;
+  }
+
+  .infoTable {
+    font-size: 13px;
+  }
+
+  .infoTable th,
+  .infoTable td {
+    padding: 10px 12px;
+  }
+
+  .infoTable th {
+    width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    height: 160px;
+  }
+
+  .pageTitle {
     font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 24px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid #333;
   }
-  
-  .content {
-    line-height: 1.8;
+
+  .sectionTitle {
+    font-size: 17px;
   }
-  
-  @media (max-width: 768px) {
-    .container {
-      padding: 0;
-      width: 100%;
-      overflow-x: hidden;
-    }
-  
-    .main {
-      padding: 56px 0 0;
-      width: 100%;
-    }
-  
-    .pageHeader {
-      height: 160px;
-      max-width: 100%;
-      margin: 0 auto 24px;
-    }
-  
-    .title {
-      font-size: 24px;
-    }
-  
-    .section {
-      margin: 0 auto 24px;
-      width: calc(100% - 32px);
-      border-radius: 12px;
-      padding: 20px 16px;
-      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-    }
-  
-    .sectionTitle {
-      font-size: 20px;
-      margin-bottom: 16px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .pageHeader {
-      height: 120px;
-    }
-  
-    .title {
-      font-size: 20px;
-    }
-  }
-  /* styles/terms.module.css に追加 */
-.content p {
-    margin-bottom: 16px;
-  }
-  
-  .content a {
-    color: #0066cc;
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  
-  .content a:hover {
-    color: #003366;
-    text-decoration: underline;
-  }
-  
-  .content strong {
-    font-weight: 600;
-  }
+}

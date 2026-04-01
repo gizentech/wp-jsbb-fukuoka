@@ -1,12 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
+import Meta from '../../components/Meta/Meta.js'
 import { FaChevronDown } from 'react-icons/fa'
-import { google } from 'googleapis'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import styles from '../../styles/Schedule.module.css'
+import { fetchCalendarEvents } from '../../lib/wp-api-client'
 
-const CALENDAR_ID = '7a96188de1254966ec76720552e75c9b03a75c5bb8f5da84ef1529a6b44f2497@group.calendar.google.com'
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土']
 
 function formatDate(dateStr) {
@@ -29,90 +29,76 @@ function formatTime(start, end) {
   return `${sTime} - ${eTime}`
 }
 
-export async function getServerSideProps() {
-  try {
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: process.env.GOOGLE_CALENDAR_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_CALENDAR_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      },
-      scopes: ['https://www.googleapis.com/auth/calendar.readonly'],
-    })
+function processEvents(rawEvents) {
+  const flatEvents = []
+  for (const event of rawEvents) {
+    const startDate = event.start?.date
+    const endDate = event.end?.date
 
-    const calendar = google.calendar({ version: 'v3', auth })
+    if (startDate && endDate) {
+      const s = new Date(startDate)
+      const e = new Date(endDate)
+      const days = Math.round((e - s) / (1000 * 60 * 60 * 24))
 
-    const now = new Date()
-    const threeMonthsLater = new Date(now.getFullYear(), now.getMonth() + 3, now.getDate())
-
-    const res = await calendar.events.list({
-      calendarId: CALENDAR_ID,
-      timeMin: now.toISOString(),
-      timeMax: threeMonthsLater.toISOString(),
-      orderBy: 'startTime',
-      singleEvents: true,
-      maxResults: 100,
-    })
-
-    const flatEvents = []
-    for (const event of res.data.items || []) {
-      const startDate = event.start.date
-      const endDate = event.end?.date
-
-      if (startDate && endDate) {
-        const s = new Date(startDate)
-        const e = new Date(endDate)
-        const days = Math.round((e - s) / (1000 * 60 * 60 * 24))
-
-        if (days > 1) {
-          for (let i = 0; i < days; i++) {
-            const d = new Date(s)
-            d.setDate(d.getDate() + i)
-            const dateStr = d.toISOString().split('T')[0]
-            flatEvents.push({
-              id: `${event.id}_day${i}`,
-              summary: event.summary || '',
-              location: event.location || null,
-              description: event.description || null,
-              start: { dateTime: null, date: dateStr },
-              end: { dateTime: null, date: dateStr },
-            })
-          }
-          continue
+      if (days > 1) {
+        for (let i = 0; i < days; i++) {
+          const d = new Date(s)
+          d.setDate(d.getDate() + i)
+          const dateStr = d.toISOString().split('T')[0]
+          flatEvents.push({
+            id: `${event.id}_day${i}`,
+            summary: event.summary || '',
+            location: event.location || null,
+            description: event.description || null,
+            start: { dateTime: null, date: dateStr },
+            end: { dateTime: null, date: dateStr },
+          })
         }
+        continue
       }
-
-      flatEvents.push({
-        id: event.id,
-        summary: event.summary || '',
-        location: event.location || null,
-        description: event.description || null,
-        start: {
-          dateTime: event.start.dateTime || null,
-          date: event.start.date || null,
-        },
-        end: {
-          dateTime: event.end?.dateTime || null,
-          date: event.end?.date || null,
-        },
-      })
     }
 
-    const events = flatEvents.map((ev, i) => {
-      const dateKey = ev.start.date || (ev.start.dateTime ? ev.start.dateTime.split('T')[0] : '')
-      const prevDateKey = i > 0
-        ? (flatEvents[i - 1].start.date || (flatEvents[i - 1].start.dateTime ? flatEvents[i - 1].start.dateTime.split('T')[0] : ''))
-        : null
-      return { ...ev, showDate: dateKey !== prevDateKey }
+    flatEvents.push({
+      id: event.id,
+      summary: event.summary || '',
+      location: event.location || null,
+      description: event.description || null,
+      start: {
+        dateTime: event.start?.dateTime || null,
+        date: event.start?.date || null,
+      },
+      end: {
+        dateTime: event.end?.dateTime || null,
+        date: event.end?.date || null,
+      },
     })
-
-    return { props: { events } }
-  } catch {
-    return { props: { events: [], error: 'イベントの取得に失敗しました' } }
   }
+
+  return flatEvents.map((ev, i) => {
+    const dateKey = ev.start.date || (ev.start.dateTime ? ev.start.dateTime.split('T')[0] : '')
+    const prevDateKey = i > 0
+      ? (flatEvents[i - 1].start.date || (flatEvents[i - 1].start.dateTime ? flatEvents[i - 1].start.dateTime.split('T')[0] : ''))
+      : null
+    return { ...ev, showDate: dateKey !== prevDateKey }
+  })
 }
 
-export default function Schedule({ events, error }) {
+export default function Schedule() {
+  const [events, setEvents] = useState([])
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [openId, setOpenId] = useState(null)
+
+  useEffect(() => {
+    fetchCalendarEvents()
+      .then((rawEvents) => {
+        setEvents(processEvents(rawEvents || []))
+      })
+      .catch(() => {
+        setError('イベントの取得に失敗しました')
+      })
+      .finally(() => setLoading(false))
+  }, [])
 
   const toggleAccordion = (id) => {
     setOpenId((prev) => (prev === id ? null : id))
@@ -120,9 +106,8 @@ export default function Schedule({ events, error }) {
 
   return (
     <>
+      <Meta title="スケジュール・大会日程" description="福岡県軟式野球連盟の大会日程・スケジュール。今後3ヶ月間の軟式野球大会・審判講習会の予定をご確認いただけます。" keywords="福岡県軟式野球連盟,大会日程,スケジュール,野球大会日程,野球スケジュール,福岡野球大会日程,福岡県野球大会,軟式野球,硬式野球,学童野球大会日程,少年野球大会日程,高校野球日程,社会人野球日程,審判講習会,野球大会,杯,旗,福岡県大会日程,九州大会日程,大会カレンダー,試合日程,野球イベント" urlPath="/schedule" breadcrumbs={[{ name: 'スケジュール', path: '/schedule' }]} />
       <Head>
-        <title>スケジュール | 一般社団法人 福岡県軟式野球連盟</title>
-        <meta name="description" content="福岡県軟式野球連盟のスケジュール。今後3ヶ月間の予定をご確認いただけます。" />
         <link rel="preload" href="/images/tournament-bg.webp" as="image" />
       </Head>
       <Header flush />
@@ -142,13 +127,14 @@ export default function Schedule({ events, error }) {
 
           <div className={styles.content}>
             <section id="schedule" className={styles.section}>
+              {loading && <p className={styles.empty}>読み込み中...</p>}
               {error && <p className={styles.error}>{error}</p>}
 
-              {!error && events.length === 0 && (
+              {!loading && !error && events.length === 0 && (
                 <p className={styles.empty}>現在予定されている大会はありません</p>
               )}
 
-              {!error && events.length > 0 && (
+              {!loading && !error && events.length > 0 && (
                 <ul className={styles.eventList}>
                   {events.map((event) => {
                     const dateStr = event.start.dateTime || event.start.date

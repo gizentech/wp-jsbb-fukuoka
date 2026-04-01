@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Meta from '../../components/Meta/Meta.js'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import AboutSidebar from '../../components/AboutSidebar/AboutSidebar'
@@ -15,7 +15,7 @@ export async function getStaticProps() {
         content: page?.content || '',
         featuredImage: page?.featuredImage || null,
       },
-      revalidate: 60,
+
     }
   } catch (error) {
     console.error('Failed to fetch sponsorship page:', error)
@@ -25,7 +25,7 @@ export async function getStaticProps() {
         content: '',
         featuredImage: null,
       },
-      revalidate: 60,
+
     }
   }
 }
@@ -33,17 +33,11 @@ export async function getStaticProps() {
 export default function Sponsorship({ title, content, featuredImage }) {
   return (
     <>
-      <Head>
-        <title>{`${title} | 一般社団法人 福岡県軟式野球連盟`}</title>
-        <meta name="description" content="福岡県軟式野球連盟へのご協賛についてのご案内です。" />
-      </Head>
+      <Meta title={title || 'ご協賛について'} description="福岡県軟式野球連盟へのご協賛についてのご案内。福岡県の軟式野球大会・活動へのスポンサーシップをご検討ください。" keywords="福岡県軟式野球連盟,協賛,スポンサー,福岡,軟式野球,野球大会" urlPath="/about/sponsorship" breadcrumbs={[{ name: '連盟概要', path: '/about' }, { name: 'ご協賛について', path: '/about/sponsorship' }]} />
       <Header flush />
       <div className={styles.container}>
         <main className={styles.main}>
-          <div
-            className={styles.hero}
-            style={featuredImage ? { backgroundImage: `url(${featuredImage})`, backgroundPosition: 'center center' } : undefined}
-          >
+          <div className={styles.hero}>
             <div className={styles.heroOverlay} />
           </div>
 

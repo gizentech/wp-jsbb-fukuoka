@@ -1,10 +1,18 @@
 .section {
-  padding: 60px 60px; /* 高さを抑える */
+  padding: 60px 0;
+  background: #0f1959;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
+
+.sectionInnerPad {
+  padding: 0 60px;
 }
 
 .inner {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 60px;
 }
 
 /* ================= HEADER ================= */
@@ -24,19 +32,20 @@
   font-size: 1.6rem;
   font-weight: 700;
   margin: 0;
+  color: #fff;
 }
 
 .subtitle {
   font-size: 0.75rem;
   letter-spacing: 0.08em;
-  color: #666;
+  color: #aaa;
 }
 
 /* ================= GRID ================= */
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr 0.8fr; /* 右を少し小さく */
+  grid-template-columns: 1fr 0.8fr;
   gap: 32px;
   align-items: start;
 }
@@ -53,7 +62,7 @@
 
 .leftImageWrap {
   width: 85%;
-  aspect-ratio: 3 / 4; /* 縦4:横3 */
+  aspect-ratio: 16 / 9;
   overflow: hidden;
 }
 
@@ -73,6 +82,7 @@
   font-weight: 700;
   line-height: 1.6;
   margin-bottom: 8px;
+  color: #fff;
 }
 
 .meta {
@@ -80,18 +90,7 @@
   align-items: center;
   gap: 12px;
   font-size: 0.7rem;
-  color: #777;
-}
-
-.likes {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.heartIcon {
-  color: #e0245e;
-  font-size: 0.75rem;
+  color: #999;
 }
 
 /* ================= RIGHT ================= */
@@ -99,7 +98,7 @@
 .rightGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px; /* 少し詰める */
+  gap: 16px;
 }
 
 .rightCard {
@@ -110,8 +109,8 @@
 }
 
 .rightImageWrap {
-  width: 90%; /* 少し縮小 */
-  aspect-ratio: 3 / 4; /* 縦4:横3 */
+  width: 90%;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   margin: 0 auto;
 }
@@ -127,10 +126,26 @@
 }
 
 .rightTitle {
-  font-size: 0.8rem; /* 少し小さく */
+  font-size: 0.8rem;
   font-weight: 600;
   line-height: 1.4;
   margin-bottom: 4px;
+  color: #fff;
+}
+
+/* ================= NO IMAGE ================= */
+
+.noImage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1a1a;
+  color: #555;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
 }
 
 /* ================= MOBILE (default hidden) ================= */
@@ -149,9 +164,6 @@
 
   .inner {
     overflow: visible;
-  }
-
-  .header {
     padding: 0 24px;
   }
 
@@ -161,7 +173,6 @@
 
   .mobileSection {
     display: block;
-    padding: 0 24px;
   }
 
   /* SP: featured card */
@@ -174,7 +185,7 @@
 
   .mobileFeaturedImageWrap {
     width: 100%;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
   }
 
@@ -193,6 +204,7 @@
     font-weight: 700;
     line-height: 1.6;
     margin-bottom: 8px;
+    color: #fff;
   }
 
   /* SP: horizontal scroll */
@@ -221,7 +233,7 @@
 
   .mobileImageWrap {
     width: 100%;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
   }
 

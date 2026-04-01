@@ -4,8 +4,10 @@ import { useRouter } from 'next/router';
 import { auth } from '../../lib/firebase';
 import { signOut } from 'firebase/auth';
 import Link from 'next/link';
-import Background from '../Background/Background';
+import dynamic from 'next/dynamic';
 import styles from './AdminLayout.module.css';
+
+const Background = dynamic(() => import('../Background/Background'), { ssr: false });
 
 export default function AdminLayout({ children }) {
   const router = useRouter();

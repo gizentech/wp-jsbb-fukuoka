@@ -1,5 +1,5 @@
-import Head from 'next/head'
 import Header from '../../components/Header/Header'
+import Meta from '../../components/Meta/Meta.js'
 import Footer from '../../components/Footer/Footer'
 import UmpireSidebar from '../../components/UmpireSidebar/UmpireSidebar'
 import styles from '../../styles/umpire/UmpireInfo.module.css'
@@ -15,7 +15,6 @@ export async function getStaticProps() {
         content: page?.content || '',
         featuredImage: page?.featuredImage || null,
       },
-      revalidate: 60,
     }
   } catch (error) {
     console.error('Failed to fetch umpire-info page:', error)
@@ -25,7 +24,6 @@ export async function getStaticProps() {
         content: '',
         featuredImage: null,
       },
-      revalidate: 60,
     }
   }
 }
@@ -33,18 +31,18 @@ export async function getStaticProps() {
 export default function UmpireInfo({ title, content, featuredImage }) {
   return (
     <>
-      <Head>
-        <title>{`${title} | 一般社団法人 福岡県軟式野球連盟`}</title>
-        <meta name="description" content="福岡県軟式野球連盟の審判についてのご案内です。" />
-      </Head>
+      <Meta
+        title={title || '審判について'}
+        description="福岡県軟式野球連盟の審判について。審判員の役割、公認審判員制度、審判資格の取得方法など福岡で野球審判を始めるための情報をご案内します。"
+        keywords="福岡,野球,審判,審判員,公認審判員,審判資格,軟式野球審判,やきゅう"
+        urlPath="/umpire/umpire-info"
+        breadcrumbs={[{ name: '審判', path: '/umpire' }, { name: '審判について', path: '/umpire/umpire-info' }]}
+      />
       <Header flush />
       <div className={styles.container}>
         <main className={styles.main}>
           {/* ヒーロー（アイキャッチ画像） */}
-          <div
-            className={styles.hero}
-            style={featuredImage ? { backgroundImage: `url(${featuredImage})`, backgroundPosition: 'center center' } : undefined}
-          >
+          <div className={styles.hero}>
             <div className={styles.heroOverlay} />
           </div>
 

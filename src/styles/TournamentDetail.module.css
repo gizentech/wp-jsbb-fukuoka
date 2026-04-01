@@ -1,425 +1,242 @@
-/* styles/TournamentDetail.module.css */
-
 .container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(-55deg, #fff 0%, #fef2d4 15%, #eefbf9 30%, #f0f7fb 45%, #f2fdff 55%, #eefafa 70%, #fef8e8 85%, #fff 100%);
-}
-
-/* タイトルカード */
-.titleCard {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 40px 0;
-}
-
-.titleInner {
-  padding-bottom: 32px;
-  border-bottom: 0.5px solid #d0d0d0;
-}
-
-.heroTitle {
-  font-size: 32px;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  margin-bottom: 4px;
-  color: #1a1a1a;
-  line-height: 1.4;
-}
-
-.heroSubtitle {
-  font-size: 13px;
-  font-weight: 700;
-  color: #888;
-  letter-spacing: 0.1em;
+  background: #fff; /* グラデーション背景を削除 */
 }
 
 .main {
   width: 100%;
-  margin: 0 auto;
-  padding: 56px 0 0;
   flex: 1;
 }
 
-.content {
-  max-width: 1200px;
+.hero {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-image: url('/fukuoka/topview/top.webp');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.titleCard {
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 24px 40px 60px;
+  padding: 40px 24px 0;
 }
 
-/* 記事セクション */
-.article {
-  width: 100%;
-  background: transparent;
-  padding: 0;
+.titleInner {
+  padding-bottom: 24px;
+  border-bottom: 1px solid #eee;
 }
 
-.articleTitle {
-  font-size: 1.5rem;
-  font-weight: bold;
-  line-height: 1.5;
-  color: #333;
-  margin: 0 0 1rem 0;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #e0e0e0;
-  position: relative;
+.heroTitle {
+  font-size: 28px;
+  font-weight: 900;
+  color: #1a1a1a;
+  margin: 0;
 }
 
-.articleTitle::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 30%;
-  height: 4px;
-  background: #c8102e;
+.heroSubtitle {
+  font-size: 12px;
+  color: #999;
+  letter-spacing: 0.1em;
+  margin-top: 4px;
 }
 
-.metaInfo {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  margin: 1rem 0;
+.content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
 }
 
-.articleDate {
-  color: #555;
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-.articleCategory {
+.backButtonTop {
   display: inline-block;
-  padding: 0.3rem 1rem;
-  font-size: 0.75rem;
-  border-radius: 20px;
-  font-weight: 600;
-  text-align: center;
-  min-width: 100px;
-  white-space: nowrap;
-  color: white;
-  background-color: #c8102e;
-}
-
-/* リッチテキスト */
-.articleContent {
-  margin-top: 2rem;
-  line-height: 1.7;
-  color: #333;
-}
-
-.articleContent h2 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  line-height: 1.4;
-  color: #333;
-  margin: 2.5rem 0 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e0e0e0;
-  position: relative;
-}
-
-.articleContent h2::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 25%;
-  height: 4px;
-  background: #c8102e;
-}
-
-.articleContent h3 {
-  font-size: 1.35rem;
-  margin: 1.5rem 0 1rem;
-  padding: 0 0 0.3rem 1rem;
-  font-weight: bold;
-  line-height: 1.2;
-  color: #333;
-  position: relative;
-}
-
-.articleContent h3::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 5px;
-  background: linear-gradient(to bottom, #c8102e 0%, #c8102e 50%, #a00d24 50%, #a00d24 100%);
-}
-
-.articleContent h3::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background-color: #cccccc;
-}
-
-.articleContent h4 {
-  font-size: 1.2rem;
-  margin: 1.5rem 0 1rem;
-  padding-left: 1rem;
-  font-weight: 700;
-  line-height: 1.4;
-  color: #333;
-  position: relative;
-  border-left: 4px solid #c8102e;
-}
-
-.articleContent h5 {
-  font-size: 1rem;
-  margin: 1rem 0 0.75rem;
-  font-weight: bold;
-  line-height: 1.4;
-  color: #333;
-  padding: 0.25rem 0.5rem;
-  background: #f5f5f5;
-  border-radius: 3px;
-}
-
-.articleContent h6 {
-  font-size: 0.95rem;
-  margin: 1rem 0 0.75rem;
-  font-weight: bold;
-  line-height: 1.4;
-  color: #333;
-}
-
-.articleContent p {
-  margin: 1rem 0;
-  line-height: 1.7;
-  color: #333;
-}
-
-.articleContent strong {
-  font-weight: bold;
-}
-
-.articleContent em {
-  font-style: italic;
-}
-
-.articleContent ul,
-.articleContent ol {
-  list-style: none;
-  padding-left: 0;
-  margin: 1.5rem 0;
-}
-
-.articleContent li {
-  position: relative;
-  padding-left: 1.8rem;
-  margin: 1rem 0;
-  line-height: 1.7;
-}
-
-.articleContent li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.53em;
-  width: 0.7rem;
-  height: 0.7rem;
-  border-radius: 50%;
-  background-color: #c8102eaa;
-}
-
-.articleContent a {
-  color: #c8102e;
-  text-decoration: underline;
-}
-
-.articleContent a:hover {
+  color: #666;
+  font-size: 0.9rem;
   text-decoration: none;
+  margin-bottom: 32px;
 }
 
-.articleContent img {
-  max-width: 100%;
+/* --- 大会名：SPで改行させず自動スケール --- */
+.tournamentTitleWrapper {
+  container-type: inline-size;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.tournamentTitle {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.titleText {
+  display: block;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 1.6rem; /* PC基本サイズ */
+  color: #1a1a1a;
+}
+
+/* --- PDFセクション --- */
+.pdfSection {
+  margin-bottom: 40px;
+}
+
+.pdfGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pdfCard {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  border-radius: 0; /* 角は四角 */
+  background: #fff;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.pdfThumbnailWrapper {
+  display: none; /* PCは非表示 */
+}
+
+.pdfThumbnail {
+  width: 100%;
   height: auto;
-  margin: 1rem 0;
   display: block;
 }
 
-.articleContent figure {
-  margin: 1rem 0;
-}
-
-.articleContent figcaption {
-  color: #666;
-  font-size: 0.875rem;
-  text-align: center;
-  margin-top: 0.5rem;
-}
-
-.articleContent table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0;
-}
-
-.articleContent th,
-.articleContent td {
-  border: 1px solid #9c9c9c7a;
-  padding: 0.65rem 0.75rem;
-}
-
-.articleContent th {
-  background-color: #f5f5f5;
-  font-weight: bold;
-  white-space: nowrap;
-  min-width: 6em;
-}
-
-.articleContent th p,
-.articleContent td p {
-  margin: 0;
-  padding: 0;
-  line-height: 1.5;
-}
-
-.articleContent blockquote {
-  border-left: 4px solid #c8102e;
-  margin: 1.5rem 0;
-  padding: 0.5rem 0 0.5rem 1rem;
-  color: #666;
-}
-
-.articleContent pre {
-  background-color: #f5f5f5;
-  border-radius: 4px;
-  padding: 1rem;
-  margin: 1rem 0;
-  overflow-x: auto;
-}
-
-.articleContent code {
-  background-color: #f5f5f5;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-family: monospace;
-}
-
-.articleContent hr {
-  border: 0;
-  border-top: 1px solid #e2e8f0;
-  margin: 2rem 0;
-}
-
-/* 戻るリンク */
-.backLink {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid #e0e0e0;
-}
-
-.backButton {
-  display: inline-flex;
-  align-items: center;
-  color: #c8102e;
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-decoration: none;
-  padding: 0.6rem 1.2rem;
-  border: 1px solid #c8102e;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
-.backButton:hover {
-  background-color: #c8102e;
-  color: #fff;
-}
-
-.loading {
+.pdfInfo {
+  padding: 12px 16px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 400px;
-  font-size: 1.2rem;
+  gap: 10px;
+}
+
+.pdfIcon { color: #c8102e; flex-shrink: 0; }
+.pdfFileName { font-size: 0.95rem; font-weight: 700; color: #333; }
+
+/* --- 大会情報（装飾なし） --- */
+.tournamentInfoSimple {
+  margin-bottom: 40px;
+}
+
+.simpleSectionTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.detailListSimple {
+  margin: 0;
+}
+
+.detailRow {
+  display: flex;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detailRow dt {
+  width: 120px;
+  font-weight: 700;
   color: #666;
+  font-size: 0.9rem;
 }
 
-/* ===== SP ===== */
+.detailRow dd {
+  margin: 0;
+  flex: 1;
+  color: #1a1a1a;
+  font-size: 0.95rem;
+}
+
+/* --- 出場チーム --- */
+.teamsHeading {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-left: 12px;
+  border-left: 4px solid #c8102e;
+}
+
+.teamsCount {
+  margin-left: 10px;
+  font-size: 0.8rem;
+  background: #f0f0f0;
+  padding: 2px 10px;
+  border-radius: 10px;
+}
+
+.teamsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.branchBox {
+  background: #fafafa;
+  border: 1px solid #eee;
+  padding: 16px;
+}
+
+.branchTitle {
+  font-size: 0.9rem;
+  color: #c8102e;
+  font-weight: 700;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+}
+
+.teamUl { list-style: none; padding: 0; margin: 0; }
+.teamLi { font-size: 0.9rem; padding: 4px 0; border-bottom: 1px dotted #ccc; }
+
+/* --- 過去大会 --- */
+.pastAccordion { border: 1px solid #eee; margin-bottom: 40px; }
+.pastSummary { padding: 12px; cursor: pointer; font-weight: 600; background: #fcfcfc; }
+.pastList { list-style: none; padding: 10px 20px; margin: 0; }
+.pastList a { color: #c8102e; text-decoration: none; font-size: 0.9rem; }
+
+/* --- スマホ対応 --- */
 @media (max-width: 767px) {
-  .titleCard {
-    padding: 24px 20px 0;
+  .hero {
+    height: 200px;
+    background-image: url('/fukuoka/topview/top.webp');
   }
 
-  .titleInner {
-    padding-bottom: 20px;
+  /* 大会名：SPでは折り返しを許可しフォントサイズを縮小 */
+  .titleText {
+    white-space: normal;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    font-size: clamp(14px, 4.5vw, 1.4rem);
   }
 
-  .heroTitle {
-    font-size: 28px;
+  .pdfThumbnailWrapper {
+    display: block; /* SPのみサムネイルを表示 */
+    background: #eee;
+    border-bottom: 1px solid #e0e0e0;
   }
 
-  .main {
-    padding: 56px 0 0;
+  .pdfGrid {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 
-  .content {
-    padding: 16px 20px 40px;
-  }
-
-  .article {
-    padding: 0;
-  }
-
-  .articleTitle {
-    font-size: 1.25rem;
-    line-height: 1.6;
-  }
-
-  .metaInfo {
-    gap: 0.5rem;
-  }
-
-  .articleCategory {
-    padding: 0.15rem 0.7rem;
-    font-size: 0.65rem;
-    min-width: auto;
-  }
-
-  .articleContent h2 {
-    font-size: 1.3rem;
-  }
-
-  .articleContent h3 {
-    font-size: 1.15rem;
-  }
-
-  .articleContent h4 {
-    font-size: 1.05rem;
-  }
-
-  .articleContent h5 {
-    font-size: 0.95rem;
-  }
-
-  .articleContent h6 {
-    font-size: 0.9rem;
-  }
-
-  .articleContent table {
-    display: table;
-    width: 100%;
-    table-layout: auto;
-    word-break: break-word;
-  }
-}
-
-@media (max-width: 479px) {
-  .articleTitle {
-    font-size: 1.1rem;
-  }
-
-  .articleDate {
-    font-size: 0.8rem;
+  .detailRow dt {
+    width: 100px;
   }
 }

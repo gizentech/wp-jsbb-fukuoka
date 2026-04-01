@@ -1,7 +1,6 @@
 // components/Interview/Interview.js
 import React from 'react'
 import Link from 'next/link'
-import { FaHeart } from 'react-icons/fa'
 import styles from './Interview.module.css'
 
 export default function Interview({ articles = [] }) {
@@ -15,9 +14,8 @@ export default function Interview({ articles = [] }) {
     return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
   };
 
-  const getFirstLine = (caption) => {
-    if (!caption) return 'Interview Article';
-    return caption.split('\n')[0];
+  const renderImage = (image, alt) => {
+    return <img src={image || '/ogp.webp'} alt={alt} />;
   };
 
   return (
@@ -36,97 +34,97 @@ export default function Interview({ articles = [] }) {
         </div>
 
         {/* =====================
-            GRID
+            GRID (PC)
         ===================== */}
         <div className={styles.grid}>
 
           {/* LEFT LARGE */}
           <Link
-            href={`/interview/${featured.id}`}
+            href={`/interview/${featured.slug}`}
             className={styles.leftCard}
           >
             <div className={styles.leftImageWrap}>
-              <img src={featured.image} alt="" />
+              {renderImage(featured.image, featured.title)}
             </div>
             <div className={styles.leftContent}>
               <h3 className={styles.leftTitle}>
-                {getFirstLine(featured.caption)}
+                {featured.title}
               </h3>
               <p className={styles.meta}>
-                <span className={styles.likes}><FaHeart className={styles.heartIcon} /> {featured.likeCount}</span>
-                <span>{formatDate(featured.timestamp)}</span>
+                <span>{formatDate(featured.date)}</span>
               </p>
             </div>
           </Link>
 
           {/* RIGHT 4 CARDS (PC) */}
-          <div className={styles.rightGrid}>
-            {sideArticles.map((article) => (
-              <Link
-                key={article.id}
-                href={`/interview/${article.id}`}
-                className={styles.rightCard}
-              >
-                <div className={styles.rightImageWrap}>
-                  <img src={article.image} alt="" />
-                </div>
-                <div className={styles.rightContent}>
-                  <h4 className={styles.rightTitle}>
-                    {getFirstLine(article.caption)}
-                  </h4>
-                  <p className={styles.meta}>
-                    <span className={styles.likes}><FaHeart className={styles.heartIcon} /> {article.likeCount}</span>
-                    <span>{formatDate(article.timestamp)}</span>
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
+          {sideArticles.length > 0 && (
+            <div className={styles.rightGrid}>
+              {sideArticles.map((article) => (
+                <Link
+                  key={article.id}
+                  href={`/interview/${article.slug}`}
+                  className={styles.rightCard}
+                >
+                  <div className={styles.rightImageWrap}>
+                    {renderImage(article.image, article.title)}
+                  </div>
+                  <div className={styles.rightContent}>
+                    <h4 className={styles.rightTitle}>
+                      {article.title}
+                    </h4>
+                    <p className={styles.meta}>
+                      <span>{formatDate(article.date)}</span>
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
 
         </div>
 
         {/* SP: featured + horizontal scroll */}
         <div className={styles.mobileSection}>
           <Link
-            href={`/interview/${featured.id}`}
+            href={`/interview/${featured.slug}`}
             className={styles.mobileFeatured}
           >
             <div className={styles.mobileFeaturedImageWrap}>
-              <img src={featured.image} alt="" />
+              {renderImage(featured.image, featured.title)}
             </div>
             <div className={styles.mobileFeaturedContent}>
               <h3 className={styles.mobileFeaturedTitle}>
-                {getFirstLine(featured.caption)}
+                {featured.title}
               </h3>
               <p className={styles.meta}>
-                <span className={styles.likes}><FaHeart className={styles.heartIcon} /> {featured.likeCount}</span>
-                <span>{formatDate(featured.timestamp)}</span>
+                <span>{formatDate(featured.date)}</span>
               </p>
             </div>
           </Link>
 
-          <div className={styles.mobileScroll}>
-            {sideArticles.map((article) => (
-              <Link
-                key={article.id}
-                href={`/interview/${article.id}`}
-                className={styles.mobileCard}
-              >
-                <div className={styles.mobileImageWrap}>
-                  <img src={article.image} alt="" />
-                </div>
-                <div className={styles.rightContent}>
-                  <h4 className={styles.rightTitle}>
-                    {getFirstLine(article.caption)}
-                  </h4>
-                  <p className={styles.meta}>
-                    <span className={styles.likes}><FaHeart className={styles.heartIcon} /> {article.likeCount}</span>
-                    <span>{formatDate(article.timestamp)}</span>
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
+          {sideArticles.length > 0 && (
+            <div className={styles.mobileScroll}>
+              {sideArticles.map((article) => (
+                <Link
+                  key={article.id}
+                  href={`/interview/${article.slug}`}
+                  className={styles.mobileCard}
+                >
+                  <div className={styles.mobileImageWrap}>
+                    {renderImage(article.image, article.title)}
+                  </div>
+                  <div className={styles.rightContent}>
+                    <h4 className={styles.rightTitle}>
+                      {article.title}
+                    </h4>
+                    <p className={styles.meta}>
+                      <span>{formatDate(article.date)}</span>
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

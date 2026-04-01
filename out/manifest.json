@@ -1,0 +1,21 @@
+{
+    "name": "一般社団法人 福岡県軟式野球連盟",
+    "short_name": "福岡県軟式野球連盟",
+    "description": "一般社団法人 福岡県軟式野球連盟は、福岡県の野球競技の中心として、各種大会の開催や野球を通じた青少年の健全育成に取り組んでいます。",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2563eb",
+    "icons": [
+      {
+        "src": "/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }

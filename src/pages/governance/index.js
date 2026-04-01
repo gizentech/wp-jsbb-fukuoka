@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Meta from '../../components/Meta/Meta.js'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import AboutSidebar from '../../components/AboutSidebar/AboutSidebar'
@@ -7,10 +7,7 @@ import styles from '../../styles/governance/Governance.module.css'
 export default function Governance() {
   return (
     <>
-      <Head>
-        <title>スポーツ団体ガバナンスコード | 一般社団法人 福岡県軟式野球連盟</title>
-        <meta name="description" content="一般社団法人 福岡県軟式野球連盟のスポーツ団体ガバナンスコード（一般スポーツ団体向け）です。" />
-      </Head>
+      <Meta title="スポーツ団体ガバナンスコード" description="福岡県軟式野球連盟のスポーツ団体ガバナンスコード（一般スポーツ団体向け）。コンプライアンスと組織運営の透明性について。" keywords="福岡県軟式野球連盟,ガバナンスコード,スポーツ団体,コンプライアンス,福岡,軟式野球" urlPath="/governance" breadcrumbs={[{ name: '連盟概要', path: '/about' }, { name: 'ガバナンスコード', path: '/governance' }]} />
       <Header flush />
       <div className={styles.container}>
         <main className={styles.main}>

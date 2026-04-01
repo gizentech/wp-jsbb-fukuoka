@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Meta from '../../components/Meta/Meta.js'
 import Link from 'next/link'
 import { FaChevronRight } from 'react-icons/fa'
 import Header from '../../components/Header/Header'
@@ -22,10 +22,7 @@ const menuItems = [
 export default function About() {
   return (
     <>
-      <Head>
-        <title>連盟概要 | 一般社団法人 福岡県軟式野球連盟</title>
-        <meta name="description" content="福岡県軟式野球連盟の連盟概要ページです。概要、ご挨拶、沿革、役員、ガバナンスコードなどの情報をご覧いただけます。" />
-      </Head>
+      <Meta title="連盟概要" description="福岡県軟式野球連盟の連盟概要。概要、会長ご挨拶、沿革、役員紹介、ガバナンスコード、関連団体など福岡県の軟式野球連盟に関する情報をご覧いただけます。" keywords="福岡県軟式野球連盟,連盟概要,野球連盟,福岡,軟式野球,役員,沿革,ガバナンスコード" urlPath="/about" breadcrumbs={[{ name: '連盟概要', path: '/about' }]} />
       <Header flush />
       <div className={styles.container}>
         <main className={styles.main}>

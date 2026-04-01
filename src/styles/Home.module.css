@@ -185,12 +185,12 @@
  
 .card:nth-child(1) .cardHeader {
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url('/images/tournament-bg.webp');
+    url('/fukuoka/topview/top.webp');
 }
  
 .card:nth-child(2) .cardHeader {
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url('/images/top2.webp');
+    url('/fukuoka/topview/top.webp');
 }
  
 .cardHeader h2 {

@@ -1,7 +1,9 @@
 // components/Column/Column.js
 import React from 'react'
 import Link from 'next/link'
-import { FaHeart } from 'react-icons/fa'
+import Image from 'next/image'
+import { FaHeart, FaEye } from 'react-icons/fa'
+import SectionTitle from '@/components/common/SectionTitle'
 import styles from './Column.module.css'
 
 export default function Column({ articles = [] }) {
@@ -23,30 +25,31 @@ export default function Column({ articles = [] }) {
   return (
     <section className={styles.section}>
       <div className={styles.inner}>
-        
+
         {/* =====================
             HEADER
         ===================== */}
         <div className={styles.header}>
-          <div>
-            <div className={styles.redLine}></div>
-            <h2 className={styles.title}>コラム</h2>
-            <span className={styles.subtitle}>ARTICLES</span>
-          </div>
+          <SectionTitle english="ARTICLES" title="コラム" />
         </div>
 
         {/* =====================
             GRID
         ===================== */}
         <div className={styles.grid}>
-          
+
           {/* LEFT LARGE */}
           <Link
             href={`/column/${featured.id}`}
             className={styles.leftCard}
           >
             <div className={styles.leftImageWrap}>
-              <img src={featured.image} alt="" />
+              <Image src={featured.image} alt="" fill sizes="(max-width: 768px) 100vw, 50vw" quality={60} style={{ objectFit: 'cover' }} unoptimized />
+              {featured.impressions > 0 && (
+                <span className={styles.impressionsOverlay}>
+                  <FaEye className={styles.eyeIcon} /> 閲覧 {featured.impressions.toLocaleString()}件
+                </span>
+              )}
             </div>
             <div className={styles.leftContent}>
               <h3 className={styles.leftTitle}>
@@ -68,7 +71,12 @@ export default function Column({ articles = [] }) {
                 className={styles.rightCard}
               >
                 <div className={styles.rightImageWrap}>
-                  <img src={article.image} alt="" />
+                  <Image src={article.image} alt="" fill sizes="(max-width: 768px) 50vw, 25vw" quality={60} style={{ objectFit: 'cover' }} unoptimized />
+                  {article.impressions > 0 && (
+                    <span className={styles.impressionsOverlay}>
+                      <FaEye className={styles.eyeIcon} /> 閲覧 {article.impressions.toLocaleString()}件
+                    </span>
+                  )}
                 </div>
                 <div className={styles.rightContent}>
                   <h4 className={styles.rightTitle}>
@@ -92,7 +100,12 @@ export default function Column({ articles = [] }) {
             className={styles.mobileFeatured}
           >
             <div className={styles.mobileFeaturedImageWrap}>
-              <img src={featured.image} alt="" />
+              <Image src={featured.image} alt="" fill sizes="100vw" quality={60} style={{ objectFit: 'cover' }} unoptimized />
+              {featured.impressions > 0 && (
+                <span className={styles.impressionsOverlay}>
+                  <FaEye className={styles.eyeIcon} /> 閲覧 {featured.impressions.toLocaleString()}件
+                </span>
+              )}
             </div>
             <div className={styles.mobileFeaturedContent}>
               <h3 className={styles.mobileFeaturedTitle}>
@@ -113,7 +126,12 @@ export default function Column({ articles = [] }) {
                 className={styles.mobileCard}
               >
                 <div className={styles.mobileImageWrap}>
-                  <img src={article.image} alt="" />
+                  <Image src={article.image} alt="" fill sizes="50vw" quality={60} style={{ objectFit: 'cover' }} unoptimized />
+                  {article.impressions > 0 && (
+                    <span className={styles.impressionsOverlay}>
+                      <FaEye className={styles.eyeIcon} /> 閲覧 {article.impressions.toLocaleString()}件
+                    </span>
+                  )}
                 </div>
                 <div className={styles.rightContent}>
                   <h4 className={styles.rightTitle}>

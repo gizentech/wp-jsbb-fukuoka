@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Meta from '../../components/Meta/Meta.js'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import AboutSidebar from '../../components/AboutSidebar/AboutSidebar'
@@ -15,7 +15,7 @@ export async function getStaticProps() {
         content: page?.content || '',
         featuredImage: page?.featuredImage || null,
       },
-      revalidate: 60,
+
     }
   } catch (error) {
     console.error('Failed to fetch officers page:', error)
@@ -25,7 +25,7 @@ export async function getStaticProps() {
         content: '',
         featuredImage: null,
       },
-      revalidate: 60,
+
     }
   }
 }
@@ -33,17 +33,11 @@ export async function getStaticProps() {
 export default function Officers({ title, content, featuredImage }) {
   return (
     <>
-      <Head>
-        <title>{`${title} | 一般社団法人 福岡県軟式野球連盟`}</title>
-        <meta name="description" content="一般社団法人 福岡県軟式野球連盟 沿革" />
-      </Head>
+      <Meta title={title || '沿革'} description="福岡県軟式野球連盟の沿革・歴史。創設から現在までの福岡県軟式野球連盟のあゆみをご紹介します。" keywords="福岡県軟式野球連盟,沿革,歴史,野球連盟,福岡,軟式野球" urlPath="/about/history" breadcrumbs={[{ name: '連盟概要', path: '/about' }, { name: '沿革', path: '/about/history' }]} />
       <Header flush />
       <div className={styles.container}>
         <main className={styles.main}>
-          <div
-            className={styles.hero}
-            style={featuredImage ? { backgroundImage: `url(${featuredImage})`, backgroundPosition: 'center center' } : undefined}
-          >
+          <div className={styles.hero}>
             <div className={styles.heroOverlay} />
           </div>
 

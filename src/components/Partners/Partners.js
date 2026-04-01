@@ -2,8 +2,6 @@ import React from 'react'
 import styles from './Partners.module.css'
 
 export default function Partners({ sponsors = [] }) {
-  if (sponsors.length === 0) return null
-
   return (
     <section className={styles.section}>
       <div className={styles.sectionInnerPad}>
@@ -15,23 +13,7 @@ export default function Partners({ sponsors = [] }) {
             <span className={styles.subtitle}>PARTNERS</span>
           </div>
 
-          <div className={styles.grid}>
-            {sponsors.map((sponsor, i) => (
-              <a
-                key={i}
-                href={sponsor.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.logoLink}
-              >
-                <img
-                  src={`/fukuoka/partner/${sponsor.image_path}`}
-                  alt={sponsor.company}
-                  className={styles.logoImage}
-                />
-              </a>
-            ))}
-          </div>
+          <p className={styles.preparing}>現在準備中です。</p>
 
         </div>
       </div>

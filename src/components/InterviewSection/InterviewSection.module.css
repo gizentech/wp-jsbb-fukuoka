@@ -1,0 +1,287 @@
+.section {
+  position: relative;
+  z-index: 2;
+  padding: 80px 0;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 100%;
+  background-color: #fff;
+  z-index: -1;
+}
+
+.inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 32px;
+}
+
+.headerLink {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--color-black);
+  white-space: nowrap;
+  transition: opacity 0.3s;
+}
+
+.headerLink:hover {
+  opacity: 0.6;
+}
+
+.headerLinkArrow {
+  font-size: 12px;
+}
+
+/* Layout: featured left + 2x2 grid right */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* Featured (left) */
+.featured {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.featuredImage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid #ccc;
+}
+
+.featuredImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.featured:hover .featuredImage img {
+  transform: scale(1.03);
+}
+
+.featuredBody {
+  padding: 10px 0;
+}
+
+.featuredTitle {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--color-black);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.featuredMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+/* PC: Side grid (right 2x2) */
+.sideGridPc {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* SP: Mobile title list (hidden on PC) */
+.mobileList {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  display: block;
+  overflow: hidden;
+  transition: opacity 0.3s;
+}
+
+.card:hover {
+  opacity: 0.8;
+}
+
+.cardImage {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border: 1px solid #ccc;
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.card:hover .cardImage img {
+  transform: scale(1.03);
+}
+
+.cardBody {
+  padding: 10px 0;
+}
+
+.cardTitle {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--color-black);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+/* No image fallback */
+.noImage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  color: #999;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+/* Shared meta styles */
+.metaDate {
+  font-size: 12px;
+  color: var(--color-gray);
+}
+
+.metaCategory {
+  font-size: 12px;
+  color: var(--color-gray);
+}
+
+/* More link button */
+.moreLink {
+  text-align: center;
+  margin-top: 48px;
+}
+
+.moreLinkBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 64px;
+  border: 1px solid #333;
+  color: var(--color-black);
+  font-weight: 500;
+  font-size: 15px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.moreLinkBtn:hover {
+  background-color: var(--color-black);
+  color: var(--color-white);
+}
+
+.moreLinkArrow {
+  font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .section {
+    padding: 48px 0;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  /* PC grid hidden on SP */
+  .sideGridPc {
+    display: none;
+  }
+
+  /* SP: title list visible */
+  .mobileList {
+    display: block;
+    margin-top: 16px;
+  }
+
+  .mobileListItem {
+    border-bottom: 1px solid #eee;
+  }
+
+  .mobileListLink {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 12px 0;
+    color: var(--color-black);
+    transition: opacity 0.3s;
+  }
+
+  .mobileListLink:hover {
+    opacity: 0.6;
+  }
+
+  .mobileListDate {
+    font-size: 12px;
+    color: var(--color-gray);
+    white-space: nowrap;
+  }
+
+  .mobileListTitle {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .moreLinkBtn {
+    padding: 14px 40px;
+    font-size: 14px;
+  }
+}

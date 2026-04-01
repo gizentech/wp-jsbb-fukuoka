@@ -1,0 +1,951 @@
+/* ==========================================
+   大会一覧: シリーズ → 大会 → 試合
+   ========================================== */
+
+.seriesList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* --- シリーズ --- */
+.seriesItem {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.seriesHeader {
+  width: 100%;
+  padding: 20px 24px;
+  background: linear-gradient(90deg, #f8f9fa 0%, #ffffff 100%);
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: inherit;
+}
+
+.seriesHeader:hover {
+  background: linear-gradient(90deg, #e9ecef 0%, #f8f9fa 100%);
+}
+
+.seriesHeader.expanded {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.seriesTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-align: left;
+}
+
+.arrow {
+  font-size: 0.75rem;
+  color: #888;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+/* --- 大会 --- */
+.tournamentsList {
+  padding: 12px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tournamentItem {
+  border: 1px solid #e8e8e8;
+}
+
+.tournamentHeader {
+  width: 100%;
+  padding: 14px 16px;
+  background: #fafafa;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: inherit;
+}
+
+.tournamentHeader:hover {
+  background: #f0f0f0;
+}
+
+.tournamentHeader.expanded {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.tournamentTitleRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.tournamentTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  text-align: left;
+}
+
+.tournamentDate {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* --- 試合一覧（合計スコアのみ） --- */
+.matchesList {
+  padding: 8px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #f9f9f9;
+}
+
+.noMatches {
+  text-align: center;
+  color: #999;
+  padding: 16px;
+  font-size: 0.9rem;
+}
+
+.matchItem {
+  display: grid;
+  grid-template-columns: 140px 1fr auto;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+  align-items: center;
+}
+
+.matchItem:hover {
+  background: #f8faf5;
+  border-color: #99c744;
+  transform: translateX(3px);
+}
+
+.matchLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.matchRound {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #c8102e;
+}
+
+.matchDate {
+  font-size: 0.78rem;
+  color: #888;
+}
+
+.matchCenter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.teamName {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+  min-width: 80px;
+}
+
+.matchCenter .teamName:first-child {
+  text-align: right;
+}
+
+.matchCenter .teamName:last-child {
+  text-align: left;
+}
+
+.matchScore {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.score {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  min-width: 24px;
+  text-align: center;
+}
+
+.scoreDivider {
+  color: #888;
+  font-size: 1rem;
+}
+
+.matchRight {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* --- ステータスバッジ --- */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid;
+  letter-spacing: 0.04em;
+}
+
+.statusGray {
+  background: #f5f5f5;
+  color: #666;
+  border-color: #d0d0d0;
+}
+
+.statusBlue {
+  background: #e3f2fd;
+  color: #1976d2;
+  border-color: #90caf9;
+}
+
+.statusGreen {
+  background: #e8f5e9;
+  color: #388e3c;
+  border-color: #81c784;
+}
+
+.statusOrange {
+  background: #fff3e0;
+  color: #f57c00;
+  border-color: #ffb74d;
+}
+
+.statusRed {
+  background: #ffebee;
+  color: #d32f2f;
+  border-color: #e57373;
+}
+
+/* ==========================================
+   ランニングスコアテーブル（詳細ページ用）
+   ========================================== */
+
+.scoreTableWrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+}
+
+.scoreTable {
+  width: 100%;
+  min-width: 580px;
+  border-collapse: collapse;
+}
+
+.scoreTable th,
+.scoreTable td {
+  padding: 10px 8px;
+  text-align: center;
+  border: 1px solid #e0e0e0;
+  font-size: 0.95rem;
+}
+
+.scoreTable thead {
+  background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.teamHeader {
+  text-align: left !important;
+  font-weight: 700;
+  min-width: 140px;
+  padding-left: 12px !important;
+}
+
+.inningHeader {
+  font-weight: 600;
+  color: #555;
+  min-width: 36px;
+}
+
+.totalHeader {
+  font-weight: 700;
+  background: #c8102e !important;
+  color: #fff !important;
+  min-width: 52px;
+}
+
+.teamCell {
+  text-align: left !important;
+  font-weight: 600;
+  background: #f9f9f9;
+  padding-left: 12px !important;
+}
+
+.scoreCell {
+  font-weight: 500;
+  color: #333;
+}
+
+.totalCell {
+  font-weight: 700;
+  font-size: 1.15rem;
+  background: #fef2f2;
+  color: #c8102e;
+}
+
+/* ==========================================
+   タブ切り替え
+   ========================================== */
+.tabBar {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 24px;
+}
+
+.tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  font-family: inherit;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s;
+}
+
+.tab:hover {
+  color: #333;
+}
+
+.tabActive {
+  color: #1a1a1a;
+}
+
+.tabActive::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #c8102e;
+}
+
+.tabBadge {
+  font-size: 0.72rem;
+  background: #c8102e;
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+/* ==========================================
+   アーカイブセクション
+   ========================================== */
+.archiveSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.archiveFilters {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  padding: 16px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.archiveFilterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.archiveFilterLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 0.05em;
+}
+
+.archiveChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.archiveChip {
+  padding: 5px 14px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: #333;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.archiveChip:hover {
+  border-color: #999;
+  background: #f5f5f5;
+}
+
+.archiveChipActive {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+.archiveChipActive:hover {
+  background: #333;
+  border-color: #333;
+}
+
+.archiveChipCount {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.archiveSelect {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 13px;
+  min-width: 120px;
+  background: #fff;
+  font-family: inherit;
+}
+
+/* グループ */
+.archiveGroup {
+  margin-bottom: 8px;
+}
+
+.archiveGroupTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.archiveGroupAccent {
+  display: inline-block;
+  width: 4px;
+  height: 20px;
+  background: #c8102e;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.archiveGroupCount {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #888;
+}
+
+/* カード */
+.archiveList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.archiveCard {
+  display: block;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  padding: 16px 20px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.archiveCard:hover {
+  border-color: #ccc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.archiveCardHeader {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.archiveDate {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.archiveYear {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #c8102e;
+  background: #fef2f2;
+  padding: 1px 8px;
+  border-radius: 10px;
+}
+
+.archiveTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+
+/* ページネーション */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+}
+
+.pageButton {
+  padding: 6px 14px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  color: #333;
+  transition: all 0.15s;
+}
+
+.pageButton:hover:not(:disabled) {
+  background: #f5f5f5;
+  border-color: #999;
+}
+
+.pageButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pageInfo {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* PDF件数表示 */
+.pdfCount {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #c8102e;
+  font-weight: 600;
+}
+
+/* PDFボタン */
+.pdfButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pdfButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #c8102e;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.pdfButton:hover {
+  background: #a50d25;
+  transform: translateY(-1px);
+}
+
+.pdfButton svg {
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   大会シリーズ（フラット表示）
+   ========================================== */
+
+.seriesSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.seriesGroup {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.seriesGroupTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 16px 20px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  background: linear-gradient(90deg, #f8f9fa 0%, #ffffff 100%);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.seriesGroupAccent {
+  width: 4px;
+  height: 20px;
+  background: #c8102e;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.seriesGroupClass {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #888;
+  background: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: auto;
+}
+
+.seriesGroupList {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- トーナメント表一覧 --- */
+
+.bracketList {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+}
+
+/* --- トーナメント表カード --- */
+
+.bracketCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.2s;
+}
+
+.bracketCard:hover {
+  background: #f8f9fa;
+}
+
+.bracketCard:last-child {
+  border-bottom: none;
+}
+
+.bracketCardMain {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.bracketLabel {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #c8102e;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tournamentNameContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.25em;
+}
+
+.nameSpace {
+  display: inline;
+}
+
+
+.bracketName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.todayBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  background: #c8102e;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.bracketCardMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+
+.bracketSeries {
+  font-size: 0.8rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.bracketYear {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.bracketNumber {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.bracketTeams {
+  font-size: 0.8rem;
+  color: #666;
+  background: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* --- 年度大会カード --- */
+
+.tournamentCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tournamentCard:last-child {
+  border-bottom: none;
+}
+
+.tournamentCardMain {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.tournamentCardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.tournamentCardDate {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.tournamentCardMatchCount {
+  font-size: 0.8rem;
+  color: #666;
+  background: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+
+/* ==========================================
+   レスポンシブ
+   ========================================== */
+@media (max-width: 767px) {
+  .seriesGroupTitle {
+    padding: 12px 16px;
+    font-size: 1rem;
+  }
+
+  .bracketCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 12px 16px;
+  }
+
+  .bracketCardMeta {
+    margin-left: 0;
+  }
+
+  .bracketName {
+    font-size: 0.9rem;
+  }
+
+  .tournamentCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 12px 16px;
+  }
+
+  .tournamentCardMatchCount {
+    margin-left: 0;
+  }
+
+  .seriesHeader {
+    padding: 16px;
+  }
+
+  .seriesTitle {
+    font-size: 1rem;
+  }
+
+  .tournamentTitle {
+    font-size: 0.9rem;
+  }
+
+  .matchItem {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .matchLeft {
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .matchCenter {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .teamName {
+    min-width: unset;
+    font-size: 0.9rem;
+  }
+
+  .matchCenter .teamName:first-child,
+  .matchCenter .teamName:last-child {
+    text-align: left;
+  }
+
+  .score {
+    font-size: 1.2rem;
+  }
+
+  .scoreTable th,
+  .scoreTable td {
+    padding: 8px 4px;
+    font-size: 0.82rem;
+  }
+
+  .teamHeader,
+  .teamCell {
+    min-width: 100px;
+  }
+
+  .tabBar {
+    gap: 0;
+  }
+
+  .tab {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+  }
+
+  .archiveFilters {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .archiveChips {
+    gap: 4px;
+  }
+
+  .archiveChip {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  .archiveCard {
+    padding: 12px 16px;
+  }
+
+  .archiveTitle {
+    font-size: 0.88rem;
+  }
+
+  .pdfButton {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+  }
+
+  .tournamentNameContainer {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .nameSpace {
+    display: none;
+  }
+}
