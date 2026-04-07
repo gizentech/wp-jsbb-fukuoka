@@ -168,11 +168,11 @@
   display: none;
 }
 
-/* サムネイル画像（縦4:横3の比率） */
+/* サムネイル画像（元の比率を保持） */
 .columnThumbnail {
   width: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
+  height: auto;
+  display: block;
 }
 
 /* テキストコンテンツエリア */
@@ -231,8 +231,8 @@
 
 /* 1つ目のアイテムのタイトルは大きく */
 .listItem:nth-child(1) .columnTitle {
-  font-size: 1.2rem;
-  -webkit-line-clamp: 4;
+  font-size: 1.1rem;
+  -webkit-line-clamp: 3;
 }
 
 /* 2-5つ目のアイテムのタイトルは通常サイズ */
@@ -381,7 +381,7 @@
     min-height: 400px;
     background: transparent;
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 1.2rem;
   }
 
   /* SP: コラムアイテム（カード型） */
@@ -415,7 +415,7 @@
   }
 
   .columnThumbnail {
-    aspect-ratio: 3 / 4;
+    height: auto;
   }
 
   .columnContent {

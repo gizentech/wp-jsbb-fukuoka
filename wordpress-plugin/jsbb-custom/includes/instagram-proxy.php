@@ -15,14 +15,17 @@ add_action('rest_api_init', function () {
 });
 
 function jsbb_get_instagram_posts() {
-    $token = defined('JSBB_INSTAGRAM_ACCESS_TOKEN') ? JSBB_INSTAGRAM_ACCESS_TOKEN : '';
+    // wp-config.php で定義されていればそれを使用、なければ直接指定
+    $token = defined('JSBB_INSTAGRAM_ACCESS_TOKEN')
+        ? JSBB_INSTAGRAM_ACCESS_TOKEN
+        : 'IGAANWjiRYuXdBZAGFZAUnI4bFNkMEZAObksxeUNwNmNTck1NQWlDbmF3MS1wWEgzRmxNMHNDNHhXXzhPXzBaTF9PTnV0Wml3WnkzTzE1ZA3lqR2wxc1g5R2FmaWRCcFRTNnRIZAm5NR0d5UzJjaDRQV1g2ZAzBMcXh2Y2JDaFdsNzlZAMAZDZD';
 
     if (empty($token)) {
         return new WP_REST_Response(array(), 200);
     }
 
     // キャッシュ確認（30分間）
-    $cache_key = 'jsbb_instagram_posts';
+    $cache_key = 'jsbb_instagram_posts_v2';
     $cached = get_transient($cache_key);
     if ($cached !== false) {
         return new WP_REST_Response($cached, 200);
@@ -72,6 +75,8 @@ function jsbb_get_instagram_posts() {
         $posts[] = array(
             'id'          => $post['id'],
             'image'       => $post['media_url'],
+            'media_url'   => $post['media_url'],
+            'media_type'  => $post['media_type'],
             'caption'     => $post['caption'] ?? '',
             'permalink'   => $post['permalink'],
             'timestamp'   => $post['timestamp'],

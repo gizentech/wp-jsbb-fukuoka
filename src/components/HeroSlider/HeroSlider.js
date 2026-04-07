@@ -63,11 +63,57 @@ function SlotNum({ value, className }) {
 }
 
 export default function HeroSlider({ important = false, latestItem = null }) {
+  // 2026年5月10日まで特別表示
+  const now = new Date();
+  const start = new Date('2026-04-04T00:00:00+09:00');
+  const deadline = new Date('2026-05-10T23:59:59+09:00');
+  const isSpecialPeriod = now >= start && now <= deadline;
+
+  // PC画像をランダムに選択（初回レンダー時に決定）
+  const [pcImageSrc] = useState(() => {
+    const images = ['/fukuoka/ft/ft2026_pc.webp', '/fukuoka/ft/ft2026_pc2.webp'];
+    return images[Math.floor(Math.random() * images.length)];
+  });
+
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
     const d = new Date(dateStr);
     return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
   };
+
+  // 特別期間: 画像のみ表示（統計・ニュース・オーバーレイなし）
+  if (isSpecialPeriod) {
+    return (
+      <div className={styles.heroSpecial}>
+        {/* PC・タブレット用 */}
+        <div className={styles.pcImage}>
+          <Image
+            src={pcImageSrc}
+            alt="トップ画像"
+            width={1920}
+            height={1080}
+            sizes="100vw"
+            priority
+            quality={85}
+            className={styles.specialImage}
+          />
+        </div>
+        {/* モバイル用 */}
+        <div className={styles.spImage}>
+          <Image
+            src="/fukuoka/ft/ft2026_sp.webp"
+            alt="トップ画像"
+            width={900}
+            height={1200}
+            sizes="100vw"
+            priority
+            quality={85}
+            className={styles.specialImage}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.hero}>

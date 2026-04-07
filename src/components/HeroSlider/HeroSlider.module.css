@@ -1,4 +1,27 @@
 /* components/HeroSlider/HeroSlider.module.css */
+
+/* ===== 特別期間用（画像のみ、オーバーレイなし） ===== */
+.heroSpecial {
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  margin-left: calc(-50vw + 50%);
+  line-height: 0;
+}
+
+.specialImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 1280px) {
+  .heroSpecial {
+    padding-top: 56px;
+  }
+}
+
+/* ===== 通常期間用 ===== */
 .hero {
   position: relative;
   width: 100vw;

@@ -46,7 +46,16 @@
       "Bash(node deploy.js:*)",
       "Bash(for f in src/pages/news/index.js src/pages/news/[id].js src/pages/interview/index.js src/pages/interview/[id].js src/pages/members/index.js src/pages/members/[id].js src/pages/column/index.js src/pages/column/[id].js)",
       "Bash(do echo \"=== $f ===\")",
-      "Bash(for f in src/pages/about/achievements.js src/pages/about/affiliated.js src/pages/about/greeting.js src/pages/about/history.js src/pages/about/honorees.js src/pages/about/index.js src/pages/about/officers.js src/pages/about/overview.js src/pages/about/partners.js src/pages/about/sponsorship.js src/pages/announce/index.js src/pages/registration/index.js src/pages/governance/index.js)"
+      "Bash(for f in src/pages/about/achievements.js src/pages/about/affiliated.js src/pages/about/greeting.js src/pages/about/history.js src/pages/about/honorees.js src/pages/about/index.js src/pages/about/officers.js src/pages/about/overview.js src/pages/about/partners.js src/pages/about/sponsorship.js src/pages/announce/index.js src/pages/registration/index.js src/pages/governance/index.js)",
+      "Bash(node deploy-plugin.js:*)",
+      "Bash(node deploy-site.js:*)",
+      "Bash(nslookup:*)",
+      "Bash(cmd.exe /c:*)",
+      "Bash(cat:*)",
+      "Bash(do)",
+      "Bash(remote_path=\"/home/jsbbfukuoka/jsbb-fukuoka.com/public_html/$f#out/\")",
+      "Bash(remote_path=\"/$f#out/\")",
+      "Bash(remote_path=\"/jsbb-fukuoka.com/public_html/$f#out/\")"
     ]
   }
 }
