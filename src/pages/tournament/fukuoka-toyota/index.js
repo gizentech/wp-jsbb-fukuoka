@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect, useCallback } from 'react'
+import { useMemo, useRef, useEffect, useCallback, useState } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -7,24 +7,68 @@ import Header from '../../../components/Header/Header'
 import Footer from '../../../components/Footer/Footer'
 import styles from '../../../styles/tournament/Tournament.module.css'
 import tStyles from '../../../components/Tournament/Tournament.module.css'
-import { fetchTournamentSeries } from '../../../lib/wp-api'
+import { fetchTournamentSeries, fetchTournamentBracketById } from '../../../lib/wp-api'
+
+function YouTubeFacade({ id, title }) {
+  const [active, setActive] = useState(false)
+  return (
+    <div className={styles.youtubeThumb}>
+      {active ? (
+        <iframe
+          src={`https://www.youtube.com/embed/${id}?autoplay=1`}
+          title={title}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        />
+      ) : (
+        <button className={styles.youtubeFacade} onClick={() => setActive(true)} aria-label={`${title}を再生`}>
+          <img
+            src={`https://img.youtube.com/vi/${id}/hqdefault.jpg`}
+            alt={title}
+            className={styles.youtubeFacadeImg}
+          />
+          <span className={styles.youtubePlayBtn}>
+            <svg viewBox="0 0 68 48" width="68" height="48">
+              <path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C56 0 34 0 34 0S12 0 7.5 1.7a8.5 8.5 0 0 0-6 6C0 12.3 0 24 0 24s0 11.7 1.5 16.3a8.5 8.5 0 0 0 6 6C12 48 34 48 34 48s22 0 26.5-1.7a8.5 8.5 0 0 0 6-6C68 35.7 68 24 68 24s0-11.7-1.5-16.3z" fill="red"/>
+              <path d="M27 34l18-10-18-10v20z" fill="#fff"/>
+            </svg>
+          </span>
+        </button>
+      )}
+    </div>
+  )
+}
 
 const SERIES_POST_ID = 1200
+
+const YOUTUBE_VIDEOS = [
+  { id: 'p4PRwsGrhxA', title: '「夢を始めようCM」ver.2' },
+  { id: 'E5VI3Lpo0xQ', title: '夢に向かって走り続ける福岡トヨタ（CM 30秒Ver.）' },
+  { id: 'LWTrw2ysprs', title: 'THANKS from 福岡トヨタ！' },
+  { id: 'mrsQ_10eNHQ', title: '【福岡トヨタ】よし！行こう!!福岡トヨタ！（和田 毅 投手CM）' },
+  { id: 'hu2hhOgZ0Jg', title: '夢に向かって走り続ける福岡トヨタ（CM 15秒Ver.）' },
+]
 
 export async function getStaticProps() {
   try {
     const allSeries = await fetchTournamentSeries()
     const series = allSeries.find((s) => s.id === SERIES_POST_ID)
-    return {
-      props: { brackets: series?.brackets || [] },
+    const baseBrackets = series?.brackets || []
 
-    }
+    // PDF情報を含む詳細データを取得
+    const brackets = await Promise.all(
+      baseBrackets.map(async (bk) => {
+        const detail = await fetchTournamentBracketById(bk.id)
+        return detail || bk
+      })
+    )
+
+    return { props: { brackets } }
   } catch (err) {
     console.error('Error fetching fukuoka-toyota tournament series:', err)
-    return {
-      props: { brackets: [] },
-
-    }
+    return { props: { brackets: [] } }
   }
 }
 
@@ -129,21 +173,98 @@ export default function FukuokaToyotaCup({ brackets }) {
               <button
                 type="button"
                 className={styles.navItem}
-                onClick={() => document.getElementById('overview').scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                onClick={() => document.getElementById('brackets').scrollIntoView({ behavior: 'smooth', block: 'start' })}
               >
-                大会概要 <FaChevronDown className={styles.navChevron} />
+                トーナメント表 <FaChevronDown className={styles.navChevron} />
               </button>
               <button
                 type="button"
                 className={styles.navItem}
-                onClick={() => document.getElementById('about').scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                onClick={() => document.getElementById('youtube').scrollIntoView({ behavior: 'smooth', block: 'start' })}
               >
-                大会について <FaChevronDown className={styles.navChevron} />
+                YouTube <FaChevronDown className={styles.navChevron} />
+              </button>
+              <button
+                type="button"
+                className={styles.navItem}
+                onClick={() => document.getElementById('overview').scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              >
+                大会概要 <FaChevronDown className={styles.navChevron} />
               </button>
             </div>
           </nav>
 
           <div className={styles.content}>
+            {/* トーナメント表 */}
+            {sortedBrackets.length > 0 && (
+              <section id="brackets" className={styles.section}>
+                {/* トーナメント表上部画像 */}
+                <div className={styles.bracketTopImage}>
+                  <Image
+                    src="/fukuoka/ft/ft2026_pc.webp"
+                    alt="福岡トヨタ杯 2026"
+                    width={1920}
+                    height={1080}
+                    sizes="(max-width: 768px) 100vw, 1120px"
+                    className={styles.bracketTopImg}
+                  />
+                </div>
+
+                <div className={styles.sectionHeader}>
+                  <span className={styles.accent} />
+                  <div>
+                    <h2 className={styles.sectionTitle}>トーナメント表</h2>
+                    <p className={styles.sectionSub}>BRACKETS</p>
+                  </div>
+                </div>
+
+                <div className={tStyles.bracketList} ref={bracketListRef}>
+                  {sortedBrackets.map((bk) => {
+                    const pdfUrl = bk.pdfs?.[0]?.url
+                    const CardEl = pdfUrl ? 'a' : 'div'
+                    const cardProps = pdfUrl
+                      ? { href: pdfUrl, target: '_blank', rel: 'noopener noreferrer' }
+                      : {}
+                    return (
+                      <CardEl key={bk.id} className={tStyles.bracketCard} {...cardProps}>
+                        <div className={tStyles.bracketCardMain}>
+                          <div className={styles.bracketNameRow} data-bracket-row>
+                            <span className={styles.bracketNameText} data-bracket-text>{bk.name1}</span>
+                            {bk.name2 && <span className={styles.bracketNameText} data-bracket-text>{bk.name2}</span>}
+                            {bk.name3 && <span className={styles.bracketNameText} data-bracket-text>{bk.name3}</span>}
+                          </div>
+                        </div>
+                        {bk.modified && (
+                          <p className={styles.bracketModified}>
+                            更新日時：{new Date(bk.modified).toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        )}
+                      </CardEl>
+                    )
+                  })}
+                </div>
+              </section>
+            )}
+
+            {/* YouTube */}
+            <section id="youtube" className={styles.section}>
+              <div className={styles.sectionHeader}>
+                <span className={styles.accent} />
+                <div>
+                  <h2 className={styles.sectionTitle}>YouTube</h2>
+                  <p className={styles.sectionSub}>MOVIE</p>
+                </div>
+              </div>
+              <div className={styles.youtubeGrid}>
+                {YOUTUBE_VIDEOS.map((v) => (
+                  <div key={v.id} className={styles.youtubeItem}>
+                    <YouTubeFacade id={v.id} title={v.title} />
+                    <p className={styles.youtubeCaption}>{v.title}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
             {/* 大会概要 */}
             <section id="overview" className={styles.section}>
               <div className={styles.sectionHeader}>
@@ -156,11 +277,71 @@ export default function FukuokaToyotaCup({ brackets }) {
               <div className={styles.tableRows}>
                 <div className={styles.tableRow}>
                   <span className={styles.tableLabel}>大会名</span>
-                  <span className={styles.tableValue}>福岡トヨタ杯 福岡県学童軟式野球春季大会</span>
+                  <span className={styles.tableValue}>福岡トヨタ杯 第１０回記念福岡県学童軟式野球春季大会</span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>大会期日</span>
+                  <span className={styles.tableValue}>令和８年５月２日（土）～６日（水）</span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>大会会場</span>
+                  <span className={styles.tableValue}>久留米市野球場・新宝満川地区野球場Ａ・Ｂ他</span>
                 </div>
                 <div className={styles.tableRow}>
                   <span className={styles.tableLabel}>主催</span>
-                  <span className={styles.tableValue}>一般社団法人 福岡県軟式野球連盟</span>
+                  <span className={styles.tableValue}>(一社)福岡県軟式野球連盟</span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>主管</span>
+                  <span className={styles.tableValue}>(一社)福岡県軟式野球連盟久留米支部（久留米市野球連盟）</span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>後援</span>
+                  <span className={styles.tableValue}>久留米市<br />久留米市教育委員会<br />（公財）久留米市スポーツと学びの財団</span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>特別協賛</span>
+                  <span className={styles.tableValue}>福岡トヨタ自動車株式会社</span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>協賛</span>
+                  <span className={styles.tableValue}>マルエス株式会社<br />株式会社共同写真企画<br />株式会社ＣＲＣＣメディアくーみんテレビ</span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>開会式</span>
+                  <span className={styles.tableValue}>令和８年５月２日（土）<br />午前８時３０分　久留米市野球場<br /><br />駐車場は、隣接の百年公園多目的広場および<br />リバーサイドパークを利用ください。</span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>抽選会</span>
+                  <span className={styles.tableValue}>令和８年４月１１日（土）１４時　久留米市野球場会議室</span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>参加資格</span>
+                  <span className={styles.tableValue}>（公財）全日本軟式野球連盟登録チームに限る。</span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>代表資格</span>
+                  <span className={styles.tableValue}>
+                    優勝チームは和歌山県で開催される<br />「高野山旗西日本学童大会」に出場<br /><br />
+                    準優勝チームは徳島県で開催される<br />「阿波おどりカップ学童大会」に出場<br /><br />
+                    ３位の２チームは<br />「桜島旗学童大会」に福岡県代表として出場
+                  </span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>申込締切</span>
+                  <span className={styles.tableValue}>令和８年４月９日（木）必着</span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>規則</span>
+                  <span className={styles.tableValue}>２０２６年公認野球規則による。<br />また、（公財）全日本軟式野球連盟「少年野球に関する事項」を適用する。</span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>使用球</span>
+                  <span className={styles.tableValue}>（公財）全日本軟式野球連盟公認球（マルエスボールＪ号）を使用する。</span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>事故処理</span>
+                  <span className={styles.tableValue}>事故発生の場合は、主催者にて応急処置のみ行う。</span>
                 </div>
               </div>
             </section>
@@ -182,36 +363,28 @@ export default function FukuokaToyotaCup({ brackets }) {
                   毎シーズン、数多くの学童野球チームに参戦して頂き、たくさんの名シーンが生まれるこの大会を通して、懸命に白球を追うこどもたちの夢を応援し続けています。
                 </p>
               </div>
+              <div className={styles.tableRows} style={{ marginTop: '32px' }}>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>試合方法</span>
+                  <span className={styles.tableValue}>
+                    ①試合は６回戦とする。ただし試合開始後９０分を超えて新しいイニングに入らない。<br />
+                    ②延長戦：６回完了あるいは９０分経過しても同点の場合、タイブレーク（無死一・二塁、打者継続）を１回のみ行い、勝敗が決しない場合は抽選で勝敗を決する。決勝戦は勝敗が決するまで行うが日没、雨天、時間等により大会本部で変更することができる。<br />
+                    ③コールドゲームは４回以降１０点差、５回以降７点差を適用する。<br />
+                    ④投球数は１日７０球以内、１週間２１０球以内。（４年生以下は１日６０球以内、１週間１８０球以内）<br />
+                    ⑤指名打者ルールを使用することができる。ただし、二刀流選手は採用しない。<br />
+                    ⑥態勢が整っている時は、試合開始予定時刻前でも試合を開始する。
+                  </span>
+                </div>
+                <div className={styles.tableRow}>
+                  <span className={styles.tableLabel}>注意事項</span>
+                  <span className={styles.tableValue}>
+                    ①ベンチ内には定められた者以外は入ってはならない。<br />
+                    ②競技運営に関する注意事項を遵守すること。試合開始１時間前に参集のこと。<br />
+                    ③マスク・プロテクター・レガース・ヘルメット及び金属バットは、（公財）全日本軟式野球連盟公認のものでなければならない。
+                  </span>
+                </div>
+              </div>
             </section>
-            {/* トーナメント表 */}
-            {sortedBrackets.length > 0 ? (
-              <section id="brackets" className={styles.section}>
-                <div className={styles.sectionHeader}>
-                  <span className={styles.accent} />
-                  <div>
-                    <h2 className={styles.sectionTitle}>トーナメント表</h2>
-                    <p className={styles.sectionSub}>BRACKETS</p>
-                  </div>
-                </div>
-                <div className={tStyles.bracketList} ref={bracketListRef}>
-                  {sortedBrackets.map((bk) => (
-                    <Link key={bk.id} href={`/tournaments/${bk.id}`} className={tStyles.bracketCard}>
-                      <div className={tStyles.bracketCardMain}>
-                        <div className={styles.bracketNameRow} data-bracket-row>
-                          <span className={styles.bracketNameText} data-bracket-text>{bk.name1}</span>
-                          {bk.name2 && (
-                            <span className={styles.bracketNameText} data-bracket-text>{bk.name2}</span>
-                          )}
-                          {bk.name3 && (
-                            <span className={styles.bracketNameText} data-bracket-text>{bk.name3}</span>
-                          )}
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            ) : null}
           </div>
         </main>
       </div>

@@ -37,6 +37,7 @@ $jsbb_includes = array(
     'contact-form',
     'calendar-proxy',
     'instagram-proxy',
+    'page-views',
 );
 
 foreach ($jsbb_includes as $file) {

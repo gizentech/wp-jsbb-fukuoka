@@ -262,8 +262,63 @@
   white-space: nowrap;
 }
 
+.bracketName1Row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bracketModified {
+  font-size: 12px;
+  color: #999;
+  margin: 6px 0 0;
+}
+
+.bracketPdfs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.bracketPdfLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #c8102e;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.bracketPdfLink:hover {
+  color: #9a0c23;
+}
+
+/* SP：最新ブラケットを最上部に単独表示（PCでは非表示） */
+.spLatestTop {
+  display: none;
+}
+
+/* SP：リスト内の最新を隠すラッパー（PCでは何もしない） */
+.spHideLatest {}
+
 /* ===== レスポンシブ：個別大会ページ ===== */
 @media (max-width: 768px) {
+  /* SP：最新を最上部に表示、トーナメント一覧内の最新は非表示 */
+  .spLatestTop {
+    display: block;
+    margin-bottom: 24px;
+  }
+
+  .spHideLatest {
+    display: none;
+  }
+
+  .bracketTopImage {
+    margin-bottom: 20px;
+    border-radius: 4px;
+  }
   .hero {
     height: 300px;
   }
@@ -346,6 +401,110 @@
 
   .sectionTitle {
     font-size: 18px;
+  }
+}
+
+/* トーナメント表上部画像 */
+.bracketTopImage {
+  margin-bottom: 32px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.bracketTopImg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 最新バッジ */
+.latestBracketBadge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: #c8102e;
+  padding: 3px 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* YouTube グリッド */
+.youtubeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.youtubeItem {}
+
+.youtubeThumb {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.youtubeThumb iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Facade（サムネイル＋再生ボタン） */
+.youtubeFacade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: block;
+}
+
+.youtubeFacadeImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.youtubePlayBtn {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 0.15s;
+}
+
+.youtubeFacade:hover .youtubePlayBtn {
+  filter: brightness(1.15) drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+}
+
+.youtubeCaption {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+  .youtubeGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .youtubeCaption {
+    font-size: 11px;
+    margin-top: 6px;
   }
 }
 

@@ -1,0 +1,182 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: linear-gradient(-55deg, #fff, #fef2d4 15%, #eefbf9 30%, #f0f7fb 45%, #f2fdff 55%, #eefafa 70%, #fef8e8 85%, #fff);
+}
+
+.main {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  flex: 1;
+}
+
+/* ヒーロー */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-image: url('/fukuoka/topview/top.webp');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* サイドバー付きレイアウト */
+.bodyLayout {
+  display: flex;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* セクションタイトル */
+.sectionTitle {
+  font-size: 28px;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.3;
+  margin: 0 0 0;
+  padding-top: 16px;
+  border-top: 3px solid #c8102e;
+  border-image: linear-gradient(to right, #c8102e 40px, transparent 40px) 1;
+}
+
+.sectionSub {
+  font-size: 13px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 0.08em;
+  margin: 4px 0 40px;
+}
+
+/* 動画セクション */
+.videoSection {
+  margin-bottom: 48px;
+}
+
+.videoTitle {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+
+.videoDesc {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.7;
+  margin: 0 0 20px;
+}
+
+/* レスポンシブ16:9 */
+.videoWrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.videoWrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Facade */
+.youtubeFacade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: block;
+}
+
+.youtubeFacadeImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.youtubePlayBtn {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 0.15s;
+}
+
+.youtubeFacade:hover .youtubePlayBtn {
+  filter: brightness(1.15) drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .main {
+    padding: 56px 0 0;
+    width: 100%;
+  }
+
+  .hero {
+    height: 200px;
+  }
+
+  .bodyLayout {
+    flex-direction: column;
+    gap: 0;
+    padding: 24px 20px 48px;
+  }
+
+  .sectionTitle {
+    font-size: 22px;
+  }
+
+  .videoTitle {
+    font-size: 15px;
+  }
+
+  .videoDesc {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    height: 160px;
+  }
+
+  .sectionTitle {
+    font-size: 20px;
+  }
+}

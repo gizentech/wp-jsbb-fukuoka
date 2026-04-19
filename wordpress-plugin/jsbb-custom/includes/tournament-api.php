@@ -55,6 +55,7 @@ add_action('rest_api_init', function () {
     ));
 });
 
+
 function jsbb_get_tournament_series_list() {
     $series = get_posts(array(
         'post_type' => 'tournament_series',

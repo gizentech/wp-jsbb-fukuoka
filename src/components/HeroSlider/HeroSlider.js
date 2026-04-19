@@ -1,5 +1,5 @@
 // components/HeroSlider/HeroSlider.js
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, Fragment } from 'react';
 import Image from 'next/image';
 import styles from './HeroSlider.module.css';
 
@@ -63,6 +63,26 @@ function SlotNum({ value, className }) {
 }
 
 export default function HeroSlider({ important = false, latestItem = null }) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalClosing, setModalClosing] = useState(false);
+
+  useEffect(() => {
+    if (modalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [modalOpen]);
+
+  const closeModal = () => {
+    setModalClosing(true);
+    setTimeout(() => {
+      setModalOpen(false);
+      setModalClosing(false);
+    }, 300);
+  };
+
   // 2026年5月10日まで特別表示
   const now = new Date();
   const start = new Date('2026-04-04T00:00:00+09:00');
@@ -84,34 +104,55 @@ export default function HeroSlider({ important = false, latestItem = null }) {
   // 特別期間: 画像のみ表示（統計・ニュース・オーバーレイなし）
   if (isSpecialPeriod) {
     return (
-      <div className={styles.heroSpecial}>
-        {/* PC・タブレット用 */}
-        <div className={styles.pcImage}>
-          <Image
-            src={pcImageSrc}
-            alt="トップ画像"
-            width={1920}
-            height={1080}
-            sizes="100vw"
-            priority
-            quality={85}
-            className={styles.specialImage}
-          />
+      <Fragment>
+        {modalOpen && (
+          <div className={`${styles.modalOverlay} ${modalClosing ? styles.modalOverlayOut : ''}`} onClick={closeModal}>
+            <div className={`${styles.modalContent} ${modalClosing ? styles.modalContentOut : ''}`} onClick={e => e.stopPropagation()}>
+              <img
+                src="https://wp.jsbb-fukuoka.com/wp-content/uploads/2026/04/69d9e076b8335.webp"
+                alt="組み合わせ"
+                className={styles.modalImage}
+              />
+              <button className={styles.modalClose} onClick={closeModal} aria-label="閉じる">閉じる</button>
+            </div>
+          </div>
+        )}
+        <div className={styles.heroSpecial}>
+          {/* PC・タブレット用 */}
+          <div className={styles.pcImage}>
+            <div className={styles.pcImageWrap} onClick={() => setModalOpen(true)}>
+              <Image
+                src={pcImageSrc}
+                alt="トップ画像"
+                width={1920}
+                height={1080}
+                sizes="100vw"
+                priority
+                quality={85}
+                className={styles.specialImage}
+              />
+            </div>
+          </div>
+          {/* モバイル用 */}
+          <div className={styles.spImage}>
+            <div className={styles.spImageWrap} onClick={() => setModalOpen(true)}>
+              <Image
+                src="/fukuoka/ft/ft2026_sp.webp"
+                alt="トップ画像"
+                width={900}
+                height={1200}
+                sizes="100vw"
+                priority
+                quality={85}
+                className={styles.specialImage}
+              />
+              <div className={styles.tapHint}>
+                <span className={styles.tapHintLabel}>組み合わせ表</span>
+              </div>
+            </div>
+          </div>
         </div>
-        {/* モバイル用 */}
-        <div className={styles.spImage}>
-          <Image
-            src="/fukuoka/ft/ft2026_sp.webp"
-            alt="トップ画像"
-            width={900}
-            height={1200}
-            sizes="100vw"
-            priority
-            quality={85}
-            className={styles.specialImage}
-          />
-        </div>
-      </div>
+      </Fragment>
     );
   }
 

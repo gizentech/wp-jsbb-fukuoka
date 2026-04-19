@@ -4,6 +4,7 @@ import styles from './UmpireSidebar.module.css'
 
 const sidebarItems = [
   { label: '審判について', href: '/umpire/umpire-info' },
+  { label: 'メディアについて', href: '/umpire/media' },
   { label: '審判派遣依頼', href: '/umpire/request' },
   { label: '審判員募集', href: '/umpire/recruit' },
   { label: '規則関連', href: '/umpire/rules' },

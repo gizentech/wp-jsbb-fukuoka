@@ -15,6 +15,7 @@ const menuItems = [
   { label: 'スケジュール', href: '/schedule' },
   { label: '審判', href: '/umpire', pcDirectHref: '/umpire/umpire-info', subItems: [
     { label: '審判について', href: '/umpire/umpire-info' },
+    { label: 'メディアについて', href: '/umpire/media' },
     { label: '審判派遣依頼', href: '/umpire/request' },
     { label: '審判員募集', href: '/umpire/recruit' },
     { label: '規則関連', href: '/umpire/rules' },

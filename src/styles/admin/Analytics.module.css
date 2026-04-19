@@ -1,0 +1,149 @@
+.page {
+  min-height: 100vh;
+  background: #f5f6fa;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 60px 20px 80px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem 2.5rem;
+  width: 100%;
+  max-width: 720px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  gap: 16px;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+}
+
+.updated {
+  font-size: 12px;
+  color: #999;
+  margin: 0;
+}
+
+.refreshBtn {
+  padding: 8px 20px;
+  background: #c8102e;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.refreshBtn:hover:not(:disabled) {
+  background: #a00d24;
+}
+
+.refreshBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px 0;
+  color: #888;
+  font-size: 14px;
+}
+
+.error {
+  color: #c8102e;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.empty {
+  color: #999;
+  font-size: 14px;
+  padding: 24px 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.table th {
+  text-align: left;
+  padding: 10px 16px;
+  background: #f8f8f8;
+  color: #555;
+  font-weight: 700;
+  font-size: 13px;
+  border-bottom: 2px solid #eee;
+}
+
+.table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #333;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.count {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0066cc;
+}
+
+.footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+  text-align: right;
+}
+
+.wpLink {
+  font-size: 13px;
+  color: #888;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.wpLink:hover {
+  color: #333;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 1.5rem;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .count {
+    font-size: 16px;
+  }
+}

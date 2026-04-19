@@ -102,8 +102,9 @@ export default function Tournaments() {
               {activeTab === 'series' && (
                 <>
                   {(() => {
+                    const FUKUOKA_TOYOTA_SERIES_ID = 1200
                     const allBrackets = series.flatMap((s) =>
-                      (s.brackets || []).map((bk) => ({ ...bk }))
+                      (s.brackets || []).map((bk) => ({ ...bk, series_id: s.id }))
                     ).sort((a, b) => (b.modified || '').localeCompare(a.modified || ''))
                     if (allBrackets.length === 0) {
                       return <div className={styles.noData}>該当する大会情報がありません。</div>
@@ -111,7 +112,7 @@ export default function Tournaments() {
                     return (
                       <div className={tStyles.bracketList}>
                         {allBrackets.map((bk) => (
-                          <Link key={bk.id} href={`/tournaments/${bk.id}`} className={tStyles.bracketCard}>
+                          <Link key={bk.id} href={bk.series_id === FUKUOKA_TOYOTA_SERIES_ID ? '/tournament/fukuoka-toyota/' : `/tournaments/${bk.id}`} className={tStyles.bracketCard}>
                             <div className={tStyles.bracketCardMain}>
                               <div className={tStyles.tournamentNameContainer}>
                                 <span className={tStyles.bracketName}>{bk.name1}</span>

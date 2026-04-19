@@ -7,6 +7,7 @@ import styles from '../../styles/umpire/Umpire.module.css'
 
 const menuItems = [
   { title: '審判について', href: '/umpire/umpire-info' },
+  { title: 'メディアについて', href: '/umpire/media' },
   { title: '審判依頼', href: '/umpire/request' },
   { title: '審判をやってみたい方へ', href: '/umpire/recruit' },
   { title: '規則関係', href: '/umpire/rules' },

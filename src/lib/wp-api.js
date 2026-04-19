@@ -500,6 +500,33 @@ export async function fetchCalendarEvents() {
   }
 }
 
+// ============================================
+// ページビュートラッキング用API
+// ============================================
+
+export async function trackPageView(pageKey) {
+  try {
+    await fetch(`${API_URL_CUSTOM}/track-view`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ page: pageKey }),
+    });
+  } catch (_) {
+    // 失敗しても画面表示には影響させない
+  }
+}
+
+export async function fetchPageViews() {
+  try {
+    const res = await fetch(`${API_URL_CUSTOM}/page-views`, { headers });
+    if (!res.ok) return {};
+    return res.json();
+  } catch (error) {
+    console.error('Error fetching page views:', error);
+    return {};
+  }
+}
+
 // Instagram (WP proxy)
 export async function fetchInstagramPosts() {
   try {
