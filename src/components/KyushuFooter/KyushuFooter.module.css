@@ -1,0 +1,127 @@
+.footer {
+  width: 100%;
+  background: #0a0f1e;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2.5rem 0 1.5rem;
+  margin-top: auto;
+}
+
+.footerInner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.organizationSection {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.organizationTitle {
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: 0.04em;
+}
+
+.organizationAddress {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  font-style: normal;
+  line-height: 1.9;
+  margin: 0;
+}
+
+/* PC用ナビ */
+.footerNavPc {
+  margin-bottom: 2rem;
+}
+
+.menuList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.menuItem {}
+
+.menuLink {
+  display: block;
+  padding: 10px 20px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 300;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menuList .menuItem:first-child .menuLink {
+  padding-left: 0;
+}
+
+.menuLink:hover {
+  color: #00b5ad;
+}
+
+/* SP用ナビ */
+.footerNavSp {
+  display: none;
+}
+
+.spMenuList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.spMenuLink {
+  display: block;
+  padding: 12px 0;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.spMenuLink:hover {
+  color: #00b5ad;
+}
+
+.bottomSection {
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.copyright {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .footerInner {
+    padding: 0 1rem;
+  }
+
+  .organizationTitle {
+    font-size: 1.1rem;
+  }
+
+  .footerNavPc {
+    display: none;
+  }
+
+  .footerNavSp {
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+}

@@ -16,8 +16,26 @@ function jsbb_add_tournament_meta_boxes() {
     add_meta_box('team_info', 'チーム情報', 'jsbb_team_info_box', 'team', 'normal', 'high');
     // トーナメント表
     add_meta_box('bracket_info', 'トーナメント表情報', 'jsbb_bracket_info_box', 'tournament_bracket', 'normal', 'high');
+    // トーナメント試合データ（インライン入力）
+    add_meta_box('bracket_matches', '試合データ（インライン入力）', 'jsbb_bracket_matches_box', 'tournament_bracket', 'normal', 'default');
 }
 add_action('add_meta_boxes', 'jsbb_add_tournament_meta_boxes');
+
+// ブラケットエディタJS/CSSを管理画面でエンキュー
+function jsbb_enqueue_bracket_editor_assets($hook) {
+    global $post;
+    if (!in_array($hook, array('post.php', 'post-new.php'))) return;
+    if (!$post || $post->post_type !== 'tournament_bracket') return;
+
+    wp_enqueue_script(
+        'jsbb-bracket-editor',
+        JSBB_PLUGIN_URL . 'assets/bracket-editor.js',
+        array('jquery'),
+        '1.0.0',
+        true
+    );
+}
+add_action('admin_enqueue_scripts', 'jsbb_enqueue_bracket_editor_assets');
 
 // --- 年度大会 メタボックス ---
 function jsbb_tournament_info_box($post) {
@@ -706,6 +724,27 @@ function jsbb_bracket_info_box($post) {
         <tr><th><label>大会略称</label></th><td>
             <input type="text" name="bracket_abbreviation" value="<?php echo esc_attr($abbreviation); ?>" style="width:100%" placeholder="略称（任意）">
         </td></tr>
+        <tr><th><label>紐付け大会（試合データ）</label></th><td>
+            <?php
+            $bracket_tournament_id = get_post_meta($post->ID, '_bracket_tournament_id', true);
+            $tournaments_for_bracket = get_posts(array(
+                'post_type' => 'tournament',
+                'posts_per_page' => -1,
+                'orderby' => 'date',
+                'order' => 'DESC',
+                'post_status' => 'publish',
+            ));
+            ?>
+            <select name="bracket_tournament_id" style="width:100%">
+                <option value="">-- 未選択（試合データなし）--</option>
+                <?php foreach ($tournaments_for_bracket as $t): ?>
+                    <option value="<?php echo $t->ID; ?>" <?php selected($bracket_tournament_id, $t->ID); ?>>
+                        <?php echo esc_html($t->post_title); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <p class="description">このトーナメント表に紐付ける試合データ（年度大会）を選択します。選択すると試合結果がWebに自動反映されます。</p>
+        </td></tr>
         <tr><th><label>PDF ファイル</label></th><td>
             <div id="jsbb-bracket-pdf-list">
                 <?php foreach ($pdf_ids as $pid):
@@ -891,6 +930,88 @@ function jsbb_bracket_info_box($post) {
     <?php
 }
 
+// --- ブラケット試合データ（インライン入力）メタボックス ---
+function jsbb_bracket_matches_box($post) {
+    $bracket_matches_json = get_post_meta($post->ID, '_bracket_matches', true);
+    $bracket_matches = array();
+    if ($bracket_matches_json) {
+        $bracket_matches = json_decode($bracket_matches_json, true);
+        if (!is_array($bracket_matches)) $bracket_matches = array();
+    }
+
+    // チーム数を取得（JS用）
+    $bracket_teams_json = get_post_meta($post->ID, '_bracket_teams', true);
+    $team_ids = is_string($bracket_teams_json) ? json_decode($bracket_teams_json, true) : array();
+    if (!is_array($team_ids)) $team_ids = array();
+    $team_count = count($team_ids);
+
+    // 紐付け大会が設定されている場合は注意書き
+    $bracket_tournament_id = get_post_meta($post->ID, '_bracket_tournament_id', true);
+    ?>
+    <style>
+    #jsbb-bracket-matches-table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    #jsbb-bracket-matches-table th { background: #c8102e; color: #fff; padding: 6px 8px; text-align: center; border: 1px solid #a00; white-space: nowrap; }
+    #jsbb-bracket-matches-table td { padding: 4px 6px; border: 1px solid #ddd; vertical-align: middle; }
+    .jsbb-bm-alt td { background: #fafafa; }
+    .jsbb-bm-round { font-weight: bold; font-size: 12px; color: #333; white-space: nowrap; }
+    .jsbb-bm-num { text-align: center; color: #666; font-size: 12px; }
+    .jsbb-bm-vs { text-align: center; color: #999; font-weight: bold; }
+    .jsbb-bm-date { width: 130px; }
+    .jsbb-bm-venue { width: 120px; }
+    .jsbb-bm-team { width: 140px; }
+    .jsbb-bm-score { width: 50px; text-align: center; }
+    .jsbb-bm-status { width: 90px; }
+    #jsbb-bracket-generate-btn { margin-bottom: 10px; }
+    </style>
+
+    <?php if ($bracket_tournament_id): ?>
+    <div style="background:#fff3cd;border:1px solid #ffc107;padding:10px 14px;border-radius:4px;margin-bottom:12px;">
+        <strong>注意:</strong> 「紐付け大会」が設定されているため、Webサイトでは紐付け大会の試合データが優先されます。ここで入力したデータは紐付け大会が未設定の場合に使用されます。
+    </div>
+    <?php endif; ?>
+
+    <p>
+        <span id="jsbb-bracket-team-count-for-editor" style="margin-right:12px;color:#555;">
+            <?php
+            $round_count = 0; $cur = $team_count; $total_m = 0;
+            while ($cur > 1) { $total_m += floor($cur / 2); $cur = ceil($cur / 2); $round_count++; }
+            echo esc_html($team_count . 'チーム（' . $round_count . 'ラウンド / ' . $total_m . '試合）');
+            ?>
+        </span>
+        <button type="button" class="button button-primary" id="jsbb-bracket-generate-btn">ブラケット生成（リセット）</button>
+        <span style="color:#666;font-size:12px;margin-left:8px;">※ 出場チームを保存した後に押してください</span>
+    </p>
+
+    <input type="hidden" id="jsbb-bracket-team-count-hidden" value="<?php echo esc_attr($team_count); ?>">
+    <input type="hidden" name="bracket_matches_json" id="jsbb-bracket-matches-json" value="<?php echo esc_attr($bracket_matches_json ?: ''); ?>">
+
+    <div style="overflow-x:auto;">
+        <table id="jsbb-bracket-matches-table">
+            <thead>
+                <tr>
+                    <th>ラウンド</th>
+                    <th>#</th>
+                    <th>試合日</th>
+                    <th>開始時刻</th>
+                    <th>会場</th>
+                    <th>ホームチーム</th>
+                    <th>得点</th>
+                    <th></th>
+                    <th>得点</th>
+                    <th>アウェイチーム</th>
+                    <th>ステータス</th>
+                </tr>
+            </thead>
+            <tbody id="jsbb-bracket-matches-tbody">
+                <?php if (empty($bracket_matches)): ?>
+                <tr><td colspan="10" style="text-align:center;color:#999;padding:20px;">「ブラケット生成」ボタンを押して試合枠を作成してください</td></tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
+}
+
 // ==========================================
 // 大会管理: 保存ハンドラ
 // ==========================================
@@ -1019,6 +1140,11 @@ function jsbb_save_bracket_meta($post_id) {
         }
     }
 
+    // 紐付け大会
+    if (isset($_POST['bracket_tournament_id'])) {
+        update_post_meta($post_id, '_bracket_tournament_id', intval($_POST['bracket_tournament_id']));
+    }
+
     // 出場チーム（配列）
     $teams = isset($_POST['bracket_teams']) ? array_map('intval', $_POST['bracket_teams']) : array();
     update_post_meta($post_id, '_bracket_teams', wp_json_encode($teams));
@@ -1026,6 +1152,18 @@ function jsbb_save_bracket_meta($post_id) {
     // PDFファイル（配列）
     $pdfs = isset($_POST['bracket_pdfs']) ? array_map('intval', $_POST['bracket_pdfs']) : array();
     update_post_meta($post_id, '_bracket_pdfs', wp_json_encode($pdfs));
+
+    // インライン試合データ（JSON）
+    if (isset($_POST['bracket_matches_json'])) {
+        $json = wp_unslash($_POST['bracket_matches_json']);
+        // JSONの妥当性チェック
+        $decoded = json_decode($json, true);
+        if (is_array($decoded)) {
+            update_post_meta($post_id, '_bracket_matches', wp_slash($json));
+        } elseif ($json === '' || $json === '[]') {
+            update_post_meta($post_id, '_bracket_matches', '[]');
+        }
+    }
 
     // 大会シリーズのteam_classをトーナメント表にも自動セット
     $series_id = isset($_POST['bracket_series_id']) ? intval($_POST['bracket_series_id']) : 0;

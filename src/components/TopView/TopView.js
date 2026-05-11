@@ -78,7 +78,19 @@ export default function TopView() {
           </div>
           <p className={styles.introCardTitle}>高円宮賜杯全日本学童軟式野球福岡県大会</p>
           <p className={styles.introCardSub}>マクドナルド・トーナメント</p>
-        </Link>
+        {/* </Link>
+        {/* <Link href="/tournament/chikugogawa" className={styles.introCard}>
+          <div className={styles.introCardImage}>
+            <Image
+              src="/chikugogawa/chikugogawa.png"
+              alt="筑後川旗"
+              fill
+              className={styles.mcdBg}
+            />
+          </div> */}
+          {/* <p className={styles.introCardTitle}>筑後川旗</p>
+          <p className={styles.introCardSub}>西日本学童軟式野球大会</p> */}
+        </Link> */
       </div>
     </section>
   )

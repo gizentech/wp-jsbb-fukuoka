@@ -1,36 +1,24 @@
+import { useEffect, useState } from 'react'
 import Meta from '../../components/Meta/Meta.js'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import AboutSidebar from '../../components/AboutSidebar/AboutSidebar'
 import styles from '../../styles/about/AboutDetail.module.css'
-import { fetchPageBySlug } from '../../lib/wp-api'
+import { fetchPageBySlug } from '../../lib/wp-api-client'
 
-export async function getStaticProps() {
-  try {
-    const page = await fetchPageBySlug('sponsorship')
+export default function Sponsorship() {
+  const [title, setTitle] = useState('ご協賛について')
+  const [content, setContent] = useState('')
 
-    return {
-      props: {
-        title: page?.title || 'ご協賛について',
-        content: page?.content || '',
-        featuredImage: page?.featuredImage || null,
-      },
+  useEffect(() => {
+    fetchPageBySlug('sponsorship').then((page) => {
+      if (page) {
+        setTitle(page.title || 'ご協賛について')
+        setContent(page.content || '')
+      }
+    }).catch(() => {})
+  }, [])
 
-    }
-  } catch (error) {
-    console.error('Failed to fetch sponsorship page:', error)
-    return {
-      props: {
-        title: 'ご協賛について',
-        content: '',
-        featuredImage: null,
-      },
-
-    }
-  }
-}
-
-export default function Sponsorship({ title, content, featuredImage }) {
   return (
     <>
       <Meta title={title || 'ご協賛について'} description="福岡県軟式野球連盟へのご協賛についてのご案内。福岡県の軟式野球大会・活動へのスポンサーシップをご検討ください。" keywords="福岡県軟式野球連盟,協賛,スポンサー,福岡,軟式野球,野球大会" urlPath="/about/sponsorship" breadcrumbs={[{ name: '連盟概要', path: '/about' }, { name: 'ご協賛について', path: '/about/sponsorship' }]} />

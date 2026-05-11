@@ -166,6 +166,17 @@ export async function fetchTournamentPostById(id) {
   }
 }
 
+const KYUSHU_CLASS = '全日本軟式野球九州連合会'
+
+export async function fetchKyushuTournaments() {
+  try {
+    const all = await fetchTournamentSeries();
+    return all.filter(s => Array.isArray(s.class) && s.class.includes(KYUSHU_CLASS));
+  } catch {
+    return [];
+  }
+}
+
 export async function fetchMigratedTournaments(perPage = 100) {
   try {
     const allPosts = [];
@@ -295,6 +306,23 @@ export async function fetchInstagramPosts() {
 // 固定ページ
 // ============================================
 
+export async function fetchPageById(id) {
+  const res = await fetch(`${API_URL}/pages/${id}?_embed`, {
+    headers: { "Accept": "application/json" },
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  let content = data.content?.rendered || '';
+  content = content.replace(/<tr[^>]*>(?:<td[^>]*>\s*(?:null)?\s*<\/td>\s*)+<\/tr>/gi, '');
+  content = content.replace(/<table/g, '<div class="table-scroll"><table');
+  content = content.replace(/<\/table>/g, '</table></div>');
+  return {
+    title: data.title?.rendered || '',
+    content,
+    featuredImage: data._embedded?.['wp:featuredmedia']?.[0]?.source_url || null,
+  };
+}
+
 export async function fetchPageBySlug(slug) {
   const data = await apiFetch(
     `${API_URL}/pages?slug=${encodeURIComponent(slug)}&_embed`
@@ -313,6 +341,46 @@ export async function fetchPageBySlug(slug) {
     content,
     featuredImage: page._embedded?.['wp:featuredmedia']?.[0]?.source_url || null,
   };
+}
+
+// ============================================
+// 筑後川旗
+// ============================================
+
+export async function fetchChikugogawaLatest() {
+  try {
+    return await apiFetch(`${API_URL_CUSTOM}/tournaments?type=chikugogawa&latest=true`);
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchChikugogawaByYear(year) {
+  try {
+    return await apiFetch(`${API_URL_CUSTOM}/tournaments?type=chikugogawa&year=${year}`);
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchChikugogawaHistory() {
+  try {
+    return await apiFetch(`${API_URL_CUSTOM}/chikugogawa/history`);
+  } catch {
+    return [];
+  }
+}
+
+// ============================================
+// ヒーロー設定
+// ============================================
+
+export async function fetchHeroSettings() {
+  try {
+    return await apiFetch(`${API_URL_CUSTOM}/hero-settings`);
+  } catch {
+    return { enabled: false, pc_image: '', sp_image: '' };
+  }
 }
 
 // ============================================

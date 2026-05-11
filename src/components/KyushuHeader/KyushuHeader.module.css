@@ -1,0 +1,255 @@
+/* KyushuHeader.module.css */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 56px;
+  background: #0a0f1e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.scrolled {
+  background: #0a0f1e;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.flush {
+  top: 0;
+  left: 0;
+  right: 0;
+  border-radius: 0;
+}
+
+.headerInner {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  position: relative;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.logo a {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.3s ease;
+}
+
+.logo a:hover {
+  opacity: 0.75;
+}
+
+.logoText {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.nav {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.pcMenu {
+  display: flex;
+  list-style: none;
+  gap: 1.2rem;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.pcMenu a {
+  color: rgba(255, 255, 255, 0.85);
+  position: relative;
+  transition: color 0.3s ease;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.pcMenu a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #00b5ad;
+  transition: width 0.3s ease;
+}
+
+.pcMenu a:hover {
+  color: #fff;
+}
+
+.pcMenu a:hover::after {
+  width: 100%;
+}
+
+.mobileMenu {
+  display: none;
+}
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 24px;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1001;
+}
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #fff;
+  position: absolute;
+  left: 0;
+  transition: all 0.3s ease;
+}
+
+.hamburger span:nth-child(1) { top: 0; }
+.hamburger span:nth-child(2) { top: 50%; transform: translateY(-50%); }
+.hamburger span:nth-child(3) { bottom: 0; }
+
+.hamburger.active span:nth-child(1) {
+  transform: translateY(11px) rotate(45deg);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: translateY(-11px) rotate(-45deg);
+}
+
+@media (max-width: 1280px) {
+  .logoText {
+    font-size: 0.8rem;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .pcMenu {
+    display: none;
+  }
+
+  .mobileMenu {
+    display: block;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    opacity: 0;
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 10%;
+    width: 90%;
+    height: 100vh;
+    background: #0a0f1e;
+    padding-top: 70px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s 0.3s;
+    opacity: 0;
+    visibility: hidden;
+    overflow-y: auto;
+    display: block;
+    z-index: 1000;
+    pointer-events: none;
+  }
+
+  .nav.open {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s 0s;
+  }
+
+  .mobileMenuLogo {
+    padding: 0 24px 1em 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .mobileLogoText {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+    display: block;
+  }
+
+  .mobileMenuList {
+    list-style: none;
+    padding: 0 0 80px 0;
+    margin: 0;
+  }
+
+  .mobileMenuItem {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .mobileMenuLink {
+    display: block;
+    padding: 14px 24px;
+    font-size: 15px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    letter-spacing: 0.03em;
+  }
+}

@@ -79,6 +79,33 @@ function jsbb_portal_generate_otp($team_id, $email) {
         'used'       => 0,
     ), array('%d', '%s', '%s', '%s', '%s', '%d', '%d'));
 
+    // メール送信
+    $subject = '【福岡県軟式野球連盟】認証コードのご案内';
+    $message = implode("\n", array(
+        '福岡県軟式野球連盟ポータルをご利用いただきありがとうございます。',
+        '',
+        '認証コード（10分間有効）:',
+        '',
+        '　' . $otp_code,
+        '',
+        'このコードをポータル画面に入力してください。',
+        'このメールに心当たりがない場合は無視してください。',
+        '',
+        '─────────────────────────',
+        '福岡県軟式野球連盟',
+        'https://jsbb-fukuoka.com',
+    ));
+    $headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'From: 福岡県軟式野球連盟 <shop@jsbb-fukuoka.com>',
+    );
+    $sent = wp_mail($email, $subject, $message, $headers);
+    if (!$sent) {
+        error_log('[JSBB Portal OTP] wp_mail failed to: ' . $email);
+    } else {
+        error_log('[JSBB Portal OTP] wp_mail sent to: ' . $email);
+    }
+
     return $otp_code;
 }
 

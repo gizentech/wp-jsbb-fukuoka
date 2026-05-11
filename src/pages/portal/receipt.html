@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  /* A4縦の用紙全体の設定 */
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  body {
+    margin: 0; 
+    padding: 0;
+    background-color: #fff;
+    font-family: "MS Mincho", "Hiragino Mincho ProN", serif;
+  }
+
+  /* 領収証の「箱」本体 
+    height を 105mm に固定することで、縦に伸びるのを防ぎます
+  */
+  .receipt-frame {
+    width: 105mm; /* 横幅を105mmに厳密に固定 */
+    height: 148mm; /* 高さを148mmに厳密に固定 */
+    margin: 10mm auto; /* A4の上部に配置 */
+    border: 4px double #000; /* 外側の二重枠 */
+    padding: 8mm;
+    box-sizing: border-box; /* 枠の太さを高さに含める */
+    position: relative;
+    background: #fff;
+  }
+
+  /* タイトル：領収証（下に二重線） */
+  .title-section {
+    text-align: center;
+    margin-bottom: 2mm;
+  }
+  .title-text {
+    font-size: 22pt; /* 縦長に合わせて調整 */
+    letter-spacing: 8pt; /* 縦長に合わせて調整 */
+    display: inline-block;
+    border-bottom: 3px double #000;
+    padding-bottom: 1mm;
+    margin-left: 12pt;
+  }
+
+  /* 日付（下一本線） */
+  .date-row {
+    text-align: right;
+    font-size: 11pt;
+    margin-bottom: 3mm;
+  }
+  .date-underline {
+    display: inline-block;
+    border-bottom: 1px solid #000;
+    width: 55mm;
+    text-align: center;
+  }
+
+  /* 宛名（下一本線） */
+  .atena-row {
+    font-size: 15pt;
+    border-bottom: 1px solid #000;
+    width: 90%; /* 縦長に合わせて調整 */
+    margin-top: 5mm; /* 縦長に合わせて調整 */
+    padding-bottom: 1mm;
+  }
+
+  /* 金額部分（網掛け ＋ 太い下一本線） */
+  .amount-section {
+    margin: 6mm 0;
+    text-align: center;
+  }
+  .amount-shading {
+    display: inline-block;
+    width: 90%; /* 縦長に合わせて調整 */
+    background-color: #e0e0e0; /* 薄いグレーの網掛け */
+    font-size: 26pt;
+    padding: 3mm 0;
+    font-weight: bold;
+    font-family: serif;
+  }
+  .amount-line {
+    width: 90%; /* 縦長に合わせて調整 */
+    border-bottom: 4px solid #000; /* 金額下の太い一本線 */
+    margin: 0 auto;
+  }
+
+  /* 但し書き */
+  .proviso {
+    font-size: 10pt; /* 縦長に合わせて調整 */
+    margin-top: 3mm;
+    text-align: left;
+  }
+
+  /* 発行者と印影（右下に配置） */
+  .issuer-info {
+    position: absolute;
+    right: 8mm; /* 縦長に合わせて調整 */
+    bottom: 10mm; /* 縦長に合わせて調整 */
+    text-align: left;
+    font-size: 10pt; /* 縦長に合わせて調整 */
+    line-height: 1.7;
+  }
+  .hanko-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .hanko-img {
+    position: absolute;
+    width: 20mm; /* 縦長に合わせて調整 */
+    height: 20mm; /* 縦長に合わせて調整 */
+    /* 「盟」と「士」の両方にかかる位置に調整 */
+    right: -4mm; /* 縦長に合わせて調整 */
+    top: -9mm; /* 縦長に合わせて調整 */
+    opacity: 0.85;
+    z-index: 10;
+  }
+
+  /* 管理番号 */
+  .serial-number {
+    position: absolute; 
+    left: 8mm; 
+    bottom: 5mm; /* 縦長に合わせて調整 */
+    font-size: 8pt;
+    color: #888;
+  }
+</style>
+</head>
+<body>
+
+  <div class="receipt-frame"> 
+    
+    <div class="title-section">
+      <div class="title-text">領収証</div>
+    </div>
+
+    <div class="date-row">
+      令和　<span class="date-underline">　８　年　５　月　１１　日</span>
+    </div>
+    
+    <div class="atena-row">
+      筑紫支部　白石ベースボールクラブ　様
+    </div>
+    
+    <div class="amount-section">
+      <div class="amount-shading">￥　１８，８００　※</div>
+      <div class="amount-line"></div>
+    </div>
+    
+    <div class="proviso">
+      但し　筑後川旗第４３回西日本学童軟式野球大会Ｔシャツ代として
+    </div>
+    
+    <div class="issuer-info">
+      <span class="hanko-wrap">
+        (一社)福岡県軟式野球連盟<br>
+        会長　石原廣士
+        <img src="stamp.png" class="hanko-img" alt="印影">
+      </span>
+    </div>
+
+    <div class="serial-number">20260511091500000030</div>
+  </div>
+
+</body>
+</html>

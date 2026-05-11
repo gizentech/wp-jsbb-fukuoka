@@ -39,6 +39,61 @@ add_action('init', function () {
 add_action('rest_api_init', function () {
 
     // -----------------------------------------------
+    // POST /portal/upload - ファイルアップロード（WPメディアライブラリへ保存）
+    // -----------------------------------------------
+    register_rest_route('jsbb/v1', '/portal/upload', array(
+        'methods'  => 'POST',
+        'callback' => function ($request) {
+            if (empty($_FILES['file'])) {
+                return new WP_Error('no_file', 'ファイルが選択されていません', array('status' => 400));
+            }
+
+            // 許可する拡張子
+            $allowed_types = array('pdf', 'xlsx', 'xls', 'docx', 'doc', 'png', 'jpg', 'jpeg');
+            $ext = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
+            if (!in_array($ext, $allowed_types)) {
+                return new WP_Error(
+                    'invalid_type',
+                    '許可されていないファイル形式です（PDF・Excel・Word・画像のみ）',
+                    array('status' => 400)
+                );
+            }
+
+            // ファイルサイズ制限: 20MB
+            if ($_FILES['file']['size'] > 20 * 1024 * 1024) {
+                return new WP_Error('file_too_large', 'ファイルサイズは20MB以下にしてください', array('status' => 400));
+            }
+
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/media.php';
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+
+            // WPメディアライブラリにアップロード
+            $attachment_id = media_handle_upload('file', 0);
+
+            if (is_wp_error($attachment_id)) {
+                return new WP_Error(
+                    'upload_error',
+                    $attachment_id->get_error_message(),
+                    array('status' => 500)
+                );
+            }
+
+            $url      = wp_get_attachment_url($attachment_id);
+            $filename = basename(get_attached_file($attachment_id));
+
+            return rest_ensure_response(array(
+                'id'       => $attachment_id,
+                'url'      => $url,
+                'filename' => $filename,
+            ));
+        },
+        'permission_callback' => function () {
+            return jsbb_portal_verify_api_key();
+        },
+    ));
+
+    // -----------------------------------------------
     // 書類テンプレート CRUD
     // -----------------------------------------------
 
@@ -248,6 +303,26 @@ add_action('rest_api_init', function () {
             // 履歴記録
             jsbb_portal_log_activity($tournament_id, $team_id, 'submission_upload', $team_name . 'が書類を提出しました: ' . ($doc_type ?: '書類'), 'team');
 
+            // 管理者へメール通知
+            $tournament_post = get_post($tournament_id);
+            $tournament_name = $tournament_post ? $tournament_post->post_title : '大会';
+            $comment_text = isset($params['comment']) ? sanitize_textarea_field($params['comment']) : '';
+            $file_name    = isset($params['file_name']) ? sanitize_text_field($params['file_name']) : '';
+            $admin_url    = admin_url('admin.php?page=portal-documents&tournament_id=' . $tournament_id);
+            $mail_body    = "書類が提出されました。\n\n"
+                          . "大会: {$tournament_name}\n"
+                          . "チーム: {$team_name}\n"
+                          . "書類種別: " . ($doc_type ?: '─') . "\n"
+                          . "ファイル: " . ($file_name ?: '─') . "\n"
+                          . ($comment_text ? "コメント: {$comment_text}\n" : '')
+                          . "\n管理画面で確認: {$admin_url}";
+            wp_mail(
+                'info@jsbb-fukuoka.com',
+                '【ポータル】書類提出通知: ' . $team_name . '（' . $tournament_name . '）',
+                $mail_body,
+                ['Content-Type: text/plain; charset=UTF-8', 'From: 福岡県軟式野球連盟ポータル <shop@jsbb-fukuoka.com>']
+            );
+
             return rest_ensure_response(jsbb_build_portal_submission($post_id));
         },
         'permission_callback' => function () {
@@ -285,6 +360,55 @@ add_action('rest_api_init', function () {
             $status_labels = array('approved' => '承認', 'rejected' => '差し戻し', 'cancelled' => '取消', 'pending' => '保留');
             $label = isset($status_labels[$status]) ? $status_labels[$status] : $status;
             jsbb_portal_log_activity($tournament_id, $team_id, 'submission_' . $status, '書類が' . $label . 'されました', 'admin');
+
+            // チームへメール通知（pending以外）
+            if ($status !== 'pending') {
+                $team_post       = get_post($team_id);
+                $team_name       = $team_post ? $team_post->post_title : 'チーム';
+                $team_email      = get_post_meta($team_id, '_portal_team_email', true) ?: '';
+                $tournament_post = get_post($tournament_id);
+                $tournament_name = $tournament_post ? $tournament_post->post_title : '大会';
+                $doc_type        = get_post_meta($post_id, '_portal_sub_document_type', true) ?: '書類';
+                $file_url        = get_post_meta($post_id, '_portal_sub_file_url', true) ?: '';
+
+                $subject_map = array(
+                    'approved'  => '【筑後川旗事務局】提出書類の承認のお知らせ',
+                    'rejected'  => '【筑後川旗事務局】提出書類の差戻のお知らせ',
+                    'cancelled' => '【筑後川旗事務局】提出書類のキャンセルのお知らせ',
+                );
+                // 旧コードでは 'rejected' = 差し戻し、管理画面で '不可' の場合は別扱い可能
+                $subject = isset($subject_map[$status]) ? $subject_map[$status] : '【筑後川旗事務局】提出書類の審査結果のお知らせ';
+
+                $body = "{$team_name} 御中\n\n"
+                      . "いつもお世話になっております。\n"
+                      . "ご提出いただいた書類の審査が完了しましたのでお知らせします。\n\n"
+                      . "大会: {$tournament_name}\n"
+                      . "書類種別: {$doc_type}\n"
+                      . "審査結果: {$label}\n";
+
+                if ($admin_comment) {
+                    $body .= "事務局コメント: {$admin_comment}\n";
+                }
+                if ($file_url) {
+                    $body .= "提出ファイル: {$file_url}\n";
+                }
+                $body .= "\n何かご不明な点がございましたら、大会事務局までご連絡ください。\n\n"
+                       . "─────────────────────────\n"
+                       . "筑後川旗大会事務局\n"
+                       . "https://jsbb-fukuoka.com";
+
+                if ($team_email) {
+                    wp_mail(
+                        $team_email,
+                        $subject,
+                        $body,
+                        array(
+                            'Content-Type: text/plain; charset=UTF-8',
+                            'From: 福岡県軟式野球連盟ポータル <shop@jsbb-fukuoka.com>',
+                        )
+                    );
+                }
+            }
 
             return rest_ensure_response(jsbb_build_portal_submission($post_id));
         },

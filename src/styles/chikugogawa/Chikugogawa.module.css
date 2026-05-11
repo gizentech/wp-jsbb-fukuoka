@@ -1,0 +1,542 @@
+/* src/styles/chikugogawa/Chikugogawa.module.css
+   筑後川旗 専用スタイル（Tournament.module.css の共通スタイルを補完）
+
+   カラーパレット
+   --chiku-primary  : #1e3a8a  Blue-900  濃い青（プライマリー）
+   --chiku-secondary: #1d4ed8  Blue-700  やや明るい青（セカンダリー）
+   --chiku-tertiary : #172554  Blue-1000 最も暗い紺（ホバー・強調）
+   --chiku-bg       : #eff6ff  Blue-50   薄水色の背景
+*/
+
+/* ===== ヒーロー（2カラム） ===== */
+.hero {
+  margin-top: 56px; /* fixed header の高さ */
+  width: 100%;
+  background: #eff6ff;
+}
+
+.heroInner {
+  display: grid;
+  /* 右カラムが16:9で決まるので、左カラムはその高さに従う */
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+}
+
+.heroLeft {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 40px 48px 40px 40px;
+}
+
+.heroNumber {
+  display: inline-block;
+  font-size: clamp(22px, 2.8vw, 40px);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: #1d4ed8;
+}
+
+.heroTitle {
+  font-size: clamp(40px, 5.5vw, 72px);
+  font-weight: 900;
+  color: #172554;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.heroSub {
+  font-size: clamp(22px, 3vw, 42px);
+  font-weight: 900;
+  color: #1e3a8a;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.heroYear {
+  display: inline-block;
+  padding: 4px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e3a8a;
+  background: #fff;
+  border: 1px solid #c7d8f5;
+  letter-spacing: 0.1em;
+  align-self: flex-start;
+  margin-bottom: 4px;
+}
+
+.heroRight {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 右カラムの画像比率を16:9に固定するラッパー */
+.heroRight::before {
+  content: '';
+  display: block;
+  padding-top: 56.25%; /* 9/16 */
+}
+
+.heroBgImage {
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* ===== 年度アーカイブナビ ===== */
+.yearNav {
+  background: #eff6ff;
+  border-bottom: 1px solid #c7d8f5;
+}
+
+.yearNavInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.yearNavLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.yearNavLinks {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.yearNavLink {
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e3a8a;
+  border: 1px solid #c7d8f5;
+  background: #fff;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.yearNavLink:hover {
+  border-color: #1e3a8a;
+  background: #eff6ff;
+}
+
+.yearNavLinkActive {
+  background: #1e3a8a;
+  color: #fff;
+  border-color: #1e3a8a;
+}
+
+/* ===== 大会概要テーブル ===== */
+/* Tournament.module.css の tableRows / tableRow / tableLabel / tableValue を流用 */
+
+/* ===== 歴代優勝 ===== */
+.historyTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.historyTable th {
+  background: #1e3a8a;
+  color: #fff;
+  padding: 12px 16px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.historyTable th:first-child {
+  width: 60px;
+}
+
+.historyTable td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+  color: #333;
+}
+
+.historyTable td:first-child {
+  text-align: center;
+  font-weight: 700;
+  color: #888;
+  font-size: 13px;
+}
+
+.historyTable tr:hover td {
+  background: #eff6ff;
+}
+
+.historyTable tr:last-child td {
+  border-bottom: none;
+}
+
+.historyChampion {
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.historyRunnerup {
+  font-weight: 700;
+  color: #666;
+  font-size: 13px;
+}
+
+/* ===== メッセージセクション ===== */
+.messageCard {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 40px;
+  padding: 40px;
+  background: #eff6ff;
+  border-left: 4px solid #1e3a8a;
+  margin-bottom: 32px;
+}
+
+.messageCard:last-child {
+  margin-bottom: 0;
+}
+
+.messagePhoto {
+  flex-shrink: 0;
+}
+
+.messageImg {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 3 / 4;
+}
+
+.messageImgPlaceholder {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: #c7d8f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.messageBody {}
+
+.messageName {
+  font-size: 18px;
+  font-weight: 900;
+  color: #1a1a1a;
+  margin: 0 0 2px;
+}
+
+.messageTitle {
+  font-size: 13px;
+  color: #888;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 0 0 20px;
+}
+
+.messageText {
+  font-size: 15px;
+  color: #444;
+  line-height: 2;
+  white-space: pre-wrap;
+}
+
+/* ===== スポンサー ===== */
+.sponsorGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+}
+
+.sponsorItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sponsorLogo {
+  max-height: 60px;
+  max-width: 160px;
+  width: auto;
+  object-fit: contain;
+  filter: grayscale(30%);
+  transition: filter 0.2s;
+}
+
+.sponsorLogo:hover {
+  filter: none;
+}
+
+.sponsorName {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e3a8a;
+  padding: 8px 16px;
+  border: 1px solid #c7d8f5;
+  background: #eff6ff;
+}
+
+/* ===== チームグリッド ===== */
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.teamCard {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.teamCard:hover {
+  box-shadow: 0 8px 24px rgba(30, 58, 138, 0.12);
+}
+
+.teamPhoto {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+  background: #eff6ff;
+}
+
+.teamCardBody {
+  padding: 20px;
+}
+
+.teamPrefecture {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e3a8a;
+  background: #eff6ff;
+  border: 1px solid #c7d8f5;
+  padding: 2px 10px;
+  margin-bottom: 8px;
+  letter-spacing: 0.06em;
+}
+
+.teamName {
+  font-size: 17px;
+  font-weight: 900;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+  line-height: 1.3;
+}
+
+.teamDescription {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ===== 導線ボタン ===== */
+.navButtons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.navBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  border: none;
+}
+
+.navBtnPrimary {
+  background: #1e3a8a;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.25);
+}
+
+.navBtnPrimary:hover {
+  background: #172554;
+  box-shadow: 0 4px 16px rgba(23, 37, 84, 0.3);
+}
+
+.navBtnSecondary {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 2px solid #1d4ed8;
+}
+
+.navBtnSecondary:hover {
+  background: #1d4ed8;
+  color: #fff;
+}
+
+/* ===== ローディング ===== */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  font-size: 14px;
+  color: #999;
+}
+
+/* ===== タイトルカード オーバーライド ===== */
+/* PC: titleCard ブロック全体を非表示（hero で表示） */
+.chikuTitleCard {
+  display: none;
+}
+
+/* PC: titleCard 内の大会名（SP 用） */
+.titleInfoWrap {
+  display: none;
+}
+
+.chikuTitleNumber {
+  font-size: clamp(18px, 4vw, 28px);
+  font-weight: 900;
+  color: #1d4ed8;
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+.chikuTournamentName {
+  color: #1d4ed8;
+}
+.chikuTournamentSub {}
+
+/* ===== レスポンシブ ===== */
+@media (max-width: 768px) {
+  .heroInner {
+    grid-template-columns: 1fr;
+    padding: 0;
+    gap: 0;
+  }
+
+  .heroRight {
+    order: 1;
+    aspect-ratio: 16 / 9;
+  }
+
+  /* SP: hero のテキストは非表示、titleCard で表示 */
+  .heroLeft {
+    display: none;
+  }
+
+  /* SP: titleCard ブロックを表示・全幅ボーダー */
+  .chikuTitleCard {
+    display: block;
+    border-bottom: 1px solid #d0d0d0;
+  }
+
+  /* SP: titleInner のボーダーを無効化（chikuTitleCard 側で引く） */
+  .chikuTitleCard :global(.titleInner) {
+    border-bottom: none;
+  }
+
+  /* SP: 2026年度開催 を囲み付きバッジに */
+  .chikuTitleCard :global(.tournamentMeta) {
+    display: inline-block;
+    padding: 4px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e3a8a;
+    background: #eff6ff;
+    border: 1px solid #c7d8f5;
+    letter-spacing: 0.1em;
+    margin: 0 0 4px;
+  }
+
+  /* SP: titleCard 内の大会名を表示 */
+  .titleInfoWrap {
+    display: block;
+  }
+
+  .heroBgImage {
+    object-position: center 20%;
+  }
+
+  .yearNavInner {
+    padding: 10px 16px;
+  }
+
+  .messageCard {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 24px;
+  }
+
+  .messagePhoto {
+    max-width: 160px;
+  }
+
+  .teamGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .historyTable {
+    font-size: 13px;
+  }
+
+  .historyTable th,
+  .historyTable td {
+    padding: 10px 12px;
+  }
+
+  .navButtons {
+    flex-direction: column;
+  }
+
+  .navBtn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* SP: タイトルを大きく・1行・全幅 */
+  .chikuTournamentName {
+    font-size: clamp(26px, 7.5vw, 36px) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chikuTournamentSub {
+    font-size: clamp(18px, 5vw, 22px) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 480px) {
+  .teamGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .historyTable th:nth-child(4),
+  .historyTable td:nth-child(4) {
+    display: none;
+  }
+}

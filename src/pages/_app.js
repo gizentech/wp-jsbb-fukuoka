@@ -1,6 +1,7 @@
 // pages/_app.js
 import '../styles/globals.css'
 import { Noto_Sans_JP } from 'next/font/google'
+import { PortalAuthProvider } from '../contexts/PortalAuthContext'
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ['latin'],
@@ -11,8 +12,10 @@ const notoSansJP = Noto_Sans_JP({
 
 export default function App({ Component, pageProps }) {
   return (
-    <div className={notoSansJP.className}>
-      <Component {...pageProps} />
-    </div>
+    <PortalAuthProvider>
+      <div className={notoSansJP.className}>
+        <Component {...pageProps} />
+      </div>
+    </PortalAuthProvider>
   )
 }

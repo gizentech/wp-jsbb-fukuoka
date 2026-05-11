@@ -19,8 +19,7 @@ add_action('init', function () {
         ),
         'public'             => false,
         'show_ui'            => true,
-        'show_in_menu'       => true,
-        'menu_position'      => 25,
+        'show_in_menu'       => 'portal-management',
         'menu_icon'          => 'dashicons-clipboard',
         'supports'           => array('title'),
         'show_in_rest'       => false,
@@ -146,8 +145,7 @@ add_action('init', function () {
         ),
         'public'             => false,
         'show_ui'            => true,
-        'show_in_menu'       => true,
-        'menu_position'      => 26,
+        'show_in_menu'       => 'portal-management',
         'menu_icon'          => 'dashicons-groups',
         'supports'           => array('title'),
         'show_in_rest'       => false,
@@ -215,11 +213,43 @@ function jsbb_portal_team_metabox($post) {
     $region_national  = get_post_meta($post->ID, '_portal_team_region_national', true) ?: '';
     $region_branch    = get_post_meta($post->ID, '_portal_team_region_branch', true) ?: '';
     $note             = get_post_meta($post->ID, '_portal_team_note', true) ?: '';
+
+    // 参加大会
+    $tournament_ids_json = get_post_meta($post->ID, '_portal_team_tournament_ids', true);
+    $selected_tournament_ids = $tournament_ids_json ? json_decode($tournament_ids_json, true) : array();
+    if (!is_array($selected_tournament_ids)) $selected_tournament_ids = array();
+
+    $all_tournaments = get_posts(array(
+        'post_type'   => 'portal_tournament',
+        'post_status' => 'publish',
+        'numberposts' => -1,
+        'orderby'     => 'title',
+        'order'       => 'ASC',
+    ));
     ?>
     <table class="form-table">
         <tr>
             <th><label>チームID</label></th>
             <td><code style="font-size:1.2em"><?php echo esc_html($team_id ?: '（保存時に自動生成）'); ?></code></td>
+        </tr>
+        <tr>
+            <th><label>参加大会</label></th>
+            <td>
+                <?php if (empty($all_tournaments)): ?>
+                    <p class="description">大会が登録されていません。先にポータル大会を作成してください。</p>
+                <?php else: ?>
+                    <div style="max-height:150px;overflow-y:auto;border:1px solid #ddd;padding:6px 10px;background:#fff;">
+                    <?php foreach ($all_tournaments as $t): ?>
+                        <label style="display:block;margin-bottom:4px;">
+                            <input type="checkbox" name="portal_team_tournament_ids[]"
+                                value="<?php echo esc_attr($t->ID); ?>"
+                                <?php checked(in_array((string)$t->ID, array_map('strval', $selected_tournament_ids))); ?> />
+                            <?php echo esc_html($t->post_title); ?>
+                        </label>
+                    <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </td>
         </tr>
         <tr>
             <th><label for="portal_team_email">代表者メール</label></th>
@@ -269,6 +299,29 @@ add_action('save_post_portal_team', function ($post_id) {
         }
     }
 
+    // 参加大会チェックボックス（双方向同期）
+    $new_tournament_ids = isset($_POST['portal_team_tournament_ids']) ? array_map('intval', (array) $_POST['portal_team_tournament_ids']) : array();
+    update_post_meta($post_id, '_portal_team_tournament_ids', wp_json_encode($new_tournament_ids));
+
+    // 各大会の _portal_tournament_team_ids にもこのチームを双方向で同期
+    $all_t = get_posts(array('post_type' => 'portal_tournament', 'posts_per_page' => -1, 'post_status' => 'publish'));
+    foreach ($all_t as $t) {
+        $t_ids_json = get_post_meta($t->ID, '_portal_tournament_team_ids', true);
+        $t_ids = $t_ids_json ? json_decode($t_ids_json, true) : array();
+        if (!is_array($t_ids)) $t_ids = array();
+        $t_ids = array_map('intval', $t_ids);
+
+        if (in_array($t->ID, $new_tournament_ids)) {
+            if (!in_array($post_id, $t_ids)) {
+                $t_ids[] = $post_id;
+                update_post_meta($t->ID, '_portal_tournament_team_ids', wp_json_encode(array_values($t_ids)));
+            }
+        } else {
+            $t_ids_filtered = array_values(array_filter($t_ids, function($tid) use ($post_id) { return (int)$tid !== (int)$post_id; }));
+            update_post_meta($t->ID, '_portal_tournament_team_ids', wp_json_encode($t_ids_filtered));
+        }
+    }
+
     // チームID未設定 or 8桁でない場合は自動生成
     $current_team_id = get_post_meta($post_id, '_portal_team_id', true);
     if (!$current_team_id || strlen($current_team_id) !== 8 || !ctype_digit($current_team_id)) {
@@ -285,6 +338,9 @@ function jsbb_build_portal_team($post_id) {
     $post = get_post($post_id);
     if (!$post || $post->post_type !== 'portal_team') return null;
 
+    $t_ids_json = get_post_meta($post_id, '_portal_team_tournament_ids', true);
+    $tournament_ids = $t_ids_json ? json_decode($t_ids_json, true) : array();
+
     return array(
         'id'              => $post->ID,
         'team_id'         => get_post_meta($post_id, '_portal_team_id', true) ?: '',
@@ -296,6 +352,7 @@ function jsbb_build_portal_team($post_id) {
         'region_national' => get_post_meta($post_id, '_portal_team_region_national', true) ?: '',
         'region_branch'   => get_post_meta($post_id, '_portal_team_region_branch', true) ?: '',
         'note'            => get_post_meta($post_id, '_portal_team_note', true) ?: '',
+        'tournament_ids'  => is_array($tournament_ids) ? $tournament_ids : array(),
         'created_at'      => get_post_meta($post_id, '_portal_team_created_at', true) ?: '',
     );
 }

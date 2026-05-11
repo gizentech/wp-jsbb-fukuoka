@@ -53,6 +53,15 @@ add_action('rest_api_init', function () {
         'callback' => 'jsbb_get_tournament_bracket_detail',
         'permission_callback' => '__return_true'
     ));
+
+    // トーナメント表PDFリスト更新（スクリプト用）
+    register_rest_route('jsbb/v1', '/tournament-bracket/(?P<id>\d+)/pdfs', array(
+        'methods' => 'POST',
+        'callback' => 'jsbb_update_bracket_pdfs',
+        'permission_callback' => function() {
+            return current_user_can('edit_posts');
+        }
+    ));
 });
 
 
@@ -354,6 +363,27 @@ function jsbb_get_branches_list() {
     return $result;
 }
 
+function jsbb_update_bracket_pdfs($request) {
+    $id = intval($request['id']);
+    $post = get_post($id);
+
+    if (!$post || $post->post_type !== 'tournament_bracket') {
+        return new WP_Error('not_found', 'トーナメント表が見つかりません', array('status' => 404));
+    }
+
+    $params = $request->get_json_params();
+    $pdf_ids = isset($params['pdf_ids']) ? array_map('intval', $params['pdf_ids']) : array();
+
+    update_post_meta($id, '_bracket_pdfs', wp_json_encode($pdf_ids));
+
+    return array(
+        'success' => true,
+        'bracket_id' => $id,
+        'pdf_ids' => $pdf_ids,
+        'message' => count($pdf_ids) . '件のPDFを設定しました',
+    );
+}
+
 function jsbb_get_tournament_brackets_list() {
     $brackets = get_posts(array(
         'post_type' => 'tournament_bracket',
@@ -423,6 +453,79 @@ function jsbb_format_bracket_data($post) {
         );
     }
 
+    // 試合データ: 紐付け大会 → なければインライン入力(_bracket_matches)
+    $tournament_id = get_post_meta($post->ID, '_bracket_tournament_id', true);
+    $matches_data = array();
+    $matches_source = 'none';
+
+    if ($tournament_id) {
+        // 紐付け大会から試合を取得
+        $matches_raw = get_posts(array(
+            'post_type' => 'match',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'meta_key' => '_match_tournament_id',
+            'meta_value' => intval($tournament_id),
+        ));
+        foreach ($matches_raw as $m) {
+            $home_team_post = get_post(intval(get_post_meta($m->ID, '_match_home_team_id', true)));
+            $away_team_post = get_post(intval(get_post_meta($m->ID, '_match_away_team_id', true)));
+            $matches_data[] = array(
+                'id' => $m->ID,
+                'date' => get_post_meta($m->ID, '_match_date', true),
+                'round' => get_post_meta($m->ID, '_match_round', true),
+                'venue' => get_post_meta($m->ID, '_match_venue', true),
+                'home_team' => array(
+                    'id' => $home_team_post ? $home_team_post->ID : null,
+                    'name' => $home_team_post ? $home_team_post->post_title : '未定',
+                ),
+                'away_team' => array(
+                    'id' => $away_team_post ? $away_team_post->ID : null,
+                    'name' => $away_team_post ? $away_team_post->post_title : '未定',
+                ),
+                'home_total' => intval(get_post_meta($m->ID, '_match_home_total', true)),
+                'away_total' => intval(get_post_meta($m->ID, '_match_away_total', true)),
+                'status' => jsbb_get_match_status($m->ID),
+            );
+        }
+        usort($matches_data, function($a, $b) {
+            return strcmp($a['date'] ?: '', $b['date'] ?: '');
+        });
+        $matches_source = 'tournament';
+    } else {
+        // インライン入力データを使用
+        $inline_json = get_post_meta($post->ID, '_bracket_matches', true);
+        if ($inline_json) {
+            $inline = json_decode($inline_json, true);
+            if (is_array($inline) && !empty($inline)) {
+                foreach ($inline as $m) {
+                    $home_score = isset($m['home_score']) && $m['home_score'] !== null ? intval($m['home_score']) : null;
+                    $away_score = isset($m['away_score']) && $m['away_score'] !== null ? intval($m['away_score']) : null;
+                    $matches_data[] = array(
+                        'id' => isset($m['id']) ? $m['id'] : null,
+                        'date' => isset($m['date']) ? $m['date'] : '',
+                        'round' => isset($m['round']) ? $m['round'] : '',
+                        'round_idx' => isset($m['round_idx']) ? intval($m['round_idx']) : 0,
+                        'match_idx' => isset($m['match_idx']) ? intval($m['match_idx']) : 0,
+                        'venue' => isset($m['venue']) ? $m['venue'] : '',
+                        'home_team' => array(
+                            'id' => null,
+                            'name' => isset($m['home_name']) && $m['home_name'] !== '' ? $m['home_name'] : '未定',
+                        ),
+                        'away_team' => array(
+                            'id' => null,
+                            'name' => isset($m['away_name']) && $m['away_name'] !== '' ? $m['away_name'] : '未定',
+                        ),
+                        'home_total' => $home_score,
+                        'away_total' => $away_score,
+                        'status' => isset($m['status']) ? $m['status'] : '試合前',
+                    );
+                }
+                $matches_source = 'inline';
+            }
+        }
+    }
+
     return array(
         'id' => $post->ID,
         'title' => $post->post_title,
@@ -437,6 +540,9 @@ function jsbb_format_bracket_data($post) {
         'categories' => is_array($class_terms) ? $class_terms : array(),
         'teams' => $teams_data,
         'pdfs' => $pdfs_data,
+        'tournament_id' => $tournament_id ? intval($tournament_id) : null,
+        'matches' => $matches_data,
+        'matches_source' => $matches_source,
         'modified' => $post->post_modified,
     );
 }

@@ -97,13 +97,10 @@
 
 .tournamentBadge {
   display: inline-block;
-  margin-top: 12px;
-  padding: 4px 14px;
+  margin-top: 8px;
   font-size: 13px;
   font-weight: 700;
   color: #c8102e;
-  background: rgba(200, 16, 46, 0.08);
-  border: 1px solid rgba(200, 16, 46, 0.2);
 }
 
 /* セクションナビ */
@@ -113,6 +110,13 @@
   z-index: 10;
   background: #fff;
   border-bottom: 1px solid #e0e0e0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.sectionNav::-webkit-scrollbar {
+  display: none;
 }
 
 .sectionNavInner {
@@ -340,7 +344,7 @@
   }
 
   .sectionNavInner {
-    padding: 0 16px;
+    padding: 0 8px;
   }
 
   .navItem {
@@ -817,5 +821,604 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+  }
+}
+/* ===== お知らせセクション ===== */
+.newsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.newsItem {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 14px 4px;
+  border-bottom: 1px solid #e5e7eb;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s;
+}
+
+.newsItem:hover {
+  background: #f9fafb;
+}
+
+.newsDate {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+  letter-spacing: 0.03em;
+}
+
+.newsTitle {
+  font-size: 0.95rem;
+  color: #111827;
+  line-height: 1.5;
+}
+
+.importantBadge {
+  display: inline-block;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* ==========================================
+   ビジュアルトーナメント表 (bk=bracket)
+   ========================================== */
+
+/* 年度見出し */
+.bkYearTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+/* View toggle */
+.bkViewToggle {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.bkViewBtn {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  position: relative;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.bkViewBtn:hover {
+  color: #333;
+}
+
+.bkViewBtnActive {
+  color: #1a1a1a;
+}
+
+.bkViewBtnActive::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #c8102e;
+}
+
+/* Bracket scroll container */
+.bkScrollOuter {
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(200,16,46,0.3) transparent;
+  margin-top: 24px;
+}
+
+.bkScrollOuter::-webkit-scrollbar {
+  height: 6px;
+  width: 4px;
+}
+
+.bkScrollOuter::-webkit-scrollbar-thumb {
+  background: rgba(200,16,46,0.3);
+  border-radius: 3px;
+}
+
+.bkStage {
+  display: inline-flex;
+  align-items: flex-start;
+  padding: 0 20px 28px;
+  min-height: 100%;
+}
+
+.bkRoundLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #c8102e;
+  text-align: center;
+  padding: 9px 0 5px;
+  border-bottom: 1px solid rgba(200,16,46,0.2);
+  position: sticky;
+  top: 0;
+  background: #f8f9fa;
+  z-index: 5;
+  white-space: nowrap;
+}
+
+/* Match card */
+.bkMatchCard {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.bkDone     { border-left: 3px solid #388e3c; }
+.bkUpcoming { border-left: 3px solid #c8102e; }
+.bkTbd      { border-left: 3px solid rgba(150,150,150,0.3); opacity: 0.72; }
+
+/* メタ行（時刻・会場・ステータス） */
+.bkMatchMeta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px 2px 9px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #eee;
+  min-height: 18px;
+  overflow: hidden;
+}
+
+.bkMatchTime {
+  font-size: 9px;
+  font-weight: 700;
+  color: #555;
+  flex-shrink: 0;
+}
+
+.bkMatchVenue {
+  font-size: 8.5px;
+  color: #888;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.bkLiveBadge {
+  font-size: 8px;
+  font-weight: 900;
+  color: #fff;
+  background: #c8102e;
+  padding: 1px 4px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  animation: bkLivePulse 1.2s ease-in-out infinite;
+}
+
+.bkDoneBadge {
+  font-size: 8px;
+  font-weight: 700;
+  color: #388e3c;
+  background: rgba(56,142,60,0.1);
+  padding: 1px 4px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+@keyframes bkLivePulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+.bkTeamRow {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  padding: 0 7px 0 9px;
+  gap: 4px;
+}
+
+.bkTeamRow + .bkTeamRow {
+  border-top: 1px solid #f0f0f0;
+}
+
+.bkWinRow .bkTeamName {
+  color: #c8102e;
+  font-weight: 700;
+}
+
+.bkWinDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #c8102e;
+  flex-shrink: 0;
+}
+
+.bkTeamName {
+  flex: 1;
+  font-size: 10.5px;
+  word-break: break-all;
+  color: #333;
+  line-height: 1.3;
+}
+
+.bkTbdName {
+  color: rgba(150,150,150,0.5);
+  font-style: italic;
+  font-size: 10px;
+}
+
+.bkTeamScore {
+  font-size: 15px;
+  font-weight: 700;
+  width: 20px;
+  text-align: right;
+  flex-shrink: 0;
+  color: #888;
+}
+
+.bkScoreWin  { color: #c8102e; }
+.bkScoreLoss { color: rgba(150,150,150,0.4); }
+
+.bkScrollHint {
+  text-align: right;
+  font-size: 11px;
+  color: #aaa;
+  padding: 6px 16px;
+  border-top: 1px solid #e0e0e0;
+  background: #f8f9fa;
+}
+
+.bkEmptyMsg {
+  padding: 48px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+}
+
+/* Teams grid (pre-tournament) */
+.teamsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.teamCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+
+.teamSeed {
+  font-size: 12px;
+  font-weight: 700;
+  color: #c8102e;
+  min-width: 24px;
+  text-align: center;
+}
+
+.teamCardName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  min-width: 0;
+  word-break: break-all;
+}
+
+.teamBranch {
+  font-size: 11px;
+  color: #888;
+  white-space: nowrap;
+}
+
+
+/* ==========================================
+   大会日別カード一覧 (ml=match list)
+   ========================================== */
+
+/* Day tabs */
+.dayTabsBar {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 16px;
+}
+
+.dayTabsBar::-webkit-scrollbar {
+  display: none;
+}
+
+.dayTab {
+  flex: 0 0 auto;
+  padding: 8px 20px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  color: #888;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+.dayTab:hover {
+  color: #333;
+}
+
+.dayTabActive {
+  color: #c8102e;
+  border-bottom-color: #c8102e;
+  background: rgba(200,16,46,0.04);
+}
+
+.dayTabLabel {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.dayTabRound {
+  font-size: 10px;
+}
+
+/* Match card grid */
+.mlCardGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mlCard {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+/* 上段: ステータス / 時刻 / 会場 */
+.mlCardTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 8px;
+}
+
+.mlStatusBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.mlBadgeTbd      { color: #4a6fa5; background: #e3eaf5; }
+.mlBadgeUpcoming { color: #c8102e; background: rgba(200,16,46,0.09); }
+.mlBadgeDone     { color: #388e3c; background: rgba(56,142,60,0.09); }
+
+.mlCardTime {
+  font-size: 14px;
+  font-weight: 700;
+  color: #222;
+  flex-shrink: 0;
+}
+
+.mlCardMeta2 {
+  font-size: 13px;
+  color: #555;
+  flex: 1;
+  min-width: 0;
+  word-break: break-all;
+}
+
+/* 下段: チーム名 — チーム名 */
+.mlCardTeams {
+  display: flex;
+  align-items: center;
+  padding: 6px 16px 14px;
+  gap: 10px;
+}
+
+.mlCardTeamName {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  min-width: 0;
+  word-break: break-all;
+}
+
+.mlCardTeamNameRight {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  min-width: 0;
+  word-break: break-all;
+  text-align: right;
+}
+
+.mlWinName {
+  color: #c8102e;
+}
+
+.mlCardDash {
+  font-size: 16px;
+  color: #aaa;
+  flex-shrink: 0;
+  padding: 0 4px;
+}
+
+.mlCardScore {
+  font-size: 22px;
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 26px;
+  text-align: center;
+  color: #888;
+}
+
+.mlScoreWin  { color: #c8102e; }
+.mlScoreLoss { color: rgba(150,150,150,0.35); }
+
+.mlNoMatches {
+  text-align: center;
+  color: #888;
+  padding: 32px;
+  font-size: 14px;
+}
+
+/* 大会日別セクション（トーナメント表の下） */
+.cardListSection {
+  margin-top: 32px;
+}
+
+.cardListTitle {
+  font-size: 16px;
+  font-weight: 900;
+  color: #333;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e0e0e0;
+  letter-spacing: 0.05em;
+}
+
+/* 過去の大会セクション */
+.pastBracketsSection {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.pastBracketsTitle {
+  font-size: 15px;
+  font-weight: 900;
+  color: #888;
+  margin-bottom: 16px;
+  letter-spacing: 0.05em;
+}
+
+.pastBracketCard {
+  opacity: 0.75;
+}
+
+/* PDF / past brackets */
+.bkPdfLinks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.bkPdfBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #c8102e;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.bkPdfBtn:hover {
+  background: #c8102e;
+  color: #fff;
+  border-color: #c8102e;
+}
+
+.pastBracketsTitle {
+  font-size: 16px;
+  font-weight: 900;
+  color: #555;
+  margin: 36px 0 16px;
+  padding-top: 32px;
+  border-top: 1px solid #eee;
+}
+
+/* SP responsive */
+@media (max-width: 767px) {
+  .bkViewBtn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .mlCardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .teamsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  /* ナビ非表示 */
+  .sectionNav {
+    display: none;
+  }
+
+  /* お知らせ: 日付とタイトルを2段に */
+  .newsItem {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+
+  /* 試合カード: SP でチーム名を小さく */
+  .mlCardTeamName,
+  .mlCardTeamNameRight {
+    font-size: 12px;
+  }
+
+  /* 試合カード上段: SP で折り返し許可 */
+  .mlCardTop {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* トーナメント表内チーム名: SP でさらに小さく */
+  .bkTeamName {
+    font-size: 9px;
   }
 }

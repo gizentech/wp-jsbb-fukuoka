@@ -3,8 +3,7 @@ if (!defined('ABSPATH')) exit;
 
 // ==========================================
 // Instagram プロキシ API
-// wp-config.php に以下を定義:
-//   define('JSBB_INSTAGRAM_ACCESS_TOKEN', '...');
+// トークンはWordPress管理画面 > 設定 > JSBB大会設定で管理
 // ==========================================
 add_action('rest_api_init', function () {
     register_rest_route('jsbb/v1', '/instagram', array(
@@ -12,13 +11,35 @@ add_action('rest_api_init', function () {
         'callback' => 'jsbb_get_instagram_posts',
         'permission_callback' => '__return_true',
     ));
+    register_rest_route('jsbb/v1', '/instagram/refresh-token', array(
+        'methods' => 'POST',
+        'callback' => 'jsbb_refresh_instagram_token',
+        'permission_callback' => function() { return current_user_can('manage_options'); },
+    ));
+    register_rest_route('jsbb/v1', '/instagram/clear-cache', array(
+        'methods' => 'POST',
+        'callback' => 'jsbb_clear_instagram_cache',
+        'permission_callback' => function() { return current_user_can('manage_options'); },
+    ));
+    // デバッグ用：生データ確認（管理者のみ）
+    register_rest_route('jsbb/v1', '/instagram/debug', array(
+        'methods' => 'GET',
+        'callback' => 'jsbb_debug_instagram_posts',
+        'permission_callback' => function() { return current_user_can('manage_options'); },
+    ));
 });
 
+function jsbb_get_instagram_token() {
+    // 優先順位: WPオプション > wp-config定数
+    $token = get_option('jsbb_instagram_access_token', '');
+    if (empty($token) && defined('JSBB_INSTAGRAM_ACCESS_TOKEN')) {
+        $token = JSBB_INSTAGRAM_ACCESS_TOKEN;
+    }
+    return $token;
+}
+
 function jsbb_get_instagram_posts() {
-    // wp-config.php で定義されていればそれを使用、なければ直接指定
-    $token = defined('JSBB_INSTAGRAM_ACCESS_TOKEN')
-        ? JSBB_INSTAGRAM_ACCESS_TOKEN
-        : 'IGAANWjiRYuXdBZAGFZAUnI4bFNkMEZAObksxeUNwNmNTck1NQWlDbmF3MS1wWEgzRmxNMHNDNHhXXzhPXzBaTF9PTnV0Wml3WnkzTzE1ZA3lqR2wxc1g5R2FmaWRCcFRTNnRIZAm5NR0d5UzJjaDRQV1g2ZAzBMcXh2Y2JDaFdsNzlZAMAZDZD';
+    $token = jsbb_get_instagram_token();
 
     if (empty($token)) {
         return new WP_REST_Response(array(), 200);
@@ -89,4 +110,51 @@ function jsbb_get_instagram_posts() {
     set_transient($cache_key, $posts, 1800);
 
     return new WP_REST_Response($posts, 200);
+}
+
+// トークンをInstagram APIで60日延長
+function jsbb_refresh_instagram_token() {
+    $token = jsbb_get_instagram_token();
+
+    if (empty($token)) {
+        return new WP_REST_Response(array('error' => 'トークンが設定されていません'), 400);
+    }
+
+    $refresh_url = sprintf(
+        'https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=%s',
+        urlencode($token)
+    );
+
+    $response = wp_remote_get($refresh_url, array('timeout' => 15));
+
+    if (is_wp_error($response)) {
+        return new WP_REST_Response(array('error' => $response->get_error_message()), 500);
+    }
+
+    $body = json_decode(wp_remote_retrieve_body($response), true);
+
+    if (!empty($body['access_token'])) {
+        update_option('jsbb_instagram_access_token', sanitize_text_field($body['access_token']));
+        $expires_in = $body['expires_in'] ?? 5183944;
+        $expires_at = time() + (int)$expires_in;
+        update_option('jsbb_instagram_token_expires_at', $expires_at);
+
+        // キャッシュもクリア
+        delete_transient('jsbb_instagram_posts_v2');
+
+        return new WP_REST_Response(array(
+            'success'    => true,
+            'message'    => 'トークンを更新しました',
+            'expires_at' => date('Y年m月d日', $expires_at),
+        ), 200);
+    }
+
+    $error_msg = $body['error']['message'] ?? '不明なエラー';
+    return new WP_REST_Response(array('error' => $error_msg), 400);
+}
+
+// キャッシュクリア
+function jsbb_clear_instagram_cache() {
+    delete_transient('jsbb_instagram_posts_v2');
+    return new WP_REST_Response(array('success' => true, 'message' => 'キャッシュをクリアしました'), 200);
 }

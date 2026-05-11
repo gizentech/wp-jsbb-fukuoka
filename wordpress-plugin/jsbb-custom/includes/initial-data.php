@@ -140,3 +140,4 @@ function jsbb_create_initial_data() {
     delete_option('jsbb_need_init_data');
 }
 add_action('init', 'jsbb_create_initial_data');
+

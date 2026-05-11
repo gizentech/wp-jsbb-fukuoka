@@ -1,5 +1,5 @@
 // components/HeroSlider/HeroSlider.js
-import { useState, useEffect, useRef, useCallback, Fragment } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import styles from './HeroSlider.module.css';
 
@@ -62,38 +62,8 @@ function SlotNum({ value, className }) {
   return <span ref={ref} className={className}>{display}</span>;
 }
 
-export default function HeroSlider({ important = false, latestItem = null }) {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalClosing, setModalClosing] = useState(false);
-
-  useEffect(() => {
-    if (modalOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
-  }, [modalOpen]);
-
-  const closeModal = () => {
-    setModalClosing(true);
-    setTimeout(() => {
-      setModalOpen(false);
-      setModalClosing(false);
-    }, 300);
-  };
-
-  // 2026年5月10日まで特別表示
-  const now = new Date();
-  const start = new Date('2026-04-04T00:00:00+09:00');
-  const deadline = new Date('2026-05-10T23:59:59+09:00');
-  const isSpecialPeriod = now >= start && now <= deadline;
-
-  // PC画像をランダムに選択（初回レンダー時に決定）
-  const [pcImageSrc] = useState(() => {
-    const images = ['/fukuoka/ft/ft2026_pc.webp', '/fukuoka/ft/ft2026_pc2.webp'];
-    return images[Math.floor(Math.random() * images.length)];
-  });
+export default function HeroSlider({ important = false, latestItem = null, heroSettings = null }) {
+  const isCustom = heroSettings?.enabled && (heroSettings?.pc_image || heroSettings?.sp_image);
 
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
@@ -101,28 +71,16 @@ export default function HeroSlider({ important = false, latestItem = null }) {
     return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
   };
 
-  // 特別期間: 画像のみ表示（統計・ニュース・オーバーレイなし）
-  if (isSpecialPeriod) {
+  // WPでカスタムヒーローが有効: 設定画像を表示（統計・ニュース・オーバーレイなし）
+  if (isCustom) {
     return (
-      <Fragment>
-        {modalOpen && (
-          <div className={`${styles.modalOverlay} ${modalClosing ? styles.modalOverlayOut : ''}`} onClick={closeModal}>
-            <div className={`${styles.modalContent} ${modalClosing ? styles.modalContentOut : ''}`} onClick={e => e.stopPropagation()}>
-              <img
-                src="https://wp.jsbb-fukuoka.com/wp-content/uploads/2026/04/69d9e076b8335.webp"
-                alt="組み合わせ"
-                className={styles.modalImage}
-              />
-              <button className={styles.modalClose} onClick={closeModal} aria-label="閉じる">閉じる</button>
-            </div>
-          </div>
-        )}
-        <div className={styles.heroSpecial}>
-          {/* PC・タブレット用 */}
+      <div className={styles.heroSpecial}>
+        {/* PC・タブレット用 */}
+        {heroSettings.pc_image && (
           <div className={styles.pcImage}>
-            <div className={styles.pcImageWrap} onClick={() => setModalOpen(true)}>
+            <div className={styles.pcImageWrap}>
               <Image
-                src={pcImageSrc}
+                src={heroSettings.pc_image}
                 alt="トップ画像"
                 width={1920}
                 height={1080}
@@ -133,11 +91,13 @@ export default function HeroSlider({ important = false, latestItem = null }) {
               />
             </div>
           </div>
-          {/* モバイル用 */}
+        )}
+        {/* モバイル用 */}
+        {heroSettings.sp_image && (
           <div className={styles.spImage}>
-            <div className={styles.spImageWrap} onClick={() => setModalOpen(true)}>
+            <div className={styles.spImageWrap}>
               <Image
-                src="/fukuoka/ft/ft2026_sp.webp"
+                src={heroSettings.sp_image}
                 alt="トップ画像"
                 width={900}
                 height={1200}
@@ -146,13 +106,27 @@ export default function HeroSlider({ important = false, latestItem = null }) {
                 quality={85}
                 className={styles.specialImage}
               />
-              <div className={styles.tapHint}>
-                <span className={styles.tapHintLabel}>組み合わせ表</span>
-              </div>
             </div>
           </div>
-        </div>
-      </Fragment>
+        )}
+        {/* SP画像のみ設定されていない場合はPC画像をフォールバック表示 */}
+        {heroSettings.pc_image && !heroSettings.sp_image && (
+          <div className={styles.spImage}>
+            <div className={styles.spImageWrap}>
+              <Image
+                src={heroSettings.pc_image}
+                alt="トップ画像"
+                width={1920}
+                height={1080}
+                sizes="100vw"
+                priority
+                quality={85}
+                className={styles.specialImage}
+              />
+            </div>
+          </div>
+        )}
+      </div>
     );
   }
 

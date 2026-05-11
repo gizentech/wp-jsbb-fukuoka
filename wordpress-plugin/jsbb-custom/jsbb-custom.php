@@ -8,6 +8,9 @@
 
 if (!defined('ABSPATH')) exit;
 
+define('JSBB_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('JSBB_PLUGIN_PATH', plugin_dir_path(__FILE__));
+
 $jsbb_includes = array(
     'member-interview',
     'officer-group',
@@ -25,6 +28,7 @@ $jsbb_includes = array(
     'team-profile',
     'access-control',
     'news',
+    'tournament-announcement',
     'admin-ui',
     'media-folder',
     'migration-helper',
@@ -34,6 +38,11 @@ $jsbb_includes = array(
     'portal-activity',
     'portal-documents',
     'portal-shop',
+    'portal-product-admin',
+    'portal-seed-chikugogawa',
+    'portal-admin-menu',
+    'chikugogawa-api',
+    'bracket-import-1846',
     'contact-form',
     'calendar-proxy',
     'instagram-proxy',

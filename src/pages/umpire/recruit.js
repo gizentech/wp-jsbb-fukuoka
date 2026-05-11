@@ -1,34 +1,24 @@
+import { useEffect, useState } from 'react'
 import Header from '../../components/Header/Header'
 import Meta from '../../components/Meta/Meta.js'
 import Footer from '../../components/Footer/Footer'
 import UmpireSidebar from '../../components/UmpireSidebar/UmpireSidebar'
 import styles from '../../styles/umpire/UmpireInfo.module.css'
-import { fetchPageById } from '../../lib/wp-api'
+import { fetchPageById } from '../../lib/wp-api-client'
 
-export async function getStaticProps() {
-  try {
-    const page = await fetchPageById(1208)
+export default function UmpireInfo() {
+  const [title, setTitle] = useState('審判について')
+  const [content, setContent] = useState('')
 
-    return {
-      props: {
-        title: page?.title || '審判について',
-        content: page?.content || '',
-        featuredImage: page?.featuredImage || null,
-      },
-    }
-  } catch (error) {
-    console.error('Failed to fetch umpire-info page:', error)
-    return {
-      props: {
-        title: '審判について',
-        content: '',
-        featuredImage: null,
-      },
-    }
-  }
-}
+  useEffect(() => {
+    fetchPageById(1208).then((page) => {
+      if (page) {
+        setTitle(page.title || '審判について')
+        setContent(page.content || '')
+      }
+    }).catch(() => {})
+  }, [])
 
-export default function UmpireInfo({ title, content, featuredImage }) {
   return (
     <>
       <Meta
@@ -41,7 +31,6 @@ export default function UmpireInfo({ title, content, featuredImage }) {
       <Header flush />
       <div className={styles.container}>
         <main className={styles.main}>
-          {/* ヒーロー（アイキャッチ画像） */}
           <div className={styles.hero}>
             <div className={styles.heroOverlay} />
           </div>

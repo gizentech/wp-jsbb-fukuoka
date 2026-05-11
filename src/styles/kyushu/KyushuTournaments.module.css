@@ -1,0 +1,214 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #0a0f1e;
+}
+
+.main {
+  flex: 1;
+  padding: 80px 0;
+  padding-top: calc(56px + 80px);
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 60px;
+}
+
+.pageHeader {
+  margin-bottom: 48px;
+}
+
+.pageEyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: #00b5ad;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+.pageTitle {
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 900;
+  color: #fff;
+  margin: 0;
+  letter-spacing: 0.04em;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pageTitleLine {
+  display: block;
+}
+
+.loading,
+.empty {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.95rem;
+}
+
+.seriesList {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.seriesItem {}
+
+.seriesTitle {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  letter-spacing: 0.04em;
+}
+
+.bracketList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bracketItem {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.bracketLink {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 0;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.bracketLink:hover {
+  opacity: 0.7;
+}
+
+.bracketName {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  flex: 1;
+  line-height: 1.5;
+}
+
+.bracketDate {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.bracketArrow {
+  color: #00b5ad;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.backLink {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  text-decoration: none;
+  margin-bottom: 40px;
+  transition: color 0.2s ease;
+}
+
+.backLink:hover {
+  color: #00b5ad;
+}
+
+.pdfSection {
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pdfCard {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.pdfCard:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.pdfThumb {
+  width: 80px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.pdfLabel {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.infoList {
+  margin: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.infoRow {
+  display: flex;
+  gap: 24px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.infoRow dt {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.infoRow dd {
+  font-size: 0.9rem;
+  color: #fff;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .main {
+    padding: calc(56px + 48px) 0 48px;
+  }
+
+  .inner {
+    padding: 0 20px;
+  }
+
+  .bracketLink {
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    padding: 14px 0;
+  }
+
+  .bracketName {
+    width: 100%;
+  }
+
+  .bracketDate {
+    font-size: 0.7rem;
+  }
+
+  .bracketArrow {
+    margin-left: auto;
+  }
+}

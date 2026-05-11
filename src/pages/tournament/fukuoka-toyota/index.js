@@ -7,7 +7,7 @@ import Header from '../../../components/Header/Header'
 import Footer from '../../../components/Footer/Footer'
 import styles from '../../../styles/tournament/Tournament.module.css'
 import tStyles from '../../../components/Tournament/Tournament.module.css'
-import { fetchTournamentSeries, fetchTournamentBracketById } from '../../../lib/wp-api'
+import { fetchTournamentSeries, fetchTournamentBracketById, fetchNews } from '../../../lib/wp-api-client'
 
 function YouTubeFacade({ id, title }) {
   const [active, setActive] = useState(false)
@@ -51,28 +51,35 @@ const YOUTUBE_VIDEOS = [
   { id: 'hu2hhOgZ0Jg', title: '夢に向かって走り続ける福岡トヨタ（CM 15秒Ver.）' },
 ]
 
-export async function getStaticProps() {
-  try {
-    const allSeries = await fetchTournamentSeries()
-    const series = allSeries.find((s) => s.id === SERIES_POST_ID)
-    const baseBrackets = series?.brackets || []
+export default function FukuokaToyotaCup() {
+  const [brackets, setBrackets] = useState([])
+  const [news, setNews] = useState([])
 
-    // PDF情報を含む詳細データを取得
-    const brackets = await Promise.all(
-      baseBrackets.map(async (bk) => {
-        const detail = await fetchTournamentBracketById(bk.id)
-        return detail || bk
-      })
-    )
+  useEffect(() => {
+    fetchTournamentSeries().then(async (allSeries) => {
+      const series = allSeries.find((s) => s.id === SERIES_POST_ID)
+      const baseBrackets = series?.brackets || []
+      const details = await Promise.all(
+        baseBrackets.map(async (bk) => {
+          const detail = await fetchTournamentBracketById(bk.id)
+          return detail || bk
+        })
+      )
+      setBrackets(details)
+    }).catch(() => {})
+  }, [])
 
-    return { props: { brackets } }
-  } catch (err) {
-    console.error('Error fetching fukuoka-toyota tournament series:', err)
-    return { props: { brackets: [] } }
-  }
-}
+  useEffect(() => {
+    fetchNews('es-class').then((items) => {
+      setNews((items || []).slice(0, 5).map((item) => ({
+        id: item.id,
+        title: item.title || '',
+        date: item.date || '',
+        important: item.important || false,
+      })))
+    }).catch(() => {})
+  }, [])
 
-export default function FukuokaToyotaCup({ brackets }) {
   const sortedBrackets = useMemo(() => {
     return [...brackets].sort((a, b) => (b.year || '').localeCompare(a.year || ''))
   }, [brackets])
@@ -170,6 +177,15 @@ export default function FukuokaToyotaCup({ brackets }) {
           {/* セクションナビ */}
           <nav className={styles.sectionNav}>
             <div className={styles.sectionNavInner}>
+              {news.length > 0 && (
+                <button
+                  type="button"
+                  className={styles.navItem}
+                  onClick={() => document.getElementById('news').scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                >
+                  お知らせ <FaChevronDown className={styles.navChevron} />
+                </button>
+              )}
               <button
                 type="button"
                 className={styles.navItem}
@@ -195,6 +211,32 @@ export default function FukuokaToyotaCup({ brackets }) {
           </nav>
 
           <div className={styles.content}>
+            {/* お知らせ */}
+            {news.length > 0 && (
+              <section id="news" className={styles.section}>
+                <div className={styles.sectionHeader}>
+                  <span className={styles.accent} />
+                  <div>
+                    <h2 className={styles.sectionTitle}>お知らせ</h2>
+                    <p className={styles.sectionSub}>INFORMATION</p>
+                  </div>
+                </div>
+                <div className={styles.newsList}>
+                  {news.map((item) => (
+                    <a key={item.id} href={`/news/${item.id}`} className={styles.newsItem}>
+                      <time className={styles.newsDate}>
+                        {new Date(item.date).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+                      </time>
+                      <span className={styles.newsTitle}>
+                        {item.important && <span className={styles.importantBadge}>重要</span>}
+                        {item.title}
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {/* トーナメント表 */}
             {sortedBrackets.length > 0 && (
               <section id="brackets" className={styles.section}>

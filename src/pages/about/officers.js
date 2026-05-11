@@ -1,39 +1,22 @@
+import { useEffect, useState } from 'react'
 import Meta from '../../components/Meta/Meta.js'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import AboutSidebar from '../../components/AboutSidebar/AboutSidebar'
 import styles from '../../styles/about/AboutDetail.module.css'
-import { fetchOfficers, fetchPageBySlug } from '../../lib/wp-api'
+import { fetchOfficers } from '../../lib/wp-api-client'
 
-export async function getStaticProps() {
-  try {
-    const [officersData, page] = await Promise.all([
-      fetchOfficers().catch(() => ({ prefecture: [], branch: [] })),
-      fetchPageBySlug('officers').catch(() => null)
-    ])
+export default function Officers() {
+  const [prefectureGroups, setPrefectureGroups] = useState([])
+  const [branchGroups, setBranchGroups] = useState([])
 
-    return {
-      props: {
-        prefectureGroups: officersData.prefecture || [],
-        branchGroups: officersData.branch || [],
-        featuredImage: page?.featuredImage || null,
-      },
+  useEffect(() => {
+    fetchOfficers().then((data) => {
+      setPrefectureGroups(data?.prefecture || [])
+      setBranchGroups(data?.branch || [])
+    }).catch(() => {})
+  }, [])
 
-    }
-  } catch (error) {
-    console.error('Failed to fetch officers page:', error)
-    return {
-      props: {
-        prefectureGroups: [],
-        branchGroups: [],
-        featuredImage: null,
-      },
-
-    }
-  }
-}
-
-export default function Officers({ prefectureGroups = [], branchGroups = [], featuredImage }) {
   return (
     <>
       <Meta title="役員およびスタッフ" description="福岡県軟式野球連盟の県連盟役員・支部役員およびスタッフ一覧。福岡県の軟式野球を支える役員をご紹介します。" keywords="福岡県軟式野球連盟,役員,スタッフ,支部,野球連盟,福岡" urlPath="/about/officers" breadcrumbs={[{ name: '連盟概要', path: '/about' }, { name: '役員およびスタッフ', path: '/about/officers' }]} />
@@ -53,7 +36,6 @@ export default function Officers({ prefectureGroups = [], branchGroups = [], fea
                     福岡県軟式野球連盟の役員およびスタッフをご紹介します。
                   </p>
 
-                  {/* 県連盟役員 */}
                   {prefectureGroups.length > 0 && (
                     <>
                       <h2 className={styles.officersSectionTitle}>
@@ -102,7 +84,6 @@ export default function Officers({ prefectureGroups = [], branchGroups = [], fea
                     </>
                   )}
 
-                  {/* 支部役員 */}
                   {branchGroups.length > 0 && (
                     <>
                       <h2 className={styles.officersSectionTitle}>

@@ -60,7 +60,7 @@ export default function Column() {
 
   // 画像のみフィルタ
   const filteredColumns = useMemo(() =>
-    columns.filter(item => item.mediaUrl && item.mediaType === 'IMAGE'),
+    columns.filter(item => item.mediaUrl && ['IMAGE', 'CAROUSEL_ALBUM'].includes(item.mediaType)),
     [columns]
   );
 

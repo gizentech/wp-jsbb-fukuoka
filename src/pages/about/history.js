@@ -1,36 +1,24 @@
+import { useEffect, useState } from 'react'
 import Meta from '../../components/Meta/Meta.js'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import AboutSidebar from '../../components/AboutSidebar/AboutSidebar'
 import styles from '../../styles/about/AboutDetail.module.css'
-import { fetchPageBySlug } from '../../lib/wp-api'
+import { fetchPageBySlug } from '../../lib/wp-api-client'
 
-export async function getStaticProps() {
-  try {
-    const page = await fetchPageBySlug('history')
+export default function Officers() {
+  const [title, setTitle] = useState('')
+  const [content, setContent] = useState('')
 
-    return {
-      props: {
-        title: page?.title || '',
-        content: page?.content || '',
-        featuredImage: page?.featuredImage || null,
-      },
+  useEffect(() => {
+    fetchPageBySlug('history').then((page) => {
+      if (page) {
+        setTitle(page.title || '')
+        setContent(page.content || '')
+      }
+    }).catch(() => {})
+  }, [])
 
-    }
-  } catch (error) {
-    console.error('Failed to fetch officers page:', error)
-    return {
-      props: {
-        title: '沿革',
-        content: '',
-        featuredImage: null,
-      },
-
-    }
-  }
-}
-
-export default function Officers({ title, content, featuredImage }) {
   return (
     <>
       <Meta title={title || '沿革'} description="福岡県軟式野球連盟の沿革・歴史。創設から現在までの福岡県軟式野球連盟のあゆみをご紹介します。" keywords="福岡県軟式野球連盟,沿革,歴史,野球連盟,福岡,軟式野球" urlPath="/about/history" breadcrumbs={[{ name: '連盟概要', path: '/about' }, { name: '沿革', path: '/about/history' }]} />

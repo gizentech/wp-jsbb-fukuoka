@@ -3,10 +3,22 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import styles from '../../styles/TournamentDetail.module.css'
+import kStyles from '../../styles/kyushu/KyushuTournaments.module.css'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
+import KyushuHeader from '../../components/KyushuHeader/KyushuHeader'
+import KyushuFooter from '../../components/KyushuFooter/KyushuFooter'
 import Meta from '../../components/Meta/Meta'
+import KyushuMeta from '../../components/KyushuMeta/KyushuMeta'
 import { fetchTournamentBracketById, fetchTournamentPostById } from '../../lib/wp-api-client'
+
+const KYUSHU_CLASS = '全日本軟式野球九州連合会'
+const isKyushu = (bracket) => Array.isArray(bracket?.categories) && bracket.categories.includes(KYUSHU_CLASS)
+
+// ブラケットID → 専用ページへのリダイレクトマップ
+const BRACKET_REDIRECT = {
+  '1846': '/tournament/macdonald-fukuoka/',
+}
 
 export default function TournamentDetail() {
   const router = useRouter()
@@ -15,9 +27,17 @@ export default function TournamentDetail() {
   const [tournament, setTournament] = useState(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [redirecting, setRedirecting] = useState(false)
 
   useEffect(() => {
     if (!id) {
+      return
+    }
+
+    // 専用ページが存在するブラケットはリダイレクト
+    if (BRACKET_REDIRECT[id]) {
+      setRedirecting(true)
+      router.replace(BRACKET_REDIRECT[id])
       return
     }
 
@@ -50,6 +70,8 @@ export default function TournamentDetail() {
       }
     })()
   }, [id])
+
+  if (redirecting) return null
 
   if (loading) {
     return (
@@ -203,6 +225,8 @@ function TournamentPostView({ tournament }) {
 }
 
 function BracketView({ bracket }) {
+  if (isKyushu(bracket)) return <KyushuBracketView bracket={bracket} />
+
   const pageTitle = `${bracket.name1} ${bracket.name2 || ''} ${bracket.name3 || ''}`.replace(/\s+/g, ' ').trim()
 
   // チームのグループ化
@@ -358,6 +382,71 @@ function BracketView({ bracket }) {
         </div>
       </main>
       <Footer />
+    </div>
+  )
+}
+
+function KyushuBracketView({ bracket }) {
+  const pageTitle = `${bracket.name1} ${bracket.name2 || ''} ${bracket.name3 || ''}`.replace(/\s+/g, ' ').trim()
+  const nameParts = [bracket.name1, bracket.name2, bracket.name3].filter(Boolean)
+
+  return (
+    <div className={kStyles.container}>
+      <KyushuMeta title={pageTitle} urlPath={`/tournaments/${bracket.id}`} />
+      <KyushuHeader />
+
+      <main className={kStyles.main}>
+        <div className={kStyles.inner}>
+          <div className={kStyles.pageHeader}>
+            <p className={kStyles.pageEyebrow}>TOURNAMENT BRACKET</p>
+            <h1 className={kStyles.pageTitle}>
+              {nameParts.map((n, i) => (
+                <span key={i} className={kStyles.pageTitleLine}>{n}</span>
+              ))}
+            </h1>
+          </div>
+
+          <Link href="/kyushu/tournaments/" className={kStyles.backLink}>
+            ← 大会情報一覧に戻る
+          </Link>
+
+          {bracket.pdfs && bracket.pdfs.length > 0 && (
+            <div className={kStyles.pdfSection}>
+              {bracket.pdfs.map((pdf) => (
+                <a key={pdf.id} href={pdf.url} target="_blank" rel="noopener noreferrer" className={kStyles.pdfCard}>
+                  {pdf.thumbnail && (
+                    <img src={pdf.thumbnail} alt="トーナメント表" className={kStyles.pdfThumb} />
+                  )}
+                  <span className={kStyles.pdfLabel}>トーナメント表を見る（PDF）</span>
+                </a>
+              ))}
+            </div>
+          )}
+
+          <dl className={kStyles.infoList}>
+            {bracket.year && (
+              <div className={kStyles.infoRow}>
+                <dt>年度</dt>
+                <dd>{bracket.year}年度</dd>
+              </div>
+            )}
+            {bracket.number && (
+              <div className={kStyles.infoRow}>
+                <dt>大会回数</dt>
+                <dd>第{bracket.number}回</dd>
+              </div>
+            )}
+            {bracket.modified && (
+              <div className={kStyles.infoRow}>
+                <dt>更新日</dt>
+                <dd>{bracket.modified.substring(0, 10)}</dd>
+              </div>
+            )}
+          </dl>
+        </div>
+      </main>
+
+      <KyushuFooter />
     </div>
   )
 }

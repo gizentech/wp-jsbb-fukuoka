@@ -24,8 +24,28 @@ function jsbb_tournament_settings_page() {
         update_option('jsbb_x_api_secret', sanitize_text_field($_POST['x_api_secret'] ?? ''));
         update_option('jsbb_x_access_token', sanitize_text_field($_POST['x_access_token'] ?? ''));
         update_option('jsbb_x_access_token_secret', sanitize_text_field($_POST['x_access_token_secret'] ?? ''));
+
+        // ヒーロー画像設定
+        update_option('jsbb_hero_custom_enabled', isset($_POST['hero_custom_enabled']) ? '1' : '0');
+        update_option('jsbb_hero_pc_image', sanitize_url($_POST['hero_pc_image'] ?? ''));
+        update_option('jsbb_hero_sp_image', sanitize_url($_POST['hero_sp_image'] ?? ''));
+
+        // Instagramトークン保存
+        if (!empty($_POST['instagram_access_token'])) {
+            $new_token = sanitize_text_field($_POST['instagram_access_token']);
+            update_option('jsbb_instagram_access_token', $new_token);
+            // トークンを新規保存した場合、有効期限をリセット（60日後）
+            update_option('jsbb_instagram_token_expires_at', time() + 5183944);
+            // キャッシュクリア
+            delete_transient('jsbb_instagram_posts_v2');
+        }
+
         echo '<div class="updated"><p>設定を保存しました。</p></div>';
     }
+
+    $ig_token      = get_option('jsbb_instagram_access_token', '');
+    $ig_expires_at = get_option('jsbb_instagram_token_expires_at', 0);
+    $ig_days_left  = $ig_expires_at ? ceil(($ig_expires_at - time()) / 86400) : null;
     ?>
     <div class="wrap">
         <h1>JSBB大会設定</h1>
@@ -58,10 +78,202 @@ function jsbb_tournament_settings_page() {
                     <input type="password" name="x_access_token_secret" value="<?php echo esc_attr(get_option('jsbb_x_access_token_secret', '')); ?>" style="width:100%">
                 </td></tr>
             </table>
+
+            <h2>Instagram</h2>
+            <table class="form-table">
+                <tr>
+                    <th>アクセストークン</th>
+                    <td>
+                        <input type="password" id="instagram_access_token" name="instagram_access_token"
+                            value=""
+                            style="width:100%"
+                            placeholder="<?php echo empty($ig_token) ? 'トークンを入力してください' : '●●●●●●（変更する場合のみ入力）'; ?>">
+                        <p class="description">
+                            <?php if (!empty($ig_token)): ?>
+                                ✅ トークン設定済み
+                                <?php if ($ig_days_left !== null): ?>
+                                    ／ 有効期限まで残り <strong><?php echo (int)$ig_days_left; ?>日</strong>
+                                    （<?php echo date('Y年m月d日', $ig_expires_at); ?>）
+                                    <?php if ($ig_days_left <= 14): ?>
+                                        <span style="color:red; font-weight:bold;"> ⚠️ まもなく期限切れです。下の「トークンを60日延長」ボタンで更新してください。</span>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                ⚠️ トークン未設定
+                            <?php endif; ?>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>トークン操作</th>
+                    <td>
+                        <button type="button" id="jsbb-ig-refresh" class="button button-primary"
+                            <?php echo empty($ig_token) ? 'disabled' : ''; ?>>
+                            🔄 トークンを60日延長
+                        </button>
+                        &nbsp;
+                        <button type="button" id="jsbb-ig-clear-cache" class="button">
+                            🗑️ キャッシュをクリア
+                        </button>
+                        <span id="jsbb-ig-status" style="margin-left:12px; font-weight:bold;"></span>
+                    </td>
+                </tr>
+            </table>
+
+            <h2>ヒーロー画像設定</h2>
+            <p class="description">チェックを入れると、トップページのヒーローにカスタム画像を表示します。チェックを外すと通常の統計表示に戻ります。</p>
+            <table class="form-table">
+                <tr>
+                    <th>カスタムヒーローを表示</th>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="hero_custom_enabled" value="1"
+                                <?php checked('1', get_option('jsbb_hero_custom_enabled', '0')); ?>>
+                            有効にする
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th>PC用画像URL</th>
+                    <td>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <input type="url" id="hero_pc_image" name="hero_pc_image"
+                                value="<?php echo esc_attr(get_option('jsbb_hero_pc_image', '')); ?>"
+                                style="width:100%" placeholder="https://...">
+                            <button type="button" class="button jsbb-media-select" data-target="hero_pc_image" data-preview="hero_pc_preview">画像を選択</button>
+                        </div>
+                        <div id="hero_pc_preview" style="margin-top:8px;">
+                            <?php $pc = get_option('jsbb_hero_pc_image', ''); if ($pc): ?>
+                                <img src="<?php echo esc_url($pc); ?>" style="max-width:400px;max-height:120px;object-fit:cover;border:1px solid #ddd;">
+                            <?php endif; ?>
+                        </div>
+                        <p class="description">横長（16:9など）推奨。PCとタブレットで表示されます。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>SP（スマホ）用画像URL</th>
+                    <td>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <input type="url" id="hero_sp_image" name="hero_sp_image"
+                                value="<?php echo esc_attr(get_option('jsbb_hero_sp_image', '')); ?>"
+                                style="width:100%" placeholder="https://...">
+                            <button type="button" class="button jsbb-media-select" data-target="hero_sp_image" data-preview="hero_sp_preview">画像を選択</button>
+                        </div>
+                        <div id="hero_sp_preview" style="margin-top:8px;">
+                            <?php $sp = get_option('jsbb_hero_sp_image', ''); if ($sp): ?>
+                                <img src="<?php echo esc_url($sp); ?>" style="max-width:200px;max-height:160px;object-fit:cover;border:1px solid #ddd;">
+                            <?php endif; ?>
+                        </div>
+                        <p class="description">縦長（3:4など）推奨。スマートフォンで表示されます。</p>
+                    </td>
+                </tr>
+            </table>
+
             <?php submit_button('設定を保存'); ?>
         </form>
     </div>
+
+    <script>
+    (function() {
+        const nonce = '<?php echo wp_create_nonce('wp_rest'); ?>';
+        const apiBase = '<?php echo esc_js(rest_url('jsbb/v1/instagram')); ?>';
+
+        document.getElementById('jsbb-ig-refresh')?.addEventListener('click', function() {
+            const btn = this;
+            const status = document.getElementById('jsbb-ig-status');
+            btn.disabled = true;
+            status.textContent = '更新中...';
+            status.style.color = '#666';
+
+            fetch(apiBase + '/refresh-token', {
+                method: 'POST',
+                headers: { 'X-WP-Nonce': nonce, 'Content-Type': 'application/json' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    status.textContent = '✅ ' + data.message + '（有効期限: ' + data.expires_at + '）';
+                    status.style.color = 'green';
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    status.textContent = '❌ エラー: ' + (data.error || '不明');
+                    status.style.color = 'red';
+                    btn.disabled = false;
+                }
+            })
+            .catch(() => {
+                status.textContent = '❌ 通信エラー';
+                status.style.color = 'red';
+                btn.disabled = false;
+            });
+        });
+
+        document.getElementById('jsbb-ig-clear-cache')?.addEventListener('click', function() {
+            const btn = this;
+            const status = document.getElementById('jsbb-ig-status');
+            btn.disabled = true;
+            status.textContent = 'クリア中...';
+            status.style.color = '#666';
+
+            fetch(apiBase + '/clear-cache', {
+                method: 'POST',
+                headers: { 'X-WP-Nonce': nonce, 'Content-Type': 'application/json' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                status.textContent = data.success ? '✅ ' + data.message : '❌ ' + (data.error || '不明');
+                status.style.color = data.success ? 'green' : 'red';
+                btn.disabled = false;
+            })
+            .catch(() => {
+                status.textContent = '❌ 通信エラー';
+                status.style.color = 'red';
+                btn.disabled = false;
+            });
+        });
+
+        // メディアアップローダー
+        document.querySelectorAll('.jsbb-media-select').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const targetId = this.dataset.target;
+                const previewId = this.dataset.preview;
+                const frame = wp.media({
+                    title: '画像を選択',
+                    button: { text: 'この画像を使用' },
+                    multiple: false,
+                    library: { type: 'image' }
+                });
+                frame.on('select', function() {
+                    const attachment = frame.state().get('selection').first().toJSON();
+                    document.getElementById(targetId).value = attachment.url;
+                    const preview = document.getElementById(previewId);
+                    preview.innerHTML = '<img src="' + attachment.url + '" style="max-width:400px;max-height:160px;object-fit:cover;border:1px solid #ddd;">';
+                });
+                frame.open();
+            });
+        });
+    })();
+    </script>
     <?php
+}
+
+// ==========================================
+// ヒーロー設定 REST API エンドポイント
+// ==========================================
+add_action('rest_api_init', function() {
+    register_rest_route('jsbb/v1', '/hero-settings', array(
+        'methods'             => 'GET',
+        'callback'            => 'jsbb_get_hero_settings',
+        'permission_callback' => '__return_true',
+    ));
+});
+
+function jsbb_get_hero_settings($request) {
+    return rest_ensure_response(array(
+        'enabled'  => get_option('jsbb_hero_custom_enabled', '0') === '1',
+        'pc_image' => get_option('jsbb_hero_pc_image', ''),
+        'sp_image' => get_option('jsbb_hero_sp_image', ''),
+    ));
 }
 
 function jsbb_get_all_members_custom($request) {

@@ -1,0 +1,87 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #0a0f1e;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+}
+
+.content {
+  text-align: center;
+  max-width: 560px;
+  width: 100%;
+}
+
+.code {
+  font-size: clamp(80px, 15vw, 140px);
+  font-weight: 900;
+  color: #00b5ad;
+  margin: 0 0 8px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.title {
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 16px;
+  letter-spacing: 0.04em;
+}
+
+.message {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.8;
+  margin: 0 0 48px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 13px 28px;
+  background: #00b5ad;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: background 0.2s ease;
+}
+
+.primaryBtn:hover {
+  background: #00838f;
+}
+
+.secondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 13px 28px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+}
+
+.secondaryBtn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}

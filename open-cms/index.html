@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>大会実施判断 CMS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Kaku Gothic ProN',Meiryo,sans-serif;background:#f0f2f5;color:#222;min-height:100vh}
+.topbar{background:#1a3a6b;color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.topbar h1{font-size:18px;font-weight:700;letter-spacing:.05em}
+.topbar .sync{font-size:12px;opacity:.7}
+.container{max-width:860px;margin:0 auto;padding:20px 16px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s,transform .1s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:#1a3a6b;color:#fff}
+.btn-primary:hover{background:#254f96}
+.btn-success{background:#16a34a;color:#fff}
+.btn-success:hover{background:#15803d}
+.btn-danger{background:#dc2626;color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-ghost{background:#e5e7eb;color:#374151}
+.btn-ghost:hover{background:#d1d5db}
+.btn-sm{padding:5px 11px;font-size:13px}
+.card{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.1);margin-bottom:16px;overflow:hidden}
+.card-header{padding:14px 18px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:10px}
+.card-body{padding:18px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:#555;margin-bottom:5px}
+.form-group input[type=text]{width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:6px;font-size:14px;outline:none;transition:border-color .15s}
+.form-group input[type=text]:focus{border-color:#1a3a6b;box-shadow:0 0 0 3px rgba(26,58,107,.1)}
+.toolbar{display:flex;flex-wrap:wrap;gap:4px;padding:8px;background:#f9fafb;border:1px solid #d1d5db;border-bottom:none;border-radius:6px 6px 0 0}
+.toolbar button{padding:4px 9px;border:1px solid #d1d5db;background:#fff;border-radius:4px;font-size:13px;cursor:pointer;line-height:1.4;color:#374151}
+.toolbar button:hover{background:#e5e7eb}
+.toolbar select{padding:3px 6px;border:1px solid #d1d5db;border-radius:4px;font-size:13px;background:#fff;color:#374151}
+.editor{min-height:160px;padding:12px;border:1px solid #d1d5db;border-radius:0 0 6px 6px;font-size:14px;line-height:1.7;outline:none;background:#fff}
+.editor:focus{border-color:#1a3a6b;box-shadow:0 0 0 3px rgba(26,58,107,.1)}
+.editor p{margin-bottom:.5em}
+.editor h2{font-size:1.2em;font-weight:700;margin-bottom:.4em}
+.editor h3{font-size:1.05em;font-weight:700;margin-bottom:.4em}
+.editor ul,
+.editor ol{margin-left:1.5em;margin-bottom:.5em}
+.toggle-row{display:flex;align-items:center;gap:12px;padding:10px 0}
+.toggle{position:relative;width:46px;height:24px;display:inline-block}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:#ccc;border-radius:24px;transition:.25s;cursor:pointer}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s}
+.toggle input:checked+.toggle-slider{background:#16a34a}
+.toggle input:checked+.toggle-slider:before{transform:translateX(22px)}
+.toggle-label{font-size:14px;font-weight:600}
+.visible-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:600}
+.badge-show{background:#dcfce7;color:#16a34a}
+.badge-hide{background:#f3f4f6;color:#9ca3af}
+.ann-item{border-bottom:1px solid #f0f0f0;padding:14px 18px}
+.ann-item:last-child{border-bottom:none}
+.ann-item-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px}
+.ann-title{font-size:15px;font-weight:700;flex:1;line-height:1.4}
+.ann-meta{font-size:12px;color:#9ca3af;margin-bottom:8px}
+.ann-content{font-size:13px;color:#555;line-height:1.6;max-height:80px;overflow:hidden;position:relative}
+.ann-content:after{content:'';position:absolute;bottom:0;left:0;right:0;height:24px;background:linear-gradient(transparent,#fff)}
+.ann-actions{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.new-btn-wrap{margin-bottom:16px}
+.empty{text-align:center;padding:40px;color:#9ca3af;font-size:15px}
+.loading{text-align:center;padding:30px;color:#9ca3af}
+.edit-panel{background:#f8faff;border:1px solid #b3c6f0;border-radius:8px;padding:16px;margin-top:12px}
+@media(max-width:480px){
+  .ann-item-header{flex-wrap:wrap}
+  .ann-actions{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>⚾ 大会実施判断 CMS</h1>
+  <span class="sync" id="syncStatus">読み込み中...</span>
+</div>
+
+<div class="container">
+
+  <!-- 新規作成ボタン -->
+  <div class="new-btn-wrap">
+    <button class="btn btn-primary" onclick="toggleNewForm()">＋ 新規投稿</button>
+  </div>
+
+  <!-- 新規作成フォーム -->
+  <div class="card" id="newForm" style="display:none">
+    <div class="card-header">
+      <strong>新規投稿</strong>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label>タイトル</label>
+        <input type="text" id="newTitle" placeholder="例：5月3日 福岡トヨタ杯　開催中止のお知らせ">
+      </div>
+      <div class="form-group">
+        <label>本文</label>
+        <div class="toolbar" id="newToolbar">
+          <select onchange="execFmt('fontSize',this.value);this.value=''">
+            <option value="">文字サイズ</option>
+            <option value="4">大</option>
+            <option value="3">中</option>
+            <option value="2">小</option>
+          </select>
+          <button onclick="execFmt('bold')" title="太字"><b>B</b></button>
+          <button onclick="execFmt('italic')" title="斜体"><i>I</i></button>
+          <button onclick="execFmt('underline')" title="下線"><u>U</u></button>
+          <button onclick="execFmt('foreColor','#dc2626')" title="赤" style="color:#dc2626">A</button>
+          <button onclick="execFmt('foreColor','#1a3a6b')" title="青" style="color:#1a3a6b">A</button>
+          <button onclick="execFmt('foreColor','#222')" title="黒">A</button>
+          <button onclick="execFmt('insertUnorderedList')" title="箇条書き">・</button>
+          <button onclick="execFmt('insertOrderedList')" title="番号リスト">1.</button>
+          <button onclick="execFmt('removeFormat')" title="書式解除">×</button>
+        </div>
+        <div class="editor" id="newContent" contenteditable="true" data-placeholder="本文を入力してください"></div>
+      </div>
+      <div class="toggle-row">
+        <label class="toggle">
+          <input type="checkbox" id="newVisible" checked>
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-label">表示する</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn btn-success" onclick="createPost()">投稿する</button>
+        <button class="btn btn-ghost" onclick="toggleNewForm()">キャンセル</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 投稿一覧 -->
+  <div class="card">
+    <div class="card-header">
+      <strong>投稿一覧</strong>
+      <span id="postCount" style="font-size:12px;color:#9ca3af;margin-left:auto"></span>
+    </div>
+    <div id="postList">
+      <div class="loading">読み込み中...</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = 'https://wp.jsbb-fukuoka.com/wp-json/jsbb/v1/announcements';
+const AUTH = 'Basic ' + btoa('open:WS5f3rYF8nwtQ09tlPOj9pca');
+let posts = [];
+let editingId = null;
+
+function execFmt(cmd, val) {
+  document.execCommand(cmd, false, val || null);
+}
+
+function toggleNewForm() {
+  const f = document.getElementById('newForm');
+  if (f.style.display === 'none') {
+    f.style.display = '';
+    document.getElementById('newTitle').focus();
+  } else {
+    f.style.display = 'none';
+    resetNewForm();
+  }
+}
+
+function resetNewForm() {
+  document.getElementById('newTitle').value = '';
+  document.getElementById('newContent').innerHTML = '';
+  document.getElementById('newVisible').checked = true;
+}
+
+async function apiFetch(url, opts = {}) {
+  const r = await fetch(url, {
+    ...opts,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': AUTH,
+      ...(opts.headers || {}),
+    },
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+async function loadPosts() {
+  try {
+    posts = await apiFetch(API + '/all');
+    renderPosts();
+    document.getElementById('syncStatus').textContent = '最終更新: ' + new Date().toLocaleTimeString('ja-JP');
+  } catch (e) {
+    document.getElementById('syncStatus').textContent = '⚠ 読み込みエラー';
+    console.error(e);
+  }
+}
+
+function renderPosts() {
+  const list = document.getElementById('postList');
+  const count = document.getElementById('postCount');
+  if (!posts.length) {
+    list.innerHTML = '<div class="empty">投稿がありません</div>';
+    count.textContent = '';
+    return;
+  }
+  count.textContent = posts.length + '件';
+  list.innerHTML = posts.map(p => `
+    <div class="ann-item" id="item-${p.id}">
+      <div class="ann-item-header">
+        <div class="ann-title">${escHtml(p.title || '(無題)')}</div>
+        <span class="visible-badge ${p.visible ? 'badge-show' : 'badge-hide'}">
+          ${p.visible ? '● 表示' : '○ 非表示'}
+        </span>
+      </div>
+      <div class="ann-meta">${formatDate(p.date)}  更新: ${formatDate(p.modified)}</div>
+      <div class="ann-content">${p.content || ''}</div>
+      <div class="ann-actions">
+        <button class="btn btn-ghost btn-sm" onclick="toggleVisible(${p.id},${p.visible})">
+          ${p.visible ? '非表示にする' : '表示する'}
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="startEdit(${p.id})">✏ 編集</button>
+        <button class="btn btn-danger btn-sm" onclick="deletePost(${p.id})">🗑 削除</button>
+      </div>
+      <div class="edit-panel" id="edit-${p.id}" style="display:none"></div>
+    </div>
+  `).join('');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function formatDate(s) {
+  if (!s) return '';
+  const d = new Date(s.replace(' ','T') + '+09:00');
+  return d.toLocaleString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+
+function startEdit(id) {
+  if (editingId && editingId !== id) {
+    document.getElementById('edit-' + editingId).style.display = 'none';
+  }
+  editingId = id;
+  const p = posts.find(x => x.id === id);
+  if (!p) return;
+  const panel = document.getElementById('edit-' + id);
+  panel.style.display = panel.style.display === 'none' ? '' : 'none';
+  if (panel.style.display === '') {
+    panel.innerHTML = `
+      <div class="form-group">
+        <label>タイトル</label>
+        <input type="text" id="editTitle-${id}" value="${escHtml(p.title || '')}">
+      </div>
+      <div class="form-group">
+        <label>本文</label>
+        <div class="toolbar">
+          <select onchange="execFmt('fontSize',this.value);this.value=''">
+            <option value="">文字サイズ</option>
+            <option value="4">大</option>
+            <option value="3">中</option>
+            <option value="2">小</option>
+          </select>
+          <button onclick="execFmt('bold')"><b>B</b></button>
+          <button onclick="execFmt('italic')"><i>I</i></button>
+          <button onclick="execFmt('underline')"><u>U</u></button>
+          <button onclick="execFmt('foreColor','#dc2626')" style="color:#dc2626">A</button>
+          <button onclick="execFmt('foreColor','#1a3a6b')" style="color:#1a3a6b">A</button>
+          <button onclick="execFmt('foreColor','#222')">A</button>
+          <button onclick="execFmt('insertUnorderedList')">・</button>
+          <button onclick="execFmt('insertOrderedList')">1.</button>
+          <button onclick="execFmt('removeFormat')">×</button>
+        </div>
+        <div class="editor" id="editContent-${id}" contenteditable="true">${p.content || ''}</div>
+      </div>
+      <div class="toggle-row">
+        <label class="toggle">
+          <input type="checkbox" id="editVisible-${id}" ${p.visible ? 'checked' : ''}>
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-label">表示する</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn btn-success btn-sm" onclick="saveEdit(${id})">保存</button>
+        <button class="btn btn-ghost btn-sm" onclick="cancelEdit(${id})">キャンセル</button>
+      </div>
+    `;
+  }
+}
+
+function cancelEdit(id) {
+  document.getElementById('edit-' + id).style.display = 'none';
+}
+
+async function saveEdit(id) {
+  const title   = document.getElementById('editTitle-' + id).value.trim();
+  const content = document.getElementById('editContent-' + id).innerHTML;
+  const visible = document.getElementById('editVisible-' + id).checked;
+  try {
+    await apiFetch(API + '/' + id, {
+      method: 'PUT',
+      body: JSON.stringify({ title, content, visible }),
+    });
+    await loadPosts();
+  } catch (e) {
+    alert('保存に失敗しました: ' + e.message);
+  }
+}
+
+async function toggleVisible(id, currentVisible) {
+  try {
+    await apiFetch(API + '/' + id, {
+      method: 'PUT',
+      body: JSON.stringify({ visible: !currentVisible }),
+    });
+    await loadPosts();
+  } catch (e) {
+    alert('更新に失敗しました: ' + e.message);
+  }
+}
+
+async function createPost() {
+  const title   = document.getElementById('newTitle').value.trim();
+  const content = document.getElementById('newContent').innerHTML;
+  const visible = document.getElementById('newVisible').checked;
+  if (!title && !content) {
+    alert('タイトルまたは本文を入力してください');
+    return;
+  }
+  try {
+    await apiFetch(API, {
+      method: 'POST',
+      body: JSON.stringify({ title: title || '無題', content, visible }),
+    });
+    resetNewForm();
+    document.getElementById('newForm').style.display = 'none';
+    await loadPosts();
+  } catch (e) {
+    alert('投稿に失敗しました: ' + e.message);
+  }
+}
+
+async function deletePost(id) {
+  const p = posts.find(x => x.id === id);
+  if (!confirm(`「${p?.title || '無題'}」を削除しますか？`)) return;
+  try {
+    await apiFetch(API + '/' + id, { method: 'DELETE' });
+    await loadPosts();
+  } catch (e) {
+    alert('削除に失敗しました: ' + e.message);
+  }
+}
+
+// 初回読み込み
+loadPosts();
+// 60秒ごとに自動更新
+setInterval(loadPosts, 60000);
+</script>
+</body>
+</html>

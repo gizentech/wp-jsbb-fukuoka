@@ -152,7 +152,7 @@ export default function News() {
                         {formatDate(item.createdAt)}
                       </time>
                       <span className={styles.newsCategory}>
-                        {categoryLabels[item.category] || item.category}
+                        {categoryLabels[item.category] || decodeURIComponent(item.category)}
                       </span>
                     </div>
                     <h3 className={styles.newsTitle}>

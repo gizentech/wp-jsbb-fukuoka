@@ -55,7 +55,14 @@
       "Bash(do)",
       "Bash(remote_path=\"/home/jsbbfukuoka/jsbb-fukuoka.com/public_html/$f#out/\")",
       "Bash(remote_path=\"/$f#out/\")",
-      "Bash(remote_path=\"/jsbb-fukuoka.com/public_html/$f#out/\")"
+      "Bash(remote_path=\"/jsbb-fukuoka.com/public_html/$f#out/\")",
+      "Read(//c/Users/shira/Desktop/Laptop-Product/new-project/**)",
+      "Read(//c/Users/shira/Desktop/Laptop-Product/new-project/src/**)",
+      "Bash(git -C /c/Users/shira/Desktop/Laptop-Product/new-project diff --name-only HEAD~3 HEAD)",
+      "Bash(node deploy-wp.js)",
+      "Bash(npm run:*)",
+      "Bash(magick \"領収書デザイン.pdf\" -density 150 receipt-preview.png)",
+      "Bash(powershell -Command ':*)"
     ]
   }
 }

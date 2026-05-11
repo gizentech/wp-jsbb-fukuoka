@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>野球大会トーナメント表</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Oswald:wght@400;600;700&display=swap');
+
+  :root {
+    --navy:  #0a1628;
+    --navy2: #0d1f3c;
+    --gold:  #c9a84c;
+    --gold2: #f0c96e;
+    --white: #f5f0e8;
+    --gray:  #8a9ab5;
+    --green: #1a6632;
+    --bg:    #060e1c;
+  }
+
+  * { box-sizing:border-box; margin:0; padding:0; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Noto Serif JP', serif;
+    min-height: 100vh;
+  }
+
+  .page { display:flex; flex-direction:column; height:100vh; overflow:hidden; }
+
+  /* ─── HEADER ─── */
+  header {
+    background: linear-gradient(135deg, var(--navy), #1a2f54);
+    border-bottom: 3px solid var(--gold);
+    padding: 14px 16px 10px;
+    text-align: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+  header::before {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,.15) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .h-sub   { font-family:'Oswald',sans-serif; font-size:10px; letter-spacing:4px; color:var(--gold); }
+  .h-title { font-size:clamp(17px,4vw,26px); font-weight:900; color:var(--white); letter-spacing:2px; }
+  .h-title span { color:var(--gold); }
+  .h-meta  { font-size:10px; color:var(--gray); margin-top:3px; }
+
+  /* ─── MODE BAR ─── */
+  .mode-bar {
+    display:flex; justify-content:center; gap:6px;
+    padding:9px 12px;
+    background:var(--navy2);
+    border-bottom:1px solid rgba(201,168,76,.15);
+    flex-shrink:0;
+  }
+  .mode-btn {
+    padding:6px 20px;
+    border:1px solid rgba(201,168,76,.35);
+    background:transparent; color:var(--gray);
+    font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1.5px;
+    cursor:pointer; border-radius:2px; transition:all .2s;
+  }
+  .mode-btn.active { background:var(--gold); color:var(--navy); border-color:var(--gold); font-weight:700; }
+
+  /* ─── DAY TABS ─── */
+  .day-tabs {
+    display:none; overflow-x:auto; background:var(--navy2);
+    border-bottom:2px solid rgba(201,168,76,.2);
+    scrollbar-width:none; -webkit-overflow-scrolling:touch; flex-shrink:0;
+  }
+  .day-tabs.vis { display:flex; }
+  .day-tabs::-webkit-scrollbar { display:none; }
+  .tab-btn {
+    flex:0 0 auto; padding:8px 16px;
+    background:transparent; border:none; border-bottom:3px solid transparent;
+    color:var(--gray); font-family:'Noto Serif JP',serif; font-size:12px;
+    cursor:pointer; white-space:nowrap; transition:all .2s;
+  }
+  .tab-btn.active { color:var(--gold); border-bottom-color:var(--gold); background:rgba(201,168,76,.07); }
+  .tab-day   { font-family:'Oswald',sans-serif; font-size:16px; font-weight:700; display:block; line-height:1; }
+  .tab-round { font-size:9px; display:block; margin-top:2px; }
+
+  /* ─── VIEWS ─── */
+  .views { flex:1; overflow:hidden; position:relative; }
+
+  /* ════ TOURNAMENT VIEW ════ */
+  #tv {
+    display:none; width:100%; height:100%;
+    overflow-x:auto; overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-color:rgba(201,168,76,.4) transparent;
+    scrollbar-width:thin;
+  }
+  #tv.active { display:block; }
+  #tv::-webkit-scrollbar { height:6px; width:4px; }
+  #tv::-webkit-scrollbar-thumb { background:rgba(201,168,76,.4); border-radius:3px; }
+
+  .b-stage {
+    display:inline-flex; align-items:flex-start;
+    padding:0 20px 28px; min-height:100%;
+  }
+
+  .r-col {
+    flex:0 0 auto; width:152px; margin-right:40px; position:relative;
+  }
+  .r-col:last-child { margin-right:24px; }
+
+  .r-label {
+    font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:2px;
+    color:var(--gold); text-align:center;
+    padding:9px 0 5px;
+    border-bottom:1px solid rgba(201,168,76,.2);
+    position:sticky; top:0; background:var(--bg); z-index:5;
+  }
+  .r-label span { display:block; font-family:'Noto Serif JP',serif; font-size:9px; color:var(--gray); margin-top:2px; letter-spacing:.5px; }
+
+  .r-body { position:relative; }
+
+  /* match card */
+  .mc {
+    position:absolute; left:0;
+    width:152px; height:64px;
+    background:linear-gradient(135deg,rgba(13,31,60,.97),rgba(8,18,36,.98));
+    border:1px solid rgba(201,168,76,.22); border-radius:4px;
+    overflow:hidden; transition:border-color .2s, box-shadow .2s;
+  }
+  .mc:hover { border-color:rgba(201,168,76,.55); box-shadow:0 0 14px rgba(201,168,76,.12); }
+  .mc.done     { border-left:3px solid var(--green); }
+  .mc.upcoming { border-left:3px solid var(--gold); }
+  .mc.tbd      { border-left:3px solid rgba(138,154,181,.2); opacity:.6; }
+
+  .mc-row {
+    display:flex; align-items:center; height:32px;
+    padding:0 7px 0 9px; gap:4px;
+  }
+  .mc-row + .mc-row { border-top:1px solid rgba(255,255,255,.06); }
+  .mc-row.win .mc-nm { color:var(--gold2); font-weight:700; }
+
+  .mc-dot { width:5px; height:5px; border-radius:50%; background:var(--gold); flex-shrink:0; visibility:hidden; }
+  .mc-row.win .mc-dot { visibility:visible; }
+  .mc-nm { flex:1; font-size:10.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--white); }
+  .mc-nm.tbd { color:rgba(138,154,181,.4); font-style:italic; font-size:10px; }
+  .mc-sc { font-family:'Oswald',sans-serif; font-size:15px; font-weight:700; width:20px; text-align:right; flex-shrink:0; color:var(--gray); }
+  .mc-sc.w { color:var(--gold2); }
+  .mc-sc.l { color:rgba(138,154,181,.38); }
+
+  /* connector SVG */
+  .conn-svg { position:absolute; top:0; left:0; pointer-events:none; overflow:visible; }
+
+  /* ════ LIST VIEW ════ */
+  #lv {
+    display:none; height:100%;
+    overflow-y:auto; -webkit-overflow-scrolling:touch;
+  }
+  #lv.active { display:block; }
+
+  .lhdr {
+    background:linear-gradient(90deg,var(--navy2),rgba(201,168,76,.07),var(--navy2));
+    padding:11px 14px; display:flex; align-items:center; gap:8px;
+    border-bottom:1px solid rgba(201,168,76,.12);
+    position:sticky; top:0; z-index:4;
+  }
+  .lbadge {
+    background:var(--gold); color:var(--navy);
+    font-family:'Oswald',sans-serif; font-size:10px; font-weight:700;
+    padding:2px 10px; letter-spacing:1.5px;
+    clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);
+  }
+  .ltitle { font-size:13px; font-weight:700; }
+  .lcnt   { margin-left:auto; font-size:10px; color:var(--gray); }
+
+  .mlist { padding:8px 10px 28px; display:flex; flex-direction:column; gap:7px; }
+
+  .lc {
+    background:linear-gradient(135deg,rgba(13,31,60,.9),rgba(10,22,40,.95));
+    border:1px solid rgba(201,168,76,.2); border-radius:4px; overflow:hidden;
+    position:relative; transition:transform .15s;
+  }
+  .lc:active { transform:scale(.99); }
+  .lc.done     { border-left:3px solid var(--green); }
+  .lc.upcoming { border-left:3px solid var(--gold); }
+  .lc.tbd      { border-left:3px solid rgba(138,154,181,.25); opacity:.7; }
+
+  .lc-no     { position:absolute; top:5px; right:8px; font-family:'Oswald',sans-serif; font-size:9px; color:var(--gray); }
+  .lc-teams  { padding:5px 10px 7px; display:flex; flex-direction:column; }
+  .lc-row    { display:flex; align-items:center; padding:6px 0; gap:6px; }
+  .lc-row + .lc-row { border-top:1px solid rgba(255,255,255,.06); }
+  .lc-row.win .lc-nm { color:var(--gold2); font-weight:700; }
+  .lc-row.win::after { content:'✦'; font-size:7px; color:var(--gold); margin-left:auto; flex-shrink:0; }
+  .lc-nm   { flex:1; font-size:clamp(12px,3.3vw,14px); color:var(--white); line-height:1.2; }
+  .lc-nm.tbd { color:rgba(138,154,181,.4); font-style:italic; font-size:11px; }
+  .lc-sc   { font-family:'Oswald',sans-serif; font-size:20px; font-weight:700; width:30px; text-align:center; flex-shrink:0; color:var(--gray); }
+  .lc-sc.w { color:var(--gold2); }
+  .lc-sc.l { color:rgba(138,154,181,.38); }
+
+  .lc-st  { display:flex; align-items:center; padding:0 10px 6px; gap:5px; }
+  .sdt    { width:5px;height:5px;border-radius:50%;flex-shrink:0; }
+  .sdt.done     { background:var(--green); }
+  .sdt.upcoming { background:var(--gold); }
+  .sdt.tbd      { background:var(--gray);opacity:.4; }
+  .stx           { font-size:9.5px; color:var(--gray); }
+  .stx.done     { color:var(--green); }
+
+  /* ─── LEGEND ─── */
+  .legend {
+    display:flex; gap:14px; padding:7px 12px; flex-wrap:wrap;
+    border-top:1px solid rgba(201,168,76,.1);
+    background:rgba(13,31,60,.5); flex-shrink:0;
+  }
+  .li { display:flex; align-items:center; gap:4px; font-size:9.5px; color:var(--gray); }
+  .ll { width:14px; height:3px; border-radius:2px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <p class="h-sub">Baseball Tournament 2025</p>
+  <h1 class="h-title">第<span>47</span>回 市民野球大会</h1>
+  <p class="h-meta">64チーム参加 ／ トーナメント方式 ／ 2025年6月〜8月</p>
+</header>
+
+<div class="mode-bar">
+  <button class="mode-btn active" id="btnT" onclick="setMode('t')">🏆 トーナメント</button>
+  <button class="mode-btn"        id="btnL" onclick="setMode('l')">📅 大会日別</button>
+</div>
+
+<div class="day-tabs" id="dayTabs"></div>
+
+<div class="views">
+  <div id="tv" class="active"><div class="b-stage" id="bStage"></div></div>
+  <div id="lv"><div id="lContent"></div></div>
+</div>
+
+<div class="legend">
+  <div class="li"><div class="ll" style="background:var(--green)"></div>試合終了</div>
+  <div class="li"><div class="ll" style="background:var(--gold)"></div>試合予定</div>
+  <div class="li"><div class="ll" style="background:rgba(138,154,181,.3)"></div>未確定</div>
+  <div class="li" style="margin-left:auto;color:rgba(201,168,76,.6);font-size:9px;">← 横スクロールで全ラウンド →</div>
+</div>
+
+</div><!-- .page -->
+<script>
+/* ── DATA ── */
+const TEAMS=[
+  "鷹羽FC","桜風SC","東山クラブ","港南ベアーズ",
+  "北星ライオンズ","緑丘タイガース","西部ドラゴンズ","南風ホークス",
+  "城東ブレーブス","川辺スターズ","丘陵ファイターズ","海浜ジャイアンツ",
+  "旭日クラブ","若草ユニコーンズ","蒼穹バファローズ","夕映えボンバーズ",
+  "翠嵐イーグルス","暁光クラブ","銀河コメッツ","山彦ウォリアーズ",
+  "天神マリナーズ","浪速レッドソックス","春日クルセイダーズ","錦秋ホワイトソックス",
+  "晴嵐アストロズ","蛍火スピリッツ","蒼天ランナーズ","金剛ブルズ",
+  "清流チームA","峰雲チームB","黎明チームC","飛翔チームD",
+  "朝焼けチームE","夜明けチームF","霧島チームG","瑞穂チームH",
+  "奥羽チームI","高原チームJ","海鳴りチームK","山桜チームL",
+  "草原チームM","流星チームN","渓流チームO","嵐山チームP",
+  "北岳チームQ","南嶺チームR","東風チームS","西海チームT",
+  "白鷺チームU","黒潮チームV","金鷲チームW","銀狐チームX",
+  "翠鳥チームY","紅鶴チームZ","蒼鷹チームAA","白虎チームBB",
+  "朱雀チームCC","玄武チームDD","麒麟チームEE","鳳凰チームFF",
+  "龍神チームGG","虎牙チームHH","鷹爪チームII","獅子吼チームJJ"
+];
+
+const RD=[
+  {name:"1回戦",   date:"6/7(土)",   day:1, n:32},
+  {name:"2回戦",   date:"6/14(土)",  day:2, n:16},
+  {name:"準々決勝",date:"7/5(土)",   day:3, n:8 },
+  {name:"準決勝",  date:"7/19(土)",  day:4, n:4 },
+  {name:"決　勝",  date:"8/2(土)",   day:5, n:1 },
+];
+
+function rng(seed){let s=seed;return()=>{s=(s*9301+49297)%233280;return s/233280;};}
+const rand=rng(77);
+const sc=()=>Math.floor(rand()*9);
+
+function build(){
+  const all=[];let id=1;
+  let prev=TEAMS.slice();
+  RD.forEach((rd,ri)=>{
+    const done=ri<2;
+    for(let i=0;i<rd.n;i++){
+      const t1=prev[i*2]||null, t2=prev[i*2+1]||null;
+      const known=t1&&t2;
+      let s1=null,s2=null,w=null;
+      if(done&&known){
+        s1=sc()+1; s2=sc();
+        if(s1===s2)s2=Math.max(0,s1-1);
+        w=s1>s2?0:1;
+      }
+      all.push({id:id++,ri,day:rd.day,name:rd.name,date:rd.date,
+        t1:t1||"勝者未定",t2:t2||"勝者未定",
+        s1,s2,w,status:done&&known?'done':known?'upcoming':'tbd'});
+    }
+    prev=[];
+    const ms=all.filter(m=>m.ri===ri);
+    ms.forEach(m=>prev.push(m.w===0?m.t1:m.w===1?m.t2:null));
+  });
+  return all;
+}
+
+const ALL=build();
+const BY_RI=RD.map((_,ri)=>ALL.filter(m=>m.ri===ri));
+
+/* ── MODE ── */
+let mode='t', curDay=1;
+
+function setMode(m){
+  mode=m;
+  document.getElementById('btnT').classList.toggle('active',m==='t');
+  document.getElementById('btnL').classList.toggle('active',m==='l');
+  document.getElementById('tv').classList.toggle('active',m==='t');
+  document.getElementById('lv').classList.toggle('active',m==='l');
+  document.getElementById('dayTabs').classList.toggle('vis',m==='l');
+  if(m==='l')renderList();
+}
+
+/* ── TOURNAMENT ── */
+const CW=152, CH=64, CG=6, LH=42, COL_GAP=40;
+
+function buildBracket(){
+  const stage=document.getElementById('bStage');
+  stage.innerHTML='';
+  const BASE=BY_RI[0].length; // 32
+
+  RD.forEach((rd,ri)=>{
+    const matches=BY_RI[ri];
+    const n=matches.length;
+    const slotsPerM=BASE/n;
+    const rowH=CH+CG;
+    const bodyH=BASE*rowH;
+
+    const col=document.createElement('div');
+    col.className='r-col';
+
+    // label
+    col.innerHTML=`<div class="r-label">${rd.name}<span>${rd.date}</span></div>`;
+
+    // body
+    const body=document.createElement('div');
+    body.className='r-body';
+    body.style.height=bodyH+'px';
+    body.style.width=(CW+COL_GAP)+'px';
+
+    // SVG overlay for connectors
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.classList.add('conn-svg');
+    svg.setAttribute('width',CW+COL_GAP);
+    svg.setAttribute('height',bodyH);
+
+    matches.forEach((m,mi)=>{
+      // vertical center of this match inside body
+      const cy=mi*slotsPerM*rowH + (slotsPerM*rowH)/2;
+      const top=cy-CH/2;
+
+      // card
+      const card=document.createElement('div');
+      card.className='mc '+m.status;
+      card.style.top=top+'px';
+
+      [0,1].forEach(ti=>{
+        const nm=ti===0?m.t1:m.t2;
+        const score=ti===0?m.s1:m.s2;
+        const isW=m.w===ti;
+        const isTbd=nm==='勝者未定';
+        const row=document.createElement('div');
+        row.className='mc-row'+(isW?' win':'');
+
+        const dot=document.createElement('div'); dot.className='mc-dot';
+        const nmEl=document.createElement('span');
+        nmEl.className='mc-nm'+(isTbd?' tbd':'');
+        nmEl.textContent=nm;
+        const scEl=document.createElement('span');
+        scEl.className='mc-sc'+(score!==null?(isW?' w':' l'):'');
+        scEl.textContent=score!==null?score:'';
+
+        row.appendChild(dot); row.appendChild(nmEl); row.appendChild(scEl);
+        card.appendChild(row);
+      });
+      body.appendChild(card);
+
+      // connectors to next round
+      if(ri<RD.length-1){
+        const nextN=BY_RI[ri+1].length;
+        const nextSlots=BASE/nextN;
+        const pairIdx=Math.floor(mi/2);
+        const nextCy=pairIdx*nextSlots*rowH+(nextSlots*rowH)/2;
+
+        const x1=CW, xm=CW+COL_GAP*0.5, x2=CW+COL_GAP;
+
+        // horizontal from card
+        line(svg,x1,cy,xm,cy,'rgba(201,168,76,0.25)');
+
+        if(mi%2===0){
+          // vertical bridge (drawn for upper of pair, spans to next center)
+          line(svg,xm,cy,xm,nextCy,'rgba(201,168,76,0.22)');
+          // arrow into next card
+          line(svg,xm,nextCy,x2,nextCy,'rgba(201,168,76,0.45)');
+        } else {
+          line(svg,xm,cy,xm,nextCy,'rgba(201,168,76,0.22)');
+        }
+      }
+    });
+
+    body.appendChild(svg);
+    col.appendChild(body);
+    stage.appendChild(col);
+  });
+}
+
+function line(svg,x1,y1,x2,y2,stroke){
+  const el=document.createElementNS('http://www.w3.org/2000/svg','line');
+  el.setAttribute('x1',x1);el.setAttribute('y1',y1);
+  el.setAttribute('x2',x2);el.setAttribute('y2',y2);
+  el.setAttribute('stroke',stroke);el.setAttribute('stroke-width','1.5');
+  svg.appendChild(el);
+}
+
+/* ── LIST ── */
+const DAY_INFO={
+  1:{label:"DAY 1",round:"1回戦",    date:"6/7(土)"},
+  2:{label:"DAY 2",round:"2回戦",    date:"6/14(土)"},
+  3:{label:"DAY 3",round:"準々決勝", date:"7/5(土)"},
+  4:{label:"DAY 4",round:"準決勝",   date:"7/19(土)"},
+  5:{label:"DAY 5",round:"決勝",     date:"8/2(土)"},
+};
+const DAYS=[1,2,3,4,5];
+
+function renderTabs(){
+  document.getElementById('dayTabs').innerHTML=DAYS.map(d=>`
+    <button class="tab-btn ${d===curDay?'active':''}" onclick="selDay(${d})">
+      <span class="tab-day">${DAY_INFO[d].label}</span>
+      <span class="tab-round">${DAY_INFO[d].round}</span>
+    </button>`).join('');
+}
+
+function selDay(d){
+  curDay=d; renderTabs(); renderList();
+  const idx=DAYS.indexOf(d);
+  document.querySelectorAll('.tab-btn')[idx]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+}
+
+function renderList(){
+  const ms=ALL.filter(m=>m.day===curDay);
+  const info=DAY_INFO[curDay];
+  const done=ms.filter(m=>m.status==='done').length;
+  if(!ms.length){ document.getElementById('lContent').innerHTML='<div style="text-align:center;padding:40px;color:var(--gray)">この日の試合はありません</div>'; return; }
+
+  let h=`<div class="lhdr"><div class="lbadge">${info.round}</div><div class="ltitle">${info.date}</div><div class="lcnt">${done}/${ms.length} 試合終了</div></div><div class="mlist">`;
+  ms.forEach(m=>{
+    const w1=m.w===0,w2=m.w===1;
+    h+=`<div class="lc ${m.status}">
+      <span class="lc-no">No.${m.id}</span>
+      <div class="lc-teams">
+        <div class="lc-row ${w1?'win':''}">
+          <span class="lc-nm ${m.t1==='勝者未定'?'tbd':''}">${m.t1}</span>
+          ${m.s1!==null?`<span class="lc-sc ${w1?'w':'l'}">${m.s1}</span>`:`<span class="lc-sc">—</span>`}
+        </div>
+        <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.2),transparent)"></div>
+        <div class="lc-row ${w2?'win':''}">
+          <span class="lc-nm ${m.t2==='勝者未定'?'tbd':''}">${m.t2}</span>
+          ${m.s2!==null?`<span class="lc-sc ${w2?'w':'l'}">${m.s2}</span>`:`<span class="lc-sc">—</span>`}
+        </div>
+      </div>
+      <div class="lc-st"><div class="sdt ${m.status}"></div><span class="stx ${m.status==='done'?'done':''}">${m.status==='done'?'試合終了':m.status==='upcoming'?'試合予定':'未確定'}</span></div>
+    </div>`;
+  });
+  h+='</div>';
+  document.getElementById('lContent').innerHTML=h;
+}
+
+/* ── INIT ── */
+buildBracket();
+renderTabs();
+</script>
+</body>
+</html>

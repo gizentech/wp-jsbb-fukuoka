@@ -422,6 +422,21 @@ add_action('rest_api_init', function () {
             update_post_meta($post_id, '_portal_team_id', jsbb_generate_team_id());
             update_post_meta($post_id, '_portal_team_created_at', current_time('mysql'));
 
+            // 大会紐づけ
+            if (!empty($params['tournament_ids']) && is_array($params['tournament_ids'])) {
+                $t_ids = array_map('intval', $params['tournament_ids']);
+                update_post_meta($post_id, '_portal_team_tournament_ids', wp_json_encode($t_ids));
+                // 大会側の team_ids にも追加
+                foreach ($t_ids as $tid) {
+                    $existing_json = get_post_meta($tid, '_portal_tournament_team_ids', true);
+                    $existing = $existing_json ? json_decode($existing_json, true) : array();
+                    if (!in_array($post_id, (array)$existing)) {
+                        $existing[] = $post_id;
+                        update_post_meta($tid, '_portal_tournament_team_ids', wp_json_encode(array_values($existing)));
+                    }
+                }
+            }
+
             return rest_ensure_response(jsbb_build_portal_team($post_id));
         },
         'permission_callback' => function () {
@@ -478,6 +493,35 @@ add_action('rest_api_init', function () {
             $current_team_id = get_post_meta($post_id, '_portal_team_id', true);
             if (!$current_team_id || strlen($current_team_id) !== 8 || !ctype_digit($current_team_id)) {
                 update_post_meta($post_id, '_portal_team_id', jsbb_generate_team_id());
+            }
+
+            // 大会紐づけ更新
+            if (isset($params['tournament_ids']) && is_array($params['tournament_ids'])) {
+                $new_t_ids = array_map('intval', $params['tournament_ids']);
+                $old_json  = get_post_meta($post_id, '_portal_team_tournament_ids', true);
+                $old_t_ids = $old_json ? json_decode($old_json, true) : array();
+
+                // 削除された大会から除外
+                foreach ((array)$old_t_ids as $tid) {
+                    if (!in_array($tid, $new_t_ids)) {
+                        $existing_json = get_post_meta($tid, '_portal_tournament_team_ids', true);
+                        $existing = $existing_json ? json_decode($existing_json, true) : array();
+                        $existing = array_values(array_filter((array)$existing, fn($id) => $id !== $post_id));
+                        update_post_meta($tid, '_portal_tournament_team_ids', wp_json_encode($existing));
+                    }
+                }
+                // 追加された大会に登録
+                foreach ($new_t_ids as $tid) {
+                    if (!in_array($tid, (array)$old_t_ids)) {
+                        $existing_json = get_post_meta($tid, '_portal_tournament_team_ids', true);
+                        $existing = $existing_json ? json_decode($existing_json, true) : array();
+                        if (!in_array($post_id, (array)$existing)) {
+                            $existing[] = $post_id;
+                            update_post_meta($tid, '_portal_tournament_team_ids', wp_json_encode(array_values($existing)));
+                        }
+                    }
+                }
+                update_post_meta($post_id, '_portal_team_tournament_ids', wp_json_encode($new_t_ids));
             }
 
             // 変更履歴を記録

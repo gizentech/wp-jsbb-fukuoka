@@ -36,6 +36,7 @@ const menuItems = [
     { label: 'スポーツ・ハラスメント', href: '/jspo-no' },
   ]},
   { label: '福岡県連ポータル', href: '/portal' },
+  { label: '九州大会', href: '/kyushu' },
 ]
 
 export default function Header({ visible = true, flush = false }) {

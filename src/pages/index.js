@@ -12,15 +12,24 @@ const InterviewSection = dynamic(() => import('../components/InterviewSection/In
 const Column = dynamic(() => import('../components/Column/Column'))
 const FAQ = dynamic(() => import('../components/FAQ/FAQ'))
 
-import { fetchNews, fetchInterviews, fetchMemberById, fetchInstagramPosts } from '../lib/wp-api-client'
+import { fetchNews, fetchInterviews, fetchMemberById, fetchInstagramPosts, fetchHeroSettings } from '../lib/wp-api-client'
+import TournamentAnnouncement from '../components/TournamentAnnouncement/TournamentAnnouncement'
 
 export default function Home() {
   const [latestItems, setLatestItems] = useState([])
   const [instagramPosts, setInstagramPosts] = useState([])
   const [interviewsData, setInterviewsData] = useState([])
+  const [heroSettings, setHeroSettings] = useState(null)
 
   useEffect(() => {
     async function loadData() {
+      try {
+        const settings = await fetchHeroSettings()
+        setHeroSettings(settings)
+      } catch (e) {
+        console.error('HeroSettings Error:', e)
+      }
+
       try {
         const wpNews = await fetchNews()
         const newsData = (wpNews || []).slice(0, 5).map((item) => ({
@@ -167,9 +176,10 @@ export default function Home() {
         </script>
       </Head>
       <Header />
+      <TournamentAnnouncement />
 
       <main className={styles.main}>
-        <HeroSlider latestItem={latestItems.length > 0 ? latestItems[0] : null} />
+        <HeroSlider latestItem={latestItems.length > 0 ? latestItems[0] : null} heroSettings={heroSettings} />
         <TopView latestItems={latestItems} />
         <InterviewSection interviews={interviewsData} />
         <Column articles={instagramPosts} />

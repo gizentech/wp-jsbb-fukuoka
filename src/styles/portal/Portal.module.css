@@ -8,11 +8,11 @@
 
 .loginCard {
   background: white;
-  border-radius: 16px;
+  border-radius: 0;
   padding: 48px 40px;
   max-width: 480px;
   width: 100%;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e0e0e0;
 }
 
 .loginTitle {
@@ -40,7 +40,7 @@
 .stepDot {
   width: 10px;
   height: 10px;
-  border-radius: 50%;
+  border-radius: 0;
   background: #e0e0e0;
   transition: background 0.3s;
 }
@@ -74,7 +74,7 @@
   width: 100%;
   padding: 12px 16px;
   border: 1.5px solid #ddd;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 1rem;
   transition: border-color 0.2s;
   background: #fafafa;
@@ -91,7 +91,7 @@
   width: 100%;
   padding: 16px;
   border: 2px solid #ddd;
-  border-radius: 12px;
+  border-radius: 0;
   font-size: 2rem;
   text-align: center;
   letter-spacing: 0.5em;
@@ -111,7 +111,7 @@
   background: #c8102e;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -132,7 +132,7 @@
   background: white;
   color: #666;
   border: 1.5px solid #ddd;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -180,9 +180,10 @@
 /* チーム確認 */
 .teamConfirm {
   background: #f8f9fa;
-  border-radius: 12px;
+  border-radius: 0;
   padding: 24px;
   text-align: center;
+  border: 1px solid #e8e8e8;
 }
 
 .confirmLabel {
@@ -204,7 +205,7 @@
   padding: 4px 16px;
   background: #fff3cd;
   color: #856404;
-  border-radius: 20px;
+  border-radius: 0;
   font-size: 0.8rem;
   font-weight: 600;
 }
@@ -214,7 +215,7 @@
   background: #fff5f5;
   color: #d63638;
   padding: 12px 16px;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 0.9rem;
   margin-bottom: 8px;
   border: 1px solid #fecaca;
@@ -223,7 +224,9 @@
 /* レスポンシブ */
 @media (max-width: 767px) {
   .loginCard {
-    padding: 32px 24px;
+    padding: 24px 16px;
+    border-left: none;
+    border-right: none;
   }
 
   .loginTitle {

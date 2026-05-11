@@ -15,8 +15,8 @@ add_action('rest_api_init', function () {
         );
         if (in_array($origin, $allowed, true)) {
             header('Access-Control-Allow-Origin: ' . esc_url_raw($origin));
-            header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-            header('Access-Control-Allow-Headers: Content-Type, Accept');
+            header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+            header('Access-Control-Allow-Headers: Content-Type, Accept, Authorization, X-Portal-Key');
             header('Access-Control-Allow-Credentials: true');
         }
         return $value;
@@ -34,8 +34,8 @@ add_action('init', function () {
         );
         if (in_array($origin, $allowed, true)) {
             header('Access-Control-Allow-Origin: ' . esc_url_raw($origin));
-            header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-            header('Access-Control-Allow-Headers: Content-Type, Accept');
+            header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+            header('Access-Control-Allow-Headers: Content-Type, Accept, Authorization, X-Portal-Key');
             header('Access-Control-Max-Age: 86400');
         }
         status_header(204);

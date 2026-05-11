@@ -13,28 +13,37 @@ export default function Tournaments() {
   const [migrated, setMigrated] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [archiveLoading, setArchiveLoading] = useState(false);
+  const [archiveLoaded, setArchiveLoaded] = useState(false);
   const [activeTab, setActiveTab] = useState('series')
   const [archivePage, setArchivePage] = useState(1)
   const ITEMS_PER_PAGE = 10
 
+  // 初回: シリーズのみ取得（軽い）
   useEffect(() => {
-    async function loadData() {
+    async function loadSeries() {
       try {
-        const [seriesData, migratedData] = await Promise.all([
-          fetchTournamentSeries(),
-          fetchMigratedTournaments(),
-        ]);
-        setSeries(seriesData || []);
-        setMigrated(migratedData || []);
-        setLoading(false);
+        const seriesData = await fetchTournamentSeries();
+        setSeries((seriesData || []).filter(s => !Array.isArray(s.class) || !s.class.includes('全日本軟式野球九州連合会')));
       } catch (err) {
-        console.error('Error fetching tournament data:', err);
+        console.error('Error fetching series:', err);
         setError('データの取得に失敗しました。');
+      } finally {
         setLoading(false);
       }
     }
-    loadData();
+    loadSeries();
   }, []);
+
+  // アーカイブタブを開いたときだけ過去大会を取得（重い）
+  useEffect(() => {
+    if (activeTab !== 'archive' || archiveLoaded || archiveLoading) return;
+    setArchiveLoading(true);
+    fetchMigratedTournaments().then((data) => {
+      setMigrated(data || []);
+      setArchiveLoaded(true);
+    }).catch(() => {}).finally(() => setArchiveLoading(false));
+  }, [activeTab, archiveLoaded, archiveLoading]);
 
   // 更新日順にソート
   const sortedArchive = useMemo(() => {
@@ -131,8 +140,9 @@ export default function Tournaments() {
               {/* アーカイブタブ */}
               {activeTab === 'archive' && (
                 <div className={tStyles.archiveSection}>
-                  {/* 投稿一覧（更新日順） */}
-                  {sortedArchive.length === 0 ? (
+                  {archiveLoading ? (
+                    <div className={styles.loading}>読み込み中...</div>
+                  ) : sortedArchive.length === 0 ? (
                     <p className={tStyles.noMatches}>該当する大会情報がありません。</p>
                   ) : (
                     <>

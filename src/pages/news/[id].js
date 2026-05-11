@@ -80,7 +80,7 @@ export default function NewsDetail() {
       <Meta
         title={news.title}
         description={`${news.title} - 福岡県軟式野球連盟からのお知らせ`}
-        keywords={`福岡県軟式野球連盟,お知らせ,ニュース,${news.title},福岡野球,軟式野球,野球大会,審判,野球連盟,福岡県野球,九州野球,野球速報,野球情報,${categoryLabels[news.category] || news.category}`}
+        keywords={`福岡県軟式野球連盟,お知らせ,ニュース,${news.title},福岡野球,軟式野球,野球大会,審判,野球連盟,福岡県野球,九州野球,野球速報,野球情報,${categoryLabels[news.category] || decodeURIComponent(news.category)}`}
         urlPath={`/news/${news.id}`}
         breadcrumbs={[{ name: 'お知らせ', path: '/news' }, { name: news.title, path: `/news/${news.id}` }]}
         ogType="article"
@@ -110,8 +110,8 @@ export default function NewsDetail() {
             "@type": "WebPage",
             "@id": `https://jsbb-fukuoka.com/news/${news.id}`
           },
-          "articleSection": categoryLabels[news.category] || news.category,
-          "keywords": `福岡野球,軟式野球,野球大会,審判,野球連盟,${categoryLabels[news.category] || news.category}`,
+          "articleSection": categoryLabels[news.category] || decodeURIComponent(news.category),
+          "keywords": `福岡野球,軟式野球,野球大会,審判,野球連盟,${categoryLabels[news.category] || decodeURIComponent(news.category)}`,
           "isAccessibleForFree": "True",
           "inLanguage": "ja"
         }}
@@ -138,7 +138,7 @@ export default function NewsDetail() {
               {new Date(news.createdAt).toLocaleDateString('ja-JP')}
             </time>
             <span className={styles.articleCategory}>
-              {categoryLabels[news.category] || news.category}
+              {categoryLabels[news.category] || decodeURIComponent(news.category)}
             </span>
             {news.important && (
               <span className={styles.importantBadge}>重要</span>

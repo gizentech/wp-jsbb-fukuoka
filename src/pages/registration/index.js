@@ -1,11 +1,11 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import Head from 'next/head'
 import Meta from '../../components/Meta/Meta.js'
 import { FaChevronDown } from 'react-icons/fa'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import styles from '../../styles/Registration.module.css'
-import { fetchPageById } from '../../lib/wp-api'
+import { fetchPageById } from '../../lib/wp-api-client'
 
 function extractH2Titles(html) {
   const matches = []
@@ -28,30 +28,19 @@ function injectSectionIds(html, sections) {
   })
 }
 
-export async function getStaticProps() {
-  try {
-    const page = await fetchPageById(16)
+export default function Registration() {
+  const [title, setTitle] = useState('登録関係書類')
+  const [content, setContent] = useState('')
 
-    return {
-      props: {
-        title: page?.title || '登録関係書類',
-        content: page?.content || '',
-      },
+  useEffect(() => {
+    fetchPageById(16).then((page) => {
+      if (page) {
+        setTitle(page.title || '登録関係書類')
+        setContent(page.content || '')
+      }
+    }).catch(() => {})
+  }, [])
 
-    }
-  } catch (error) {
-    console.error('Failed to fetch registration page:', error)
-    return {
-      props: {
-        title: '登録関係書類',
-        content: '',
-      },
-
-    }
-  }
-}
-
-export default function Registration({ title, content }) {
   const sections = useMemo(() => extractH2Titles(content), [content])
   const contentWithIds = useMemo(() => injectSectionIds(content, sections), [content, sections])
 
@@ -64,12 +53,10 @@ export default function Registration({ title, content }) {
       <Header flush />
       <div className={styles.container}>
         <main className={styles.main}>
-          {/* ヒーロー */}
           <div className={styles.hero}>
             <div className={styles.heroOverlay} />
           </div>
 
-          {/* タイトルカード */}
           <div className={styles.titleCard}>
             <div className={styles.titleInner}>
               <h1 className={styles.pageName}>{title}</h1>
@@ -86,7 +73,6 @@ export default function Registration({ title, content }) {
             </div>
           </div>
 
-          {/* セクションナビ */}
           {sections.length > 0 && (
             <nav className={styles.sectionNav}>
               <div className={styles.sectionNavInner}>
@@ -104,7 +90,6 @@ export default function Registration({ title, content }) {
             </nav>
           )}
 
-          {/* WordPressコンテンツ */}
           <div className={styles.content}>
             <div
               className={styles.wpContent}

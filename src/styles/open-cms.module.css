@@ -1,0 +1,295 @@
+/* ===== ラップ ===== */
+.wrap {
+  min-height: 100vh;
+  background: #f0f2f5;
+  font-family: 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+}
+
+/* ===== ヘッダー ===== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #1a3a6b;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 52px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+
+.headerTitle {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.synced {
+  font-size: 12px;
+  opacity: .7;
+}
+
+/* ===== メイン ===== */
+.main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 12px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ===== 新規投稿ボタン ===== */
+.newBtn {
+  width: 100%;
+  padding: 16px;
+  background: #1a3a6b;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: .05em;
+}
+.newBtn:active { opacity: .85; }
+
+/* ===== カード ===== */
+.card {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+
+.cardLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a3a6b;
+  padding: 10px 14px 0;
+  letter-spacing: .05em;
+}
+
+.cardTop {
+  padding: 12px 14px 8px;
+}
+
+.cardInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.badgeShow { background: #dcfce7; color: #16a34a; }
+.badgeHide { background: #f3f4f6; color: #9ca3af; }
+
+.cardDate {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+  line-height: 1.4;
+}
+
+.cardContent {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.7;
+  padding: 0 14px 12px;
+  border-top: 1px solid #f3f4f6;
+  margin-top: 4px;
+  padding-top: 10px;
+}
+.cardContent p  { margin-bottom: .4em; }
+.cardContent ul,
+.cardContent ol { margin-left: 1.4em; margin-bottom: .4em; }
+
+/* ===== アクションボタン ===== */
+.actions {
+  display: flex;
+  border-top: 1px solid #f0f0f0;
+}
+
+.actionBtn {
+  flex: 1;
+  padding: 12px 4px;
+  border: none;
+  background: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border-right: 1px solid #f0f0f0;
+}
+.actionBtn:last-child { border-right: none; }
+.actionBtn:active { opacity: .7; }
+
+.actionShow  { color: #16a34a; }
+.actionHide  { color: #9ca3af; }
+.actionEdit  { color: #1a3a6b; }
+.actionDelete{ color: #dc2626; }
+
+/* ===== 投稿フォーム ===== */
+.formWrap {
+  padding: 12px 14px 14px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.titleInput {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  -webkit-appearance: none;
+}
+.titleInput:focus { border-color: #1a3a6b; }
+
+/* ツールバー */
+.toolbar {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.tbBtn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #f9fafb;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #374151;
+}
+.tbBtn:active { background: #e5e7eb; }
+
+/* エディタ */
+.editor {
+  min-height: 120px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.7;
+  outline: none;
+  -webkit-user-modify: read-write;
+  overflow-y: auto;
+  color: #111;
+}
+.editor:focus { border-color: #1a3a6b; }
+.editor:empty:before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+/* フォーム下部 */
+.formBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.toggleLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: #d1d5db;
+  border-radius: 24px;
+  transition: background .2s;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: transform .2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.toggleOn {
+  background: #16a34a;
+}
+.toggleOn::after {
+  transform: translateX(20px);
+}
+
+.formBtns {
+  display: flex;
+  gap: 8px;
+}
+
+.btnPrimary {
+  padding: 10px 22px;
+  background: #1a3a6b;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  min-width: 80px;
+}
+.btnPrimary:disabled { opacity: .6; }
+.btnPrimary:active { opacity: .85; }
+
+.btnGhost {
+  padding: 10px 16px;
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btnGhost:active { opacity: .75; }
+
+/* ===== ステート ===== */
+.loading,
+.empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: #9ca3af;
+  font-size: 15px;
+}
