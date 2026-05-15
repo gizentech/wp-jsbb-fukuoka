@@ -144,6 +144,15 @@
   opacity: 0.6;
 }
 
+.iconLinkUser {}
+
+@media (max-width: 768px) {
+  .iconLinkUser {
+    position: relative;
+    top: -1px;
+  }
+}
+
 /* メガメニュートリガー */
 .megaTrigger {
   background: none;
@@ -425,6 +434,23 @@
 
   .mobileMenuItem {
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .mobileMenuItemContact {
+    padding: 16px 24px 8px;
+  }
+
+  .mobileContactLink {
+    display: block;
+    background: #111;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 14px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-align: center;
   }
 
   .mobileMenuLink {

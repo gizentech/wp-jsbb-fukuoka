@@ -70,6 +70,7 @@ export default function PortalGuide() {
             </div>
           </div>
         </div>
+        </div>
 
         <div style={sectionStyle}>
           <div style={titleStyle}>Step 3：注文確定書（QRコード）の持参</div>
@@ -114,13 +115,6 @@ export default function PortalGuide() {
         </footer>
       </div>
 
-      <style jsx>{`
-        @media print {
-          button, a { display: none !important; }
-          body { background: white !important; }
-          div { box-shadow: none !important; }
-        }
-      `}</style>
     </div>
   );
 }

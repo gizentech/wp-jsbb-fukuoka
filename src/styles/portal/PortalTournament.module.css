@@ -9,8 +9,8 @@
 .tournamentHeader {
   background: white;
   border-radius: 0;
-  padding: 24px 32px;
-  margin-bottom: 24px;
+  padding: 16px 24px;
+  margin-bottom: 20px;
   border: 1px solid #e0e0e0;
   border-bottom: 3px solid #c8102e;
 }
@@ -22,12 +22,33 @@
   margin: 0 0 8px;
 }
 
+.tournamentTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+}
+
+/* PC: スペース区切り（titleSepは空白のまま） */
+.titlePart1,
+.titlePart2 { display: inline; }
+.titleSep   { display: inline; }
+
+@media (max-width: 600px) {
+  .tournamentTitle { font-size: 1.15rem; }
+  /* SP: 「旗」の後で改行 */
+  .titlePart1 { display: inline; }
+  .titleSep   { display: none; }
+  .titlePart2 { display: block; }
+}
+
 .tournamentMeta {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 24px;
+  margin-top: 6px;
+  margin-bottom: 0;
 }
 
 .statusBadge {
@@ -437,10 +458,10 @@
 }
 
 .productName {
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1a1a1a;
-  margin: 0 0 4px;
+  margin: 0 0 6px;
 }
 
 .productPrice {
@@ -452,9 +473,13 @@
 
 .productDesc {
   font-size: 0.85rem;
-  color: #666;
-  margin: 0 0 12px;
-  line-height: 1.4;
+  color: #444;
+  margin: 16px 0 8px;
+  line-height: 1.75;
+  white-space: pre-line;
+  background: white;
+  border: 1px solid #e8e8e8;
+  padding: 16px 18px;
 }
 
 .orderForm {
@@ -1045,10 +1070,41 @@
 
 .productSectionHeader {
   display: flex;
-  gap: 16px;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 12px;
   margin-bottom: 16px;
+}
+
+.productSectionText {
+  width: 100%;
+}
+
+/* PC: 画像グリッド（最大4列） */
+.pcImageGrid {
+  display: flex;
   flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pcImageThumb {
+  height: 220px;
+  width: 165px; /* 220px × (3/4) */
+  object-fit: cover;
+  background: #f5f5f5;
+  cursor: zoom-in;
+  border: 1px solid #e0e0e0;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+  display: block;
+}
+
+.pcImageThumb:hover {
+  opacity: 0.82;
+}
+
+/* SP: スライダーは非表示（PCではgridを使う） */
+.sliderWrap {
+  display: none;
 }
 
 .productImages {
@@ -1063,6 +1119,75 @@
   object-fit: cover;
   border-radius: 0;
   border: 1px solid #ddd;
+}
+
+.sliderImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  cursor: zoom-in;
+}
+
+.sliderBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.38);
+  color: #fff;
+  border: none;
+  width: 28px;
+  height: 40px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  padding: 0;
+  line-height: 1;
+}
+
+.sliderDots {
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.sliderDot,
+.sliderDotActive {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.sliderDot { background: rgba(255,255,255,0.5); }
+.sliderDotActive { background: #fff; }
+
+@media (max-width: 600px) {
+  .pcImageGrid {
+    display: none;
+  }
+  .sliderWrap {
+    display: block;
+    width: 100%;
+    position: relative;
+    padding-top: 133.33%; /* 4/3 = 縦長3:4 */
+    height: 0;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+  .sliderImg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .namePriceNote {
@@ -1221,7 +1346,63 @@
 
 /* 既存注文（注文履歴スタイル） */
 .existingOrderPanel {
-  margin-bottom: 16px;
+  margin-bottom: 0;
+  border: none !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+/* 注文サマリーカード */
+.orderSummaryCard {
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.orderSummaryRow {
+  display: flex;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  gap: 16px;
+}
+
+.orderSummaryRow:last-child {
+  border-bottom: none;
+}
+
+.orderSummaryLabel {
+  font-size: 0.75rem;
+  color: #999;
+  min-width: 110px;
+  flex-shrink: 0;
+}
+
+.orderSummaryValue {
+  font-size: 0.95rem;
+  color: #1a1a1a;
+}
+
+.orderSummaryTotal {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #c8102e;
+}
+
+@media (max-width: 480px) {
+  .orderSummaryRow {
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 0;
+  }
+  .orderSummaryLabel {
+    min-width: unset;
+    font-size: 0.72rem;
+  }
+  .orderSummaryValue {
+    font-size: 1rem;
+  }
 }
 
 .existingOrderName {
@@ -1239,6 +1420,49 @@
   margin-top: 12px;
   padding-top: 10px;
   border-top: 1px solid #f0f0f0;
+}
+
+.orderActionRow {
+  display: flex;
+  gap: 10px;
+  margin: 14px 0 4px;
+}
+
+.orderActionEdit,
+.orderActionCancel {
+  flex: 1;
+  padding: 13px 0;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 5px;
+}
+
+.orderActionEdit {
+  background: #1565c0;
+  color: #fff;
+  border: none;
+}
+
+.orderActionCancel {
+  background: #fff;
+  color: #c62828;
+  border: 2px solid #c62828;
+}
+
+@media (max-width: 480px) {
+  .orderActionRow {
+    flex-direction: column;
+  }
+  .orderActionEdit,
+  .orderActionCancel {
+    padding: 15px 0;
+    font-size: 1.05rem;
+  }
 }
 
 .tshirtTableWrap {

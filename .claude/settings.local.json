@@ -62,7 +62,19 @@
       "Bash(node deploy-wp.js)",
       "Bash(npm run:*)",
       "Bash(magick \"領収書デザイン.pdf\" -density 150 receipt-preview.png)",
-      "Bash(powershell -Command ':*)"
+      "Bash(powershell -Command ':*)",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(rm -rf .next)",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":3000 \\\\|:3001 \")",
+      "Bash(findstr LISTENING)",
+      "Bash(taskkill /F /PID 12564)",
+      "Bash(cmd /c \"taskkill /F /PID 12564\")",
+      "Bash(cmd /c \"netstat -ano | findstr \\\\\":3000 \\\\\" | findstr LISTENING && netstat -ano | findstr \\\\\":3001 \\\\\" | findstr LISTENING\")",
+      "Bash(cmd /c \"netstat -ano | findstr \\\\\":3000 \\\\\" | findstr LISTENING\")",
+      "Bash(cmd /c \"netstat -ano | findstr \\\\\":3001 \\\\\" | findstr LISTENING\")",
+      "Bash(cmd /c \"netstat -ano | findstr \\\\\":3000\\\\\"\")",
+      "WebFetch(domain:design.digital.go.jp)"
     ]
   }
 }

@@ -10,9 +10,7 @@ if (!defined('JSBB_SMTP_HOST'))       define('JSBB_SMTP_HOST',       'sv13316.xs
 if (!defined('JSBB_SMTP_PORT'))       define('JSBB_SMTP_PORT',       465);
 if (!defined('JSBB_SMTP_USER'))       define('JSBB_SMTP_USER',       'shop@jsbb-fukuoka.com');
 if (!defined('JSBB_SMTP_PASS'))       define('JSBB_SMTP_PASS',       'open2000');
-if (!defined('JSBB_ORDER_NOTIFY_TO')) define('JSBB_ORDER_NOTIFY_TO', 'info@jsbb-fukuoka.com');
-if (!defined('JSBB_ORDER_NOTIFY_CC')) define('JSBB_ORDER_NOTIFY_CC', 'takayama@jsbb-fukuoka.com');
-if (!defined('JSBB_ORDER_NOTIFY_BCC'))define('JSBB_ORDER_NOTIFY_BCC','shiraishi@jsbb-fukuoka.com');
+if (!defined('JSBB_ORDER_NOTIFY_TO')) define('JSBB_ORDER_NOTIFY_TO', 'notification@jsbb-fukuoka.com');
 
 // SMTP設定フック
 add_action('phpmailer_init', function ($phpmailer) {
@@ -624,6 +622,9 @@ function jsbb_send_order_email($order_id, $team_name, $team_email, $tournament_n
     $action_label = $action === 'updated' ? '注文変更' : '注文完了';
     $subject    = "【{$tournament_name}】{$action_label}_{$team_name}_{$ts_stamp}";
 
+    // チームIDを注文メタから取得
+    $team_id = (int) get_post_meta($order_id, '_portal_order_team_id', true);
+
     $sizes_order = array('120', '130', '140', '150', 'SS', 'S', 'M', 'L', 'LL', '3L', '4L', '5L');
 
     // アイテムを has_name で分割
@@ -649,7 +650,7 @@ function jsbb_send_order_email($order_id, $team_name, $team_email, $tournament_n
     $html = jsbb_build_order_email_html(
         $ts, $team_name, $team_email, $tournament_name,
         $no_name_items, $with_name_items, $names_used,
-        $sizes_order, $body_total, $name_total, $total, $action_label, $diff_html
+        $sizes_order, $body_total, $name_total, $total, $action_label, $diff_html, $team_id
     );
 
     // ヘッダー
@@ -657,8 +658,6 @@ function jsbb_send_order_email($order_id, $team_name, $team_email, $tournament_n
     $headers = array(
         'Content-Type: text/html; charset=UTF-8',
         "From: 福岡県軟式野球連盟ポータル <{$from}>",
-        'Cc: ' . JSBB_ORDER_NOTIFY_CC,
-        'Bcc: ' . JSBB_ORDER_NOTIFY_BCC,
     );
 
     // 管理者へ通知
@@ -732,12 +731,13 @@ function jsbb_build_order_diff_html($old_items, $new_items) {
 function jsbb_build_order_email_html(
     $ts, $team_name, $team_email, $tournament_name,
     $no_name_items, $with_name_items, $names_used,
-    $sizes_order, $body_total, $name_total, $total, $action_label, $diff_html = ''
+    $sizes_order, $body_total, $name_total, $total, $action_label, $diff_html = '', $team_id = 0
 ) {
-    $table_style = 'border-collapse:collapse;margin:8px 0;width:100%;';
-    $th_style    = 'padding:6px 12px;border:1px solid #ddd;background:#f5f5f5;text-align:center;font-size:14px;';
-    $td_style    = 'padding:5px 10px;border:1px solid #ddd;text-align:center;font-size:14px;';
-    $td_size     = 'padding:5px 10px;border:1px solid #ddd;text-align:left;font-size:14px;';
+    $table_style    = 'border-collapse:collapse;margin:8px 0;width:100%;';
+    $th_style       = 'padding:6px 12px;border:1px solid #ddd;background:#f5f5f5;text-align:center;font-size:14px;';
+    $td_style       = 'padding:5px 10px;border:1px solid #ddd;text-align:center;font-size:14px;';
+    $td_size        = 'padding:5px 10px;border:1px solid #ddd;text-align:left;font-size:14px;';
+    $team_id_display = sprintf('%08d', $team_id);
 
     function build_size_table($items, $sizes_order, $table_style, $th_style, $td_style, $td_size) {
         $grid = array();
@@ -846,9 +846,224 @@ HTML;
       <p style="font-size:12px;color:#888;margin:8px 0 0;">※お支払いは大会受付にてお渡し時にお願いします</p>
     </div>
     <p style="font-size:12px;color:#aaa;margin-top:24px;text-align:center;">福岡県軟式野球連盟 チームポータル</p>
+    <p style="font-size:10px;color:#ccc;margin-top:8px;text-align:center;letter-spacing:0.5px;">{$ts} / Team ID: {$team_id_display}</p>
   </div>
 </div>
 HTML;
 
     return $html;
+}
+
+// ==========================================
+// 領収証お知らせ CPT
+// ==========================================
+add_action('init', function () {
+    register_post_type('portal_rcpt_notice', array(
+        'public'       => false,
+        'show_ui'      => false,
+        'show_in_rest' => false,
+        'supports'     => array('title'),
+    ));
+});
+
+// ==========================================
+// 領収証お知らせ REST API
+// ==========================================
+add_action('rest_api_init', function () {
+
+    // GET /portal/admin/receipt-notices
+    register_rest_route('jsbb/v1', '/portal/admin/receipt-notices', array(
+        'methods'             => 'GET',
+        'callback'            => function ($request) {
+            $portal_key = $request->get_param('portal_key');
+            if ($portal_key !== (defined('JSBB_PORTAL_KEY') ? JSBB_PORTAL_KEY : 'open2000')) {
+                return new WP_Error('forbidden', '認証エラー', array('status' => 403));
+            }
+            $tournament_id = (int) $request->get_param('tournament_id');
+            $meta_query = array(array('key' => '_rcpt_notice_status', 'value' => 'active'));
+            if ($tournament_id) {
+                $meta_query[] = array('key' => '_rcpt_notice_tournament_id', 'value' => $tournament_id);
+            }
+            $posts = get_posts(array(
+                'post_type'      => 'portal_rcpt_notice',
+                'posts_per_page' => -1,
+                'post_status'    => 'publish',
+                'meta_query'     => $meta_query,
+                'orderby'        => 'date',
+                'order'          => 'DESC',
+            ));
+            $result = array();
+            foreach ($posts as $p) {
+                $amounts_raw = get_post_meta($p->ID, '_rcpt_notice_amounts', true);
+                $result[] = array(
+                    'id'            => $p->ID,
+                    'team_id'       => (int) get_post_meta($p->ID, '_rcpt_notice_team_id', true),
+                    'team_name'     => get_post_meta($p->ID, '_rcpt_notice_team_name', true),
+                    'team_email'    => get_post_meta($p->ID, '_rcpt_notice_team_email', true),
+                    'tournament_id' => (int) get_post_meta($p->ID, '_rcpt_notice_tournament_id', true),
+                    'tournament_name' => get_post_meta($p->ID, '_rcpt_notice_tournament_name', true),
+                    'amounts'       => $amounts_raw ? json_decode($amounts_raw, true) : array(),
+                    'order_total'   => (int) get_post_meta($p->ID, '_rcpt_notice_order_total', true),
+                    'created_at'    => get_post_meta($p->ID, '_rcpt_notice_created_at', true),
+                );
+            }
+            return rest_ensure_response($result);
+        },
+        'permission_callback' => '__return_true',
+    ));
+
+    // POST /portal/admin/receipt-notices
+    register_rest_route('jsbb/v1', '/portal/admin/receipt-notices', array(
+        'methods'             => 'POST',
+        'callback'            => function ($request) {
+            $portal_key = $request->get_param('portal_key');
+            if ($portal_key !== (defined('JSBB_PORTAL_KEY') ? JSBB_PORTAL_KEY : 'open2000')) {
+                return new WP_Error('forbidden', '認証エラー', array('status' => 403));
+            }
+            $body = $request->get_json_params();
+            $notices = $body['notices'] ?? array();
+            if (empty($notices)) {
+                return new WP_Error('invalid', 'noticesが必要です', array('status' => 400));
+            }
+            $created = array();
+            $now = current_time('Y-m-d H:i:s');
+            foreach ($notices as $n) {
+                $post_id = wp_insert_post(array(
+                    'post_type'   => 'portal_rcpt_notice',
+                    'post_status' => 'publish',
+                    'post_title'  => '領収証お知らせ_' . ($n['team_name'] ?? '') . '_' . date('YmdHis'),
+                ));
+                if (is_wp_error($post_id)) continue;
+                update_post_meta($post_id, '_rcpt_notice_team_id',        (int)($n['team_id'] ?? 0));
+                update_post_meta($post_id, '_rcpt_notice_team_name',      sanitize_text_field($n['team_name'] ?? ''));
+                update_post_meta($post_id, '_rcpt_notice_team_email',     sanitize_email($n['team_email'] ?? ''));
+                update_post_meta($post_id, '_rcpt_notice_tournament_id',  (int)($n['tournament_id'] ?? 0));
+                update_post_meta($post_id, '_rcpt_notice_tournament_name', sanitize_text_field($n['tournament_name'] ?? ''));
+                update_post_meta($post_id, '_rcpt_notice_amounts',        json_encode(array_map('intval', $n['amounts'] ?? array())));
+                update_post_meta($post_id, '_rcpt_notice_order_total',    (int)($n['order_total'] ?? 0));
+                update_post_meta($post_id, '_rcpt_notice_status',         'active');
+                update_post_meta($post_id, '_rcpt_notice_created_at',     $now);
+                // メール送信
+                if (!empty($n['team_email'])) {
+                    jsbb_send_receipt_notice_email(
+                        $n['team_name'] ?? '',
+                        $n['team_email'],
+                        $n['tournament_name'] ?? '',
+                        array_map('intval', $n['amounts'] ?? array()),
+                        (int)($n['team_id'] ?? 0),
+                        $now
+                    );
+                }
+                $created[] = $post_id;
+            }
+            return rest_ensure_response(array('created' => count($created)));
+        },
+        'permission_callback' => '__return_true',
+    ));
+
+    // DELETE /portal/admin/receipt-notices/{id}
+    register_rest_route('jsbb/v1', '/portal/admin/receipt-notices/(?P<id>\d+)', array(
+        'methods'             => 'DELETE',
+        'callback'            => function ($request) {
+            $portal_key = $request->get_param('portal_key');
+            if ($portal_key !== (defined('JSBB_PORTAL_KEY') ? JSBB_PORTAL_KEY : 'open2000')) {
+                return new WP_Error('forbidden', '認証エラー', array('status' => 403));
+            }
+            $post_id = (int) $request['id'];
+            $post = get_post($post_id);
+            if (!$post || $post->post_type !== 'portal_rcpt_notice') {
+                return new WP_Error('not_found', '見つかりません', array('status' => 404));
+            }
+            update_post_meta($post_id, '_rcpt_notice_status', 'deleted');
+            return rest_ensure_response(array('deleted' => true));
+        },
+        'permission_callback' => '__return_true',
+    ));
+
+    // GET /portal/team/{team_id}/receipt-notices
+    register_rest_route('jsbb/v1', '/portal/team/(?P<team_id>\d+)/receipt-notices', array(
+        'methods'             => 'GET',
+        'callback'            => function ($request) {
+            $portal_key = $request->get_param('portal_key');
+            if ($portal_key !== (defined('JSBB_PORTAL_KEY') ? JSBB_PORTAL_KEY : 'open2000')) {
+                return new WP_Error('forbidden', '認証エラー', array('status' => 403));
+            }
+            $team_id = (int) $request['team_id'];
+            $posts = get_posts(array(
+                'post_type'      => 'portal_rcpt_notice',
+                'posts_per_page' => -1,
+                'post_status'    => 'publish',
+                'meta_query'     => array(
+                    array('key' => '_rcpt_notice_team_id',  'value' => $team_id),
+                    array('key' => '_rcpt_notice_status',   'value' => 'active'),
+                ),
+                'orderby' => 'date',
+                'order'   => 'DESC',
+            ));
+            $result = array();
+            foreach ($posts as $p) {
+                $amounts_raw = get_post_meta($p->ID, '_rcpt_notice_amounts', true);
+                $result[] = array(
+                    'id'              => $p->ID,
+                    'tournament_id'   => (int) get_post_meta($p->ID, '_rcpt_notice_tournament_id', true),
+                    'tournament_name' => get_post_meta($p->ID, '_rcpt_notice_tournament_name', true),
+                    'amounts'         => $amounts_raw ? json_decode($amounts_raw, true) : array(),
+                    'order_total'     => (int) get_post_meta($p->ID, '_rcpt_notice_order_total', true),
+                    'created_at'      => get_post_meta($p->ID, '_rcpt_notice_created_at', true),
+                );
+            }
+            return rest_ensure_response($result);
+        },
+        'permission_callback' => '__return_true',
+    ));
+});
+
+// ==========================================
+// 領収証お知らせメール送信
+// ==========================================
+function jsbb_send_receipt_notice_email($team_name, $team_email, $tournament_name, $amounts, $team_id, $ts) {
+    $from    = 'shop@jsbb-fukuoka.com';
+    $headers = array(
+        'Content-Type: text/html; charset=UTF-8',
+        "From: 福岡県軟式野球連盟ポータル <{$from}>",
+    );
+    $subject = "【{$tournament_name}】領収証のご用意ができました";
+
+    $team_id_display = sprintf('%08d', $team_id);
+    $amounts_html = '';
+    if (count($amounts) === 1) {
+        $amounts_html = '<p style="font-size:16px;font-weight:700;color:#c8102e;">¥' . number_format($amounts[0]) . '</p>';
+    } else {
+        $amounts_html = '<ul style="padding-left:20px;">';
+        foreach ($amounts as $i => $amt) {
+            $amounts_html .= '<li style="font-size:14px;">第' . ($i + 1) . '領収証：¥' . number_format($amt) . '</li>';
+        }
+        $amounts_html .= '</ul>';
+    }
+
+    $html = <<<HTML
+<div style="font-family:'Hiragino Kaku Gothic ProN','メイリオ',sans-serif;max-width:640px;margin:0 auto;padding:24px;background:#fff;">
+  <div style="background:#c8102e;color:#fff;padding:16px 24px;border-radius:8px 8px 0 0;">
+    <h2 style="margin:0;font-size:18px;">領収証のご用意ができました</h2>
+  </div>
+  <div style="border:1px solid #e0e0e0;border-top:none;padding:24px;border-radius:0 0 8px 8px;">
+    <p style="font-size:15px;">{$team_name} 様</p>
+    <p style="font-size:14px;color:#333;">
+      下記大会の領収証が発行されました。<br>
+      ポータルサイトのマイページにログイン後、対象大会の「領収証」タブより印刷・ダウンロードが可能です。
+    </p>
+    <table style="width:100%;margin:16px 0;">
+      <tr><td style="color:#666;width:120px;font-size:14px;padding:4px 0;">大会名</td><td style="font-size:14px;">{$tournament_name}</td></tr>
+      <tr><td style="color:#666;font-size:14px;padding:4px 0;">金額</td><td>{$amounts_html}</td></tr>
+    </table>
+    <div style="background:#f5f5f5;border-radius:6px;padding:14px 18px;margin-top:16px;">
+      <p style="font-size:13px;color:#555;margin:0;">マイページURL: https://jsbb-fukuoka.com/portal/mypage/</p>
+    </div>
+    <p style="font-size:12px;color:#aaa;margin-top:24px;text-align:center;">福岡県軟式野球連盟 チームポータル</p>
+    <p style="font-size:10px;color:#ccc;margin-top:8px;text-align:center;">{$ts} / Team ID: {$team_id_display}</p>
+  </div>
+</div>
+HTML;
+
+    wp_mail($team_email, $subject, $html, $headers);
 }

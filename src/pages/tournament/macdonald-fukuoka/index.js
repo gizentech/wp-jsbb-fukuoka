@@ -558,9 +558,7 @@ export default function MacdonaldFukuoka() {
                         <CardEl key={bk.id} className={tStyles.bracketCard} {...cardProps}>
                           <div className={tStyles.bracketCardMain}>
                             <div className={styles.bracketNameRow} data-bracket-row>
-                              {bk.name1 && <span className={styles.bracketNameText} data-bracket-text>{bk.name1}</span>}
-                              {bk.name2 && <span className={styles.bracketNameText} data-bracket-text>{bk.name2}</span>}
-                              {bk.name3 && <span className={styles.bracketNameText} data-bracket-text>{bk.name3}</span>}
+                              <span className={styles.bracketNameText} data-bracket-text>トーナメント表</span>
                             </div>
                           </div>
                           {bk.modified && (

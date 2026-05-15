@@ -219,24 +219,14 @@
     margin-bottom: 8px;
   }
 
-  /* SP: horizontal scroll */
+  /* SP: 2x2 grid */
   .mobileScroll {
-    display: flex;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .mobileScroll::-webkit-scrollbar {
-    display: none;
   }
 
   .mobileCard {
-    width: calc((100% - 12px) / 2);
-    min-width: calc((100% - 12px) / 2);
-    max-width: calc((100% - 12px) / 2);
-    flex-shrink: 0;
     text-decoration: none;
     color: inherit;
     display: flex;

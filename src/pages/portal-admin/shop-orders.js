@@ -9,6 +9,7 @@ import {
   fetchAdminOrders, fetchAllTournaments,
   fetchAllTeams, createTeam, updateTeam, deleteTeam,
   fetchMasters, updateMasters, issueReceipt,
+  sendReceiptNotices, fetchAdminReceiptNotices, deleteReceiptNotice,
 } from '../../lib/portal-api';
 
 // 権限レベル: 'editor' = フル編集可 / 'viewer' = 閲覧+Excel のみ
@@ -28,131 +29,155 @@ function productTypeAbbr(name) {
   return name.charAt(0);
 }
 
-function buildExcelColumns(orders) {
-  const productNames = [];
-  for (const o of orders) {
-    for (const it of (o.items || [])) {
-      if (it.product_name && !productNames.includes(it.product_name)) {
-        productNames.push(it.product_name);
-      }
-    }
-  }
-  const cols = ['注文日時', 'チーム名', 'メールアドレス', 'ネーム指定'];
-  for (const pName of productNames) {
-    const pt = productTypeAbbr(pName);
-    for (const color of COLORS) {
-      const ca = COLOR_ABBR[color];
-      for (const size of SIZES) {
-        cols.push(`${ca}-${pt}${size}無`);
-        cols.push(`${ca}-${pt}${size}有`);
-      }
-    }
-  }
-  cols.push('ネイビー枚数', 'ホワイト枚数', '本体金額', 'ネーム金額', '合計金額');
-  return { cols, productNames };
-}
-
-function buildExcelRow(order, cols, productNames) {
-  const items = order.items || [];
-  const grid = {};
-  for (const it of items) {
-    const key = `${it.color}_${it.product_name}_${it.size}_${it.has_name ? 'yes' : 'no'}`;
-    grid[key] = (grid[key] || 0) + (it.quantity || 0);
-  }
-  const namesUsed = [...new Set(items.filter(i => i.has_name && i.name).map(i => i.name))];
-  let navyTotal = 0, whiteTotal = 0;
-  for (const it of items) {
-    if (it.color === 'ネイビー') navyTotal += it.quantity || 0;
-    if (it.color === 'ホワイト') whiteTotal += it.quantity || 0;
-  }
-  const row = {
-    '注文日時': (order.created_at || '').replace('T', ' ').slice(0, 16),
-    'チーム名': order.team_name || '',
-    'メールアドレス': order.team_email || '',
-    'ネーム指定': namesUsed.join('、'),
-  };
-  for (const pName of productNames) {
-    const pt = productTypeAbbr(pName);
-    for (const color of COLORS) {
-      const ca = COLOR_ABBR[color];
-      for (const size of SIZES) {
-        row[`${ca}-${pt}${size}無`] = grid[`${color}_${pName}_${size}_no`]  || '';
-        row[`${ca}-${pt}${size}有`] = grid[`${color}_${pName}_${size}_yes`] || '';
-      }
-    }
-  }
-  row['ネイビー枚数'] = navyTotal || '';
-  row['ホワイト枚数'] = whiteTotal || '';
-  row['本体金額']     = order.body_total || order.total || 0;
-  row['ネーム金額']   = order.name_total || 0;
-  row['合計金額']     = order.total || 0;
-  return cols.map(c => row[c] ?? '');
-}
-
 async function exportToExcel(orders, tournamentName) {
-  const { cols, productNames } = buildExcelColumns(orders);
-  const dataRows = orders.map(o => buildExcelRow(o, cols, productNames));
-  const ws = XLSX.utils.aoa_to_sheet([cols, ...dataRows]);
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, '注文一覧');
-  const ts = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
-  const fileName = `注文一覧_${tournamentName || '大会'}_${ts}.xlsx`;
 
-  // ブラウザ向けダウンロード（writeFile はNode.js専用）
-  const buf = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  // ── チームごとの全データを一度集計 ──────────────
+  const teamMap = {};
+  for (const order of orders) {
+    if (order.status === 'cancelled') continue;
+    const key = order.team_name || '（不明）';
+    if (!teamMap[key]) teamMap[key] = {
+      navy_no: {}, navy_name: {}, white_no: {}, white_name: {},
+      names: new Set(), total: 0,
+    };
+    teamMap[key].total += order.total || 0;
+    for (const it of (order.items || [])) {
+      const s = it.size || '?', qty = it.quantity || 0;
+      if (it.color === 'ネイビー' && !it.has_name) teamMap[key].navy_no[s]    = (teamMap[key].navy_no[s]    || 0) + qty;
+      if (it.color === 'ネイビー' &&  it.has_name) teamMap[key].navy_name[s]  = (teamMap[key].navy_name[s]  || 0) + qty;
+      if (it.color === 'ホワイト' && !it.has_name) teamMap[key].white_no[s]   = (teamMap[key].white_no[s]   || 0) + qty;
+      if (it.color === 'ホワイト' &&  it.has_name) teamMap[key].white_name[s] = (teamMap[key].white_name[s] || 0) + qty;
+      if (it.has_name && it.name) teamMap[key].names.add(it.name);
+    }
+  }
+  const teams = Object.entries(teamMap).sort(([a], [b]) => a.localeCompare(b, 'ja'));
+
+  // サイズ列ヘルパー
+  function usedSizes(getter) {
+    return SIZES.filter(s => teams.some(([, t]) => (getter(t)[s] || 0) > 0));
+  }
+  function makeSheet(getter, withName) {
+    const sizes = usedSizes(getter);
+    const header = withName ? ['チーム名', 'ネーム内容', ...sizes, '合計'] : ['チーム名', ...sizes, '合計'];
+    const rows = teams
+      .map(([name, t]) => {
+        const vals = sizes.map(s => getter(t)[s] || 0);
+        const tot  = sizes.reduce((sum, s) => sum + (getter(t)[s] || 0), 0);
+        return withName ? [name, [...t.names].join('、'), ...vals, tot] : [name, ...vals, tot];
+      });
+    const totRow = withName
+      ? ['合計', '', ...sizes.map(s => teams.reduce((sum, [, t]) => sum + (getter(t)[s] || 0), 0)),
+          teams.reduce((sum, [, t]) => sum + sizes.reduce((s2, sz) => s2 + (getter(t)[sz] || 0), 0), 0)]
+      : ['合計', ...sizes.map(s => teams.reduce((sum, [, t]) => sum + (getter(t)[s] || 0), 0)),
+          teams.reduce((sum, [, t]) => sum + sizes.reduce((s2, sz) => s2 + (getter(t)[sz] || 0), 0), 0)];
+    return XLSX.utils.aoa_to_sheet([header, ...rows, totRow]);
+  }
+
+  // ── Sheet 2〜5 ───────────────────────────────────
+  XLSX.utils.book_append_sheet(wb, makeSheet(t => t.navy_no,    false), 'ネイビー');
+  XLSX.utils.book_append_sheet(wb, makeSheet(t => t.navy_name,  true),  'ネイビー（ネーム）');
+  XLSX.utils.book_append_sheet(wb, makeSheet(t => t.white_no,   false), 'ホワイト');
+  XLSX.utils.book_append_sheet(wb, makeSheet(t => t.white_name, true),  'ホワイト（ネーム）');
+
+  // ── Sheet 1：枚数・金額（先頭に挿入） ───────────
+  const sv_header = ['チーム名', 'ネイビーネームあり', 'ネイビーネームなし', 'ホワイトネームあり', 'ホワイトネームなし', 'ネーム内容', '合計枚数', '金額'];
+  const sv_rows = teams.map(([name, t]) => {
+    const nn = Object.values(t.navy_name).reduce((s, v) => s + v, 0);
+    const no = Object.values(t.navy_no).reduce((s, v)  => s + v, 0);
+    const wn = Object.values(t.white_name).reduce((s, v) => s + v, 0);
+    const wo = Object.values(t.white_no).reduce((s, v)  => s + v, 0);
+    return [name, nn || 0, no || 0, wn || 0, wo || 0, [...t.names].join('、'), nn + no + wn + wo, t.total || 0];
+  });
+  const sv_tot = [
+    '合計',
+    teams.reduce((s, [, t]) => s + Object.values(t.navy_name).reduce((a, v) => a + v, 0), 0),
+    teams.reduce((s, [, t]) => s + Object.values(t.navy_no).reduce((a, v)   => a + v, 0), 0),
+    teams.reduce((s, [, t]) => s + Object.values(t.white_name).reduce((a, v) => a + v, 0), 0),
+    teams.reduce((s, [, t]) => s + Object.values(t.white_no).reduce((a, v)  => a + v, 0), 0),
+    '',
+    teams.reduce((s, [, t]) => s + [...Object.values(t.navy_name), ...Object.values(t.navy_no), ...Object.values(t.white_name), ...Object.values(t.white_no)].reduce((a, v) => a + v, 0), 0),
+    teams.reduce((s, [, t]) => s + t.total, 0),
+  ];
+  // book_prepend がないため先頭挿入は別途 wb に追加後 sheet 順を組み直す
+  const wsSummary = XLSX.utils.aoa_to_sheet([sv_header, ...sv_rows, sv_tot]);
+  // 一旦全シートを新ブックに先頭→後ろの順で追加
+  const wb2 = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb2, wsSummary, '枚数・金額');
+  wb.SheetNames.forEach(n => XLSX.utils.book_append_sheet(wb2, wb.Sheets[n], n));
+  // ─────────────────────────────────────────────────
+
+  const ts  = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 14);
+  const fileName = `注文一覧_${tournamentName || '大会'}_${ts}.xlsx`;
+  const buf  = XLSX.write(wb2, { bookType: 'xlsx', type: 'array' });
   const blob = new Blob([buf], { type: 'application/octet-stream' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = fileName;
-  document.body.appendChild(a);
-  a.click();
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = fileName;
+  document.body.appendChild(a); a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 
 // ==========================================
-// 変更差分テーブル
+// 変更差分テーブル（アコーディオン）
 // ==========================================
 function OrderDiffTable({ history }) {
+  const [openIdx, setOpenIdx] = useState(null);
   const updated = (history || []).filter(h => h.action === 'updated');
   if (!updated.length) return null;
 
   return (
-    <div style={{ marginTop: 10 }}>
+    <div style={{ marginTop: 8 }}>
       {updated.map((h, hi) => {
         const diff = computeDiff(h.old_items, h.new_items);
         if (!diff.length) return null;
+        const isOpen = openIdx === hi;
         return (
-          <div key={hi} style={{ marginTop: 8 }}>
-            <p style={{ fontSize: '0.75rem', color: '#888', margin: '0 0 4px' }}>
-              変更履歴: {(h.date || '').slice(0, 16)} → ¥{(h.new_total || 0).toLocaleString()}
-            </p>
-            <table style={{ borderCollapse: 'collapse', fontSize: '0.78rem', width: '100%' }}>
-              <thead>
-                <tr style={{ background: '#f5f5f5' }}>
-                  <th style={{ padding: '3px 8px', border: '1px solid #ddd', width: 48 }}>区分</th>
-                  <th style={{ padding: '3px 8px', border: '1px solid #ddd', textAlign: 'left' }}>カラー・サイズ・ネーム</th>
-                  <th style={{ padding: '3px 8px', border: '1px solid #ddd', width: 90, textAlign: 'right' }}>数量</th>
-                </tr>
-              </thead>
-              <tbody>
-                {diff.map((d, di) => {
-                  const { type, item, oldQty } = d;
-                  const label = [item.color, item.size, item.has_name ? 'ネームあり' : 'ネームなし', item.has_name && item.name ? `「${item.name}」` : ''].filter(Boolean).join(' ');
-                  const color = type === 'added' ? '#c8102e' : type === 'removed' ? '#999' : '#e65100';
-                  const tag   = type === 'added' ? '追加' : type === 'removed' ? '削除' : '変更';
-                  const qtyStr = type === 'changed' ? `${oldQty}枚→${item.quantity}枚` : `×${item.quantity}枚`;
-                  return (
-                    <tr key={di} style={{ color }}>
-                      <td style={{ padding: '3px 8px', border: '1px solid #eee', fontWeight: 700, textAlign: 'center' }}>{tag}</td>
-                      <td style={{ padding: '3px 8px', border: '1px solid #eee', textDecoration: type === 'removed' ? 'line-through' : 'none' }}>{label}</td>
-                      <td style={{ padding: '3px 8px', border: '1px solid #eee', textAlign: 'right', textDecoration: type === 'removed' ? 'line-through' : 'none' }}>{qtyStr}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div key={hi} style={{ marginTop: 4, border: '1px solid #e8e8e8', background: '#fafafa' }}>
+            <button
+              onClick={() => setOpenIdx(isOpen ? null : hi)}
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '5px 10px', background: 'none', border: 'none', cursor: 'pointer',
+                fontSize: '0.75rem', color: '#888', textAlign: 'left',
+              }}
+            >
+              <span>
+                <span style={{ color: '#e65100', fontWeight: 700, marginRight: 6 }}>変更履歴</span>
+                {(h.date || '').slice(0, 16)}
+                <span style={{ marginLeft: 8, color: '#555' }}>→ ¥{(h.new_total || 0).toLocaleString()}</span>
+                <span style={{ marginLeft: 8, color: '#bbb' }}>（{diff.length}件）</span>
+              </span>
+              <span style={{ fontSize: '0.7rem', color: '#aaa' }}>{isOpen ? '▲' : '▼'}</span>
+            </button>
+            {isOpen && (
+              <table style={{ borderCollapse: 'collapse', fontSize: '0.76rem', width: '100%' }}>
+                <thead>
+                  <tr style={{ background: '#f0f0f0' }}>
+                    <th style={{ padding: '3px 8px', border: '1px solid #ddd', width: 44 }}>区分</th>
+                    <th style={{ padding: '3px 8px', border: '1px solid #ddd', textAlign: 'left' }}>カラー・サイズ・ネーム</th>
+                    <th style={{ padding: '3px 8px', border: '1px solid #ddd', width: 100, textAlign: 'right' }}>数量</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {diff.map((d, di) => {
+                    const { type, item, oldQty } = d;
+                    const label = [item.color, item.size, item.has_name ? 'ネームあり' : 'ネームなし', item.has_name && item.name ? `「${item.name}」` : ''].filter(Boolean).join(' ');
+                    const color = type === 'added' ? '#c8102e' : type === 'removed' ? '#999' : '#e65100';
+                    const tag   = type === 'added' ? '追加' : type === 'removed' ? '削除' : '変更';
+                    const qtyStr = type === 'changed' ? `${oldQty}枚→${item.quantity}枚` : `×${item.quantity}枚`;
+                    return (
+                      <tr key={di} style={{ color }}>
+                        <td style={{ padding: '3px 8px', border: '1px solid #eee', fontWeight: 700, textAlign: 'center' }}>{tag}</td>
+                        <td style={{ padding: '3px 8px', border: '1px solid #eee', textDecoration: type === 'removed' ? 'line-through' : 'none' }}>{label}</td>
+                        <td style={{ padding: '3px 8px', border: '1px solid #eee', textAlign: 'right', textDecoration: type === 'removed' ? 'line-through' : 'none' }}>{qtyStr}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
           </div>
         );
       })}
@@ -202,76 +227,318 @@ function openReceiptPrint({ receipt_no, issued_at, teamName, branch, title, amou
   const rm = d.getMonth() + 1;
   const rd = d.getDate();
 
-  const css = [
-    '@page{size:A4 portrait;margin:0}',
-    '*{margin:0;padding:0;box-sizing:border-box}',
-    'body{font-family:"MS Mincho","Yu Mincho","Hiragino Mincho ProN",serif;color:#000;background:#fff;',
-    'display:flex;flex-direction:column;align-items:center;padding:10mm 0;min-height:100vh}',
-    '@media print{.btn{display:none!important}body{padding:0 0}}',
-    '.btn{margin-bottom:6mm;padding:7px 20px;background:#1a56db;color:#fff;border:none;font-size:13px;cursor:pointer;font-family:sans-serif}',
-    /* 105x148mm \uff08A6\u7e26\uff09\u3092 A4 \u7e26\u306e\u4e0a\u534a\u306b\u914d\u7f6e */
-    '.rc{width:105mm;height:148mm;border:4px double #000;padding:5mm 6mm 4mm;display:flex;flex-direction:column;position:relative}',
-    /* \u30bf\u30a4\u30c8\u30eb\uff1a\u4e2d\u592e\u3001\u4e8c\u91cd\u7dda\u4e0b\u7dda */
-    '.rc-title{text-align:center;margin-bottom:2.5mm}',
-    '.rc-title span{font-size:18px;font-weight:bold;letter-spacing:10px;border-bottom:2.5px double #000;padding-bottom:2px}',
-    /* \u65e5\u4ed8\uff1a\u53f3\u5bc4\u305b\u3001\u4e0b\u306b\u4e00\u672c\u7dda */
-    '.rc-date-wrap{display:flex;justify-content:flex-end;margin-bottom:1.5mm}',
-    '.rc-date{font-size:10px;letter-spacing:2px;border-bottom:1px solid #000;padding-bottom:1px}',
-    /* \u5b9b\u540d */
-    '.rc-branch{font-size:10px;margin-bottom:0.5mm;min-height:0.9em}',
-    '.rc-name-row{display:flex;align-items:flex-end;gap:4px;border-bottom:1px solid #000;padding-bottom:2px;margin-bottom:2mm}',
-    '.rc-name{font-size:13px;letter-spacing:1px;flex:1}',
-    '.rc-sama{font-size:12px;white-space:nowrap}',
-    /* \u91d1\u984d\uff1a\u8584\u3044\u30b0\u30ec\u30fc\u7db2\u639b\u3051\u3001\u4e0b\u306b\u592a\u3044\u4e00\u672c\u7dda */
-    '.rc-amount{display:flex;align-items:center;',
-    'background:repeating-linear-gradient(-45deg,rgba(0,0,0,0.04) 0,rgba(0,0,0,0.04) 2px,transparent 2px,transparent 5px),#ececec;',
-    'border-bottom:2.5px solid #000;padding:4px 5px;margin-bottom:2mm;gap:3px}',
-    '.rc-yen{font-size:16px;font-weight:bold;white-space:nowrap}',
-    '.rc-aval{flex:1;font-size:16px;font-weight:bold;text-align:center;letter-spacing:2px}',
-    '.rc-ast{font-size:15px;font-weight:bold;white-space:nowrap}',
-    /* \u4f46\u66f8\u304d */
-    '.rc-tadashi{font-size:10px;color:#000;margin-bottom:auto;padding-bottom:1mm}',
-    /* \u767a\u884c\u8005 */
-    '.rc-issuer{display:flex;justify-content:flex-end;margin-top:auto}',
-    '.rc-itext{text-align:right;line-height:1.9;position:relative;padding-right:34px}',
-    '.rc-org{font-size:10px}',
-    '.rc-pres{font-size:11px;font-weight:bold;letter-spacing:2px}',
-    '.rc-stamp{position:absolute;right:-6px;bottom:-4px;width:46px;height:46px;opacity:0.85}',
-    '.rc-no{position:absolute;bottom:3mm;left:6mm;font-size:8px;color:#aaa}',
-  ].join('');
+  const css = `
+@page{size:A4 landscape;margin:30mm 6mm 5mm}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:"MS Mincho","Yu Mincho","Hiragino Mincho ProN",serif;
+  color:#000;background:#fff;
+  display:flex;flex-direction:column;align-items:center;
+  padding:8mm 0;
+}
+@media print{
+  .btn{display:none!important}
+  body{padding:0}
+}
+.btn{
+  margin-bottom:5mm;padding:7px 22px;
+  background:#1a56db;color:#fff;border:none;
+  font-size:13px;cursor:pointer;font-family:sans-serif;border-radius:3px;
+}
+/* 領収書本体：A6横内に収まる、やや縦長に */
+.rc{
+  width:112mm;
+  min-height:75mm;
+  border:3px double #000;
+  padding:6mm 7mm 5mm;
+  display:flex;flex-direction:column;
+  position:relative;gap:2.5mm;
+}
+/* タイトル */
+.rc-title{text-align:center}
+.rc-title span{
+  font-size:20px;font-weight:bold;letter-spacing:14px;
+  border-bottom:2.5px double #000;padding-bottom:2px;
+}
+/* 日付：右寄せ */
+.rc-date{text-align:right;font-size:10px;letter-spacing:1.5px}
+/* 宛名ブロック（支部＋チーム名を密着） */
+.rc-addressee{display:flex;flex-direction:column;gap:0.5mm}
+/* 支部（小さめ、線なし） */
+.rc-branch{font-size:9.5px}
+/* チーム名+様：左寄せ、インライン下線（様で止まる） */
+.rc-name-inner{
+  display:inline-flex;align-items:flex-end;gap:3px;
+  border-bottom:1.5px solid #000;padding-bottom:2px;
+}
+.rc-name{font-size:14px;letter-spacing:1px}
+.rc-sama{font-size:12px}
+/* 金額：中央、その部分だけ網掛け＋下線 */
+.rc-amount-wrap{display:flex;justify-content:center;margin-top:4mm}
+.rc-amount{
+  display:inline-flex;align-items:center;gap:0;
+  background:repeating-linear-gradient(
+    -45deg,
+    rgba(0,0,0,0.05) 0,rgba(0,0,0,0.05) 2px,
+    #efefef 2px,#efefef 6px
+  );
+  border-bottom:2.5px solid #000;
+  padding:4px 2px;
+  justify-content:center;
+}
+.rc-yen{font-size:16px;font-weight:bold}
+.rc-val{font-size:18px;font-weight:bold;letter-spacing:1px}
+.rc-ast{font-size:15px;font-weight:bold}
+/* 但し書き */
+.rc-tadashi{font-size:10px;flex:1;margin-top:2.5mm}
+/* 発行者 */
+.rc-issuer{display:flex;justify-content:flex-end;margin-top:auto}
+.rc-itext{text-align:right;line-height:2;position:relative;padding-right:28px}
+.rc-org{font-size:9.5px}
+.rc-pres{font-size:11px;font-weight:bold;letter-spacing:2px}
+.rc-stamp{position:absolute;right:-8px;bottom:-2px;width:44px;height:44px;opacity:0.82}
+/* 管理番号：左下 */
+.rc-no{position:absolute;bottom:2.5mm;left:5mm;font-size:7.5px;color:#bbb;letter-spacing:0.3px}
+`;
 
-  const body = [
-    '<button class="btn" onclick="window.print()">\u5370\u5237 / PDF\u4fdd\u5b58</button>',
-    '<div class="rc">',
-    '  <div class="rc-title"><span>\u9818\u3000\u53ce\u3000\u8a3c</span></div>',
-    '  <div class="rc-date-wrap">',
-    '    <span class="rc-date">\u4ee4\u548c\u3000' + ry + '\u3000\u5e74\u3000' + rm + '\u3000\u6708\u3000' + rd + '\u3000\u65e5</span>',
-    '  </div>',
-    '  <div class="rc-branch">' + (branch || '\u3000') + '</div>',
-    '  <div class="rc-name-row">',
-    '    <span class="rc-name">' + teamName + '</span>',
-    '    <span class="rc-sama">\u69d8</span>',
-    '  </div>',
-    '  <div class="rc-amount">',
-    '    <span class="rc-yen">\uffe5</span>',
-    '    <span class="rc-aval">' + amountFW + '</span>',
-    '    <span class="rc-ast">\u203b</span>',
-    '  </div>',
-    '  <div class="rc-tadashi">\u4f46\u3057\u3000' + title + '</div>',
-    '  <div class="rc-issuer">',
-    '    <div class="rc-itext">',
-    '      <div class="rc-org">(\u4e00\u793e)\u798f\u5ca1\u770c\u8edf\u5f0f\u91ce\u7403\u9023\u76df</div>',
-    '      <div class="rc-pres">\u4f1a\u9577\u3000\u77f3\u539f\u5ee3\u58eb</div>',
-    '      <img class="rc-stamp" src="' + stampUrl + '" alt="" onerror="this.style.display=\'none\'">',
-    '    </div>',
-    '  </div>',
-    '  <div class="rc-no">No.' + receipt_no + '</div>',
-    '</div>',
-  ].join('\n');
+  const body = `
+<button class="btn" onclick="window.print()">印刷 / PDF保存</button>
+<div class="rc">
+  <div class="rc-title"><span>領　収　証</span></div>
+  <div class="rc-date">令和${ry}年${rm}月${rd}日</div>
+  <div class="rc-addressee">
+    ${branch ? `<div class="rc-branch">${branch}</div>` : ''}
+    <div class="rc-name-wrap">
+      <span class="rc-name-inner">
+        <span class="rc-name">${teamName}</span>
+        <span class="rc-sama">様</span>
+      </span>
+    </div>
+  </div>
+  <div class="rc-amount-wrap">
+    <div class="rc-amount">
+      <span class="rc-yen">￥</span>
+      <span class="rc-val">${amountFW}</span>
+      <span class="rc-ast">※</span>
+    </div>
+  </div>
+  <div class="rc-tadashi">但し　${title}</div>
+  <div class="rc-issuer">
+    <div class="rc-itext">
+      <div class="rc-org">(一社)福岡県軟式野球連盟</div>
+      <div class="rc-pres">会長　石原廣士</div>
+      <img class="rc-stamp" src="${stampUrl}" alt="" onerror="this.style.display='none'">
+    </div>
+  </div>
+  <div class="rc-no">No.${receipt_no}</div>
+</div>
+`;
 
-  const html = '<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>\u9818\u53ce\u8a3c</title><style>' + css + '</style></head><body>' + body + '<script>window.onload=function(){setTimeout(function(){window.print();},600);};<\/script></body></html>';
-  const w = window.open('', '_blank', 'width=500,height=700');
+  const html = `<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>領収証</title><style>${css}</style></head><body>${body}<script>window.onload=function(){setTimeout(function(){window.print();},600);};<\/script></body></html>`;
+  const w = window.open('', '_blank', 'width=680,height=460');
   if (w) { w.document.write(html); w.document.close(); }
+}
+
+// ==========================================
+// 領収書：複数枚一括印刷
+// ==========================================
+function openMultiReceiptPrint(receiptsData) {
+  const stampUrl = window.location.origin + '/bill/印鑑.png';
+
+  function fw(n) {
+    return String(n).replace(/[0-9,]/g, c =>
+      c === ',' ? '\uff0c' : String.fromCharCode(c.charCodeAt(0) + 0xFEE0)
+    );
+  }
+
+  function buildRc(r) {
+    const amountFW = fw(Number(r.amount).toLocaleString());
+    const d = r.issued_at ? new Date(r.issued_at.replace(' ', 'T')) : new Date();
+    const ry = d.getFullYear() - 2018, rm = d.getMonth() + 1, rd = d.getDate();
+    return `
+<div class="rc">
+  <div class="rc-title"><span>領　収　証</span></div>
+  <div class="rc-date">令和${ry}年${rm}月${rd}日</div>
+  <div class="rc-addressee">
+    ${r.branch ? `<div class="rc-branch">${r.branch}</div>` : ''}
+    <div class="rc-name-wrap">
+      <span class="rc-name-inner">
+        <span class="rc-name">${r.teamName}</span>
+        <span class="rc-sama">様</span>
+      </span>
+    </div>
+  </div>
+  <div class="rc-amount-wrap">
+    <div class="rc-amount">
+      <span class="rc-yen">￥</span>
+      <span class="rc-val">${amountFW}</span>
+      <span class="rc-ast">※</span>
+    </div>
+  </div>
+  <div class="rc-tadashi">但し　${r.title}</div>
+  <div class="rc-issuer">
+    <div class="rc-itext">
+      <div class="rc-org">(一社)福岡県軟式野球連盟</div>
+      <div class="rc-pres">会長　石原廣士</div>
+      <img class="rc-stamp" src="${stampUrl}" alt="" onerror="this.style.display='none'">
+    </div>
+  </div>
+  <div class="rc-no">No.${r.receipt_no}</div>
+</div>`;
+  }
+
+  const isLandscape = receiptsData.length >= 2;
+  const perPage = isLandscape ? 4 : 2;
+
+  const pages = [];
+  for (let i = 0; i < receiptsData.length; i += perPage) pages.push(receiptsData.slice(i, i + perPage));
+
+  const pagesHtml = pages.map(pageRecs => {
+    const cells = pageRecs.map(r => `<div class="cell">${buildRc(r)}</div>`).join('');
+    const empties = Array(perPage - pageRecs.length).fill('<div class="cell"></div>').join('');
+    return `<div class="page">${cells}${empties}</div>`;
+  }).join('');
+
+  const css = `
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"MS Mincho","Yu Mincho","Hiragino Mincho ProN",serif;color:#000;background:#fff}
+@media print{.btn{display:none!important}}
+.btn{display:block;margin:8px auto 12px;padding:7px 24px;background:#1a56db;color:#fff;border:none;font-size:13px;cursor:pointer;font-family:sans-serif}
+${isLandscape
+  ? '@page{size:A4 landscape;margin:8mm}.page{width:281mm;height:194mm;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8mm;break-after:page}'
+  : '@page{size:A4 portrait;margin:8mm}.page{width:194mm;height:281mm;display:grid;grid-template-columns:1fr;grid-template-rows:1fr 1fr;gap:8mm;break-after:page}'}
+.page:last-child{break-after:avoid}
+.cell{display:flex;align-items:center;justify-content:center}
+.rc{width:112mm;min-height:75mm;border:3px double #000;padding:6mm 7mm 5mm;display:flex;flex-direction:column;position:relative;gap:2.5mm}
+.rc-title{text-align:center}
+.rc-title span{font-size:20px;font-weight:bold;letter-spacing:14px;border-bottom:2.5px double #000;padding-bottom:2px}
+.rc-date{text-align:right;font-size:10px;letter-spacing:1.5px}
+.rc-addressee{display:flex;flex-direction:column;gap:0.5mm}
+.rc-branch{font-size:9.5px}
+.rc-name-inner{display:inline-flex;align-items:flex-end;gap:3px;border-bottom:1.5px solid #000;padding-bottom:2px}
+.rc-name{font-size:14px;letter-spacing:1px}
+.rc-sama{font-size:12px}
+.rc-amount-wrap{display:flex;justify-content:center;margin-top:4mm}
+.rc-amount{display:inline-flex;align-items:center;gap:0;background:repeating-linear-gradient(-45deg,rgba(0,0,0,0.05) 0,rgba(0,0,0,0.05) 2px,#efefef 2px,#efefef 6px);border-bottom:2.5px solid #000;padding:4px 2px;justify-content:center}
+.rc-yen{font-size:16px;font-weight:bold}
+.rc-val{font-size:18px;font-weight:bold;letter-spacing:1px}
+.rc-ast{font-size:15px;font-weight:bold}
+.rc-tadashi{font-size:10px;flex:1;margin-top:2.5mm}
+.rc-issuer{display:flex;justify-content:flex-end;margin-top:auto}
+.rc-itext{text-align:right;line-height:2;position:relative;padding-right:28px}
+.rc-org{font-size:9.5px}
+.rc-pres{font-size:11px;font-weight:bold;letter-spacing:2px}
+.rc-stamp{position:absolute;right:-8px;bottom:-2px;width:44px;height:44px;opacity:0.82}
+.rc-no{position:absolute;bottom:2.5mm;left:5mm;font-size:7.5px;color:#bbb;letter-spacing:0.3px}
+`;
+
+  const html = `<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>領収証（一括）</title><style>${css}</style></head><body><button class="btn" onclick="window.print()">印刷 / PDF保存（${receiptsData.length}枚）</button>${pagesHtml}<script>window.onload=function(){setTimeout(function(){window.print();},600);};<\/script></body></html>`;
+  const w = window.open('', '_blank', isLandscape ? 'width=1000,height=750' : 'width=750,height=1000');
+  if (w) { w.document.write(html); w.document.close(); }
+}
+
+// ==========================================
+// 領収証送付モーダル（金額調整・分割対応）
+// ==========================================
+function ReceiptNoticeModal({ teams, tournamentId, tournamentName, onClose, onSent }) {
+  // teams: [{ team_id, team_name, team_email, total }]
+  const [rows, setRows] = useState(() =>
+    teams.map(t => ({ ...t, amounts: [t.total] }))
+  );
+  const [sending, setSending] = useState(false);
+  const [err, setErr] = useState('');
+
+  function setAmount(ti, ai, val) {
+    setRows(prev => prev.map((r, i) => i !== ti ? r : {
+      ...r,
+      amounts: r.amounts.map((a, j) => j !== ai ? a : Math.max(0, Number(val) || 0)),
+    }));
+  }
+  function addSplit(ti) {
+    setRows(prev => prev.map((r, i) => i !== ti ? r : { ...r, amounts: [...r.amounts, 0] }));
+  }
+  function removeSplit(ti, ai) {
+    setRows(prev => prev.map((r, i) => i !== ti ? r : { ...r, amounts: r.amounts.filter((_, j) => j !== ai) }));
+  }
+
+  async function handleSend() {
+    for (const r of rows) {
+      const sum = r.amounts.reduce((s, a) => s + a, 0);
+      if (sum > r.total) { setErr(`${r.team_name}: 合計金額（¥${sum.toLocaleString()}）が注文合計（¥${r.total.toLocaleString()}）を超えています`); return; }
+      if (r.amounts.some(a => a <= 0)) { setErr(`${r.team_name}: 金額は1以上を入力してください`); return; }
+    }
+    setSending(true); setErr('');
+    try {
+      const notices = rows.map(r => ({
+        team_id: r.team_id, team_name: r.team_name, team_email: r.team_email,
+        tournament_id: r.tournament_id || tournamentId, tournament_name: r.tournament_name || tournamentName,
+        amounts: r.amounts, order_total: r.total,
+      }));
+      await sendReceiptNotices(notices);
+      onSent();
+      onClose();
+    } catch (e) {
+      setErr(e.message || '送付に失敗しました');
+    } finally { setSending(false); }
+  }
+
+  const overlay = { position:'fixed', inset:0, background:'rgba(0,0,0,0.45)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:16 };
+  const box = { background:'#fff', padding:'24px 28px', width:'100%', maxWidth:600, maxHeight:'85vh', overflowY:'auto', position:'relative' };
+  const inp = { width:'100%', padding:'6px 10px', border:'1px solid #ddd', fontSize:'0.9rem', boxSizing:'border-box' };
+
+  return (
+    <div style={overlay} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={box}>
+        <h3 style={{ margin:'0 0 16px', fontSize:'1.05rem', fontWeight:700 }}>領収証を送付する</h3>
+        <p style={{ fontSize:'0.82rem', color:'#888', marginBottom:16 }}>合計金額以下であれば分割領収書も発行できます。</p>
+
+        {rows.map((r, ti) => {
+          const sum = r.amounts.reduce((s, a) => s + a, 0);
+          const over = sum > r.total;
+          return (
+            <div key={ti} style={{ marginBottom:16, border:'1px solid #e8e8e8', padding:'12px 14px' }}>
+              <div style={{ fontWeight:700, fontSize:'0.9rem', marginBottom:8 }}>{r.team_name}</div>
+              <div style={{ fontSize:'0.78rem', color:'#888', marginBottom:8 }}>注文合計: ¥{r.total.toLocaleString()}</div>
+              {r.amounts.map((amt, ai) => (
+                <div key={ai} style={{ display:'flex', gap:6, alignItems:'center', marginBottom:6 }}>
+                  <span style={{ fontSize:'0.8rem', color:'#555', minWidth:60 }}>第{ai+1}領収証</span>
+                  <span style={{ fontSize:'0.85rem' }}>¥</span>
+                  <input type="number" style={{ ...inp, width:120 }} value={amt}
+                    onChange={e => setAmount(ti, ai, e.target.value)} min={0} />
+                  {r.amounts.length > 1 && (
+                    <button onClick={() => removeSplit(ti, ai)}
+                      style={{ padding:'4px 8px', background:'#fff', border:'1px solid #ddd', color:'#c62828', cursor:'pointer', fontSize:'0.8rem' }}>削除</button>
+                  )}
+                </div>
+              ))}
+              <div style={{ display:'flex', alignItems:'center', gap:12, marginTop:4 }}>
+                <button onClick={() => addSplit(ti)}
+                  style={{ fontSize:'0.8rem', padding:'4px 10px', background:'#f5f5f5', border:'1px solid #ddd', cursor:'pointer' }}>
+                  + 分割追加
+                </button>
+                <span style={{ fontSize:'0.8rem', color: over ? '#c62828' : '#2e7d32', fontWeight:600 }}>
+                  合計 ¥{sum.toLocaleString()} {over ? '（超過）' : r.total > sum ? `（¥${(r.total-sum).toLocaleString()} 未配分）` : '（一致）'}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+
+        {err && <p style={{ color:'#c62828', fontSize:'0.85rem', marginTop:8 }}>{err}</p>}
+
+        <div style={{ display:'flex', gap:8, marginTop:20 }}>
+          <button onClick={handleSend} disabled={sending}
+            style={{ flex:1, padding:'10px', background:'#1565c0', color:'#fff', border:'none', fontWeight:700, fontSize:'0.95rem', cursor:'pointer', opacity: sending ? 0.6 : 1 }}>
+            {sending ? '送付中...' : `${rows.length}チームに送付する`}
+          </button>
+          <button onClick={onClose}
+            style={{ padding:'10px 20px', background:'#fff', border:'1px solid #ddd', color:'#555', fontSize:'0.9rem', cursor:'pointer' }}>
+            キャンセル
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // ==========================================
@@ -370,20 +637,32 @@ export default function ShopOrdersAdmin() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [exporting, setExporting] = useState(false);
   const [receiptOrder, setReceiptOrder] = useState(null); // { order, teamName, tournamentName }
+  const [selectedForPrint, setSelectedForPrint] = useState(new Set());
+  const [bulkPrinting, setBulkPrinting] = useState(false);
+  const [showNoticeModal, setShowNoticeModal] = useState(false);
+  const [receiptNotices, setReceiptNotices] = useState([]);
+  const [noticesLoading, setNoticesLoading] = useState(false);
 
   function handleLogin(e) {
     e.preventDefault();
     const r = ACCOUNTS[pwInput];
     if (r) {
-      setRole(r);
+      setRole(pwInput);
+      sessionStorage.setItem('shopAdminRole', pwInput);
       setPwError('');
     } else {
       setPwError('パスワードが正しくありません');
     }
   }
 
+  // マウント後にsessionStorageからログイン状態を復元（hydrationエラー回避のためuseEffectで行う）
+  useEffect(() => {
+    const saved = sessionStorage.getItem('shopAdminRole');
+    if (saved && ACCOUNTS[saved] !== undefined) setRole(saved);
+  }, []);
+
   const authed = !!role;
-  const canEdit = role === 'editor';
+  const canEdit = ACCOUNTS[role] === 'editor';
 
   useEffect(() => {
     if (!authed) return;
@@ -412,6 +691,7 @@ export default function ShopOrdersAdmin() {
         map[key] = {
           team_name: o.team_name, team_email: o.team_email || '',
           team_region_branch: o.team_region_branch || '',
+          tournament_id: o.tournament_id,
           tournament_name: o.tournament_name,
           navy: 0, white: 0, total: 0, body_total: 0, name_total: 0, orders: [],
         };
@@ -447,6 +727,63 @@ export default function ShopOrdersAdmin() {
     } finally {
       setExporting(false);
     }
+  }
+
+  function toggleSelectForPrint(ti) {
+    setSelectedForPrint(prev => {
+      const next = new Set(prev);
+      if (next.has(ti)) next.delete(ti); else next.add(ti);
+      return next;
+    });
+  }
+
+  async function handleBulkPrint() {
+    const DEFAULT_TITLE = '筑後川旗第43回西日本学童軟式野球大会Tシャツ代として';
+    setBulkPrinting(true);
+    const receipts = [];
+    for (const ti of selectedForPrint) {
+      const team = teamSummary[ti];
+      const confirmedOrder = (team.orders || []).find(o => o.status !== 'cancelled');
+      if (!confirmedOrder) continue;
+      try {
+        const result = await issueReceipt({
+          order_id: confirmedOrder.id,
+          team_name: team.team_name,
+          branch: team.team_region_branch || '',
+          title: DEFAULT_TITLE,
+          amount: team.total,
+        });
+        receipts.push({
+          receipt_no: result.receipt_no,
+          issued_at: result.issued_at,
+          teamName: team.team_name,
+          branch: team.team_region_branch || '',
+          title: DEFAULT_TITLE,
+          amount: team.total,
+        });
+      } catch (e) {
+        console.error('領収書発行エラー:', team.team_name, e);
+      }
+    }
+    setBulkPrinting(false);
+    if (receipts.length) openMultiReceiptPrint(receipts);
+  }
+
+  async function loadReceiptNotices() {
+    setNoticesLoading(true);
+    try {
+      const data = await fetchAdminReceiptNotices(selectedTournamentId || null);
+      setReceiptNotices(data || []);
+    } catch (_) { setReceiptNotices([]); }
+    finally { setNoticesLoading(false); }
+  }
+
+  async function handleDeleteNotice(noticeId) {
+    if (!confirm('このお知らせを削除しますか？')) return;
+    try {
+      await deleteReceiptNotice(noticeId);
+      setReceiptNotices(prev => prev.filter(n => n.id !== noticeId));
+    } catch (e) { alert(e.message || '削除に失敗しました'); }
   }
 
   // ─── ログイン画面 ──────────────────────────
@@ -497,6 +834,11 @@ export default function ShopOrdersAdmin() {
           <span style={{ fontSize: '0.85rem', opacity: 0.8 }}>
             {canEdit ? '編集モード' : '閲覧モード（Excel出力のみ）'}
           </span>
+          <button
+            onClick={() => { sessionStorage.removeItem('shopAdminRole'); setRole(null); }}
+            style={{ marginLeft: 'auto', padding: '5px 14px', background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.5)', color: '#fff', fontSize: '0.82rem', cursor: 'pointer', borderRadius: 3 }}>
+            ログアウト
+          </button>
         </header>
 
         {/* タブ */}
@@ -519,7 +861,7 @@ export default function ShopOrdersAdmin() {
           ))}
         </div>
 
-        <main style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 16px' }}>
+        <main style={{ maxWidth: 1600, margin: '0 auto', padding: '24px 16px' }}>
           {activeTab === 'teams'    && <TeamManagement canEdit={canEdit} tournaments={tournaments} />}
           {activeTab === 'doctypes' && <DocTypeSettings />}
           {activeTab === 'orders' && <>
@@ -543,7 +885,20 @@ export default function ShopOrdersAdmin() {
                 <option value="cancelled">キャンセルのみ</option>
               </select>
             </div>
-            <div style={{ marginLeft: 'auto' }}>
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, alignItems: 'center' }}>
+              {selectedForPrint.size >= 1 && (
+                <button
+                  onClick={() => setShowNoticeModal(true)}
+                  style={{ padding: '8px 16px', background: '#1565c0', color: '#fff', border: 'none', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer' }}>
+                  領収証を送付する（{selectedForPrint.size}チーム）
+                </button>
+              )}
+              {selectedForPrint.size >= 1 && (
+                <button onClick={handleBulkPrint} disabled={bulkPrinting}
+                  style={{ padding: '8px 20px', background: '#c8102e', color: '#fff', border: 'none', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', opacity: bulkPrinting ? 0.6 : 1 }}>
+                  {bulkPrinting ? '発行中...' : `領収証まとめて印刷（${selectedForPrint.size}枚）`}
+                </button>
+              )}
               <button onClick={handleExport} disabled={exporting || !filteredOrders.length}
                 style={{ padding: '8px 20px', background: '#2e7d32', color: '#fff', border: 'none', fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer', opacity: (exporting || !filteredOrders.length) ? 0.5 : 1 }}>
                 {exporting ? 'エクスポート中...' : 'Excel出力'}
@@ -572,8 +927,13 @@ export default function ShopOrdersAdmin() {
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
                     <tr style={{ background: '#f5f5f5', borderBottom: '2px solid #eee' }}>
-                      {['チーム名', '大会', 'ネイビー', 'ホワイト', '総枚数', '本体金額', 'ネーム金額', '合計金額', ''].map(h => (
-                        <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: '0.85rem', color: '#555', fontWeight: 600, whiteSpace: 'nowrap' }}>{h}</th>
+                      <th style={{ padding: '6px 8px', textAlign: 'center', width: 40 }}>
+                        <input type="checkbox" style={{ width: 18, height: 18, cursor: 'pointer' }}
+                          checked={selectedForPrint.size === teamSummary.length && teamSummary.length > 0}
+                          onChange={e => setSelectedForPrint(e.target.checked ? new Set(teamSummary.map((_, i) => i)) : new Set())} />
+                      </th>
+                      {['チーム名', '大会', 'ネイビー', 'ホワイト', '総枚数', '本体金額', 'ネーム金額', '合計金額', '領収証'].map(h => (
+                        <th key={h} style={{ padding: '6px 10px', textAlign: 'left', fontSize: '0.78rem', color: '#555', fontWeight: 600, whiteSpace: 'nowrap' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -583,73 +943,57 @@ export default function ShopOrdersAdmin() {
                         <tr key={ti}
                           style={{ borderBottom: '1px solid #f0f0f0', cursor: 'pointer', background: expandedOrderId === ti ? '#fafafa' : '#fff' }}
                           onClick={() => setExpandedOrderId(expandedOrderId === ti ? null : ti)}>
-                          <td style={{ padding: '12px 14px', fontWeight: 600, fontSize: '0.9rem' }}>{team.team_name}</td>
-                          <td style={{ padding: '12px 14px', fontSize: '0.85rem', color: '#666' }}>{team.tournament_name || '—'}</td>
-                          <td style={{ padding: '12px 14px', textAlign: 'center' }}>{team.navy > 0 ? `${team.navy}枚` : '—'}</td>
-                          <td style={{ padding: '12px 14px', textAlign: 'center' }}>{team.white > 0 ? `${team.white}枚` : '—'}</td>
-                          <td style={{ padding: '12px 14px', textAlign: 'center', fontWeight: 600 }}>{team.navy + team.white}枚</td>
-                          <td style={{ padding: '12px 14px', textAlign: 'right' }}>¥{team.body_total.toLocaleString()}</td>
-                          <td style={{ padding: '12px 14px', textAlign: 'right' }}>{team.name_total > 0 ? `¥${team.name_total.toLocaleString()}` : '—'}</td>
-                          <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 700, color: '#c8102e', fontSize: '0.95rem' }}>¥{team.total.toLocaleString()}</td>
-                          <td style={{ padding: '8px 14px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
-                            {(() => {
+                          <td style={{ padding: '6px 8px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+                            <input type="checkbox" style={{ width: 18, height: 18, cursor: 'pointer' }} checked={selectedForPrint.has(ti)} onChange={() => toggleSelectForPrint(ti)} />
+                          </td>
+                          <td style={{ padding: '6px 10px', fontWeight: 600, fontSize: '0.82rem', minWidth: 160, whiteSpace: 'nowrap' }}>{team.team_name}</td>
+                          <td style={{ padding: '6px 10px', fontSize: '0.78rem', color: '#666', minWidth: 200, whiteSpace: 'nowrap' }}>{team.tournament_name || '—'}</td>
+                          <td style={{ padding: '6px 10px', textAlign: 'center', fontSize: '0.78rem' }}>{team.navy}枚</td>
+                          <td style={{ padding: '6px 10px', textAlign: 'center', fontSize: '0.78rem' }}>{team.white}枚</td>
+                          <td style={{ padding: '6px 10px', textAlign: 'center', fontWeight: 600, fontSize: '0.82rem' }}>{team.navy + team.white}枚</td>
+                          <td style={{ padding: '6px 10px', textAlign: 'right', fontSize: '0.78rem' }}>¥{team.body_total.toLocaleString()}</td>
+                          <td style={{ padding: '6px 10px', textAlign: 'right', fontSize: '0.78rem' }}>¥{team.name_total.toLocaleString()}</td>
+                          <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 700, color: '#c8102e', fontSize: '0.82rem' }}>¥{team.total.toLocaleString()}</td>
+                          {/* 領収証：折りたたみ時のみ表示 */}
+                          <td style={{ padding: '6px 8px', textAlign: 'center', whiteSpace: 'nowrap' }} onClick={e => e.stopPropagation()}>
+                            {expandedOrderId !== ti && (() => {
                               const confirmedOrder = (team.orders || []).find(o => o.status !== 'cancelled');
                               return confirmedOrder ? (
-                                <button
+                                <span
                                   onClick={() => setReceiptOrder({ order: confirmedOrder, teamName: team.team_name, teamRegionBranch: team.team_region_branch, tournamentName: team.tournament_name })}
-                                  style={{ padding: '4px 12px', fontSize: '0.78rem', background: '#fff', border: '1px solid #c8102e', color: '#c8102e', cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                                  style={{ fontSize: '0.75rem', color: '#c8102e', cursor: 'pointer', textDecoration: 'underline' }}>
                                   領収証
-                                </button>
+                                </span>
                               ) : null;
                             })()}
-                            <span style={{ display: 'block', fontSize: '0.75rem', color: '#aaa', marginTop: 2 }}>
-                              {expandedOrderId === ti ? '▲' : '▼'}
-                            </span>
                           </td>
                         </tr>
 
                         {expandedOrderId === ti && (
                           <tr key={`${ti}_detail`}>
-                            <td colSpan={9} style={{ padding: '0 16px 16px', background: '#f8f9fa' }}>
-                              <div style={{ paddingTop: 12 }}>
-                                <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: 8 }}>
-                                  メール: {team.team_email || '—'}
-                                </p>
-                                {team.orders.map((order, oi) => {
-                                  const isCancelled = order.status === 'cancelled';
-                                  const items = order.items || [];
-                                  const namesUsed = [...new Set(items.filter(i => i.has_name && i.name).map(i => i.name))];
-                                  return (
-                                    <div key={oi} style={{ marginBottom: 12, padding: 12, background: isCancelled ? '#fafafa' : '#fff', border: '1px solid #e8e8e8', opacity: isCancelled ? 0.6 : 1 }}>
-                                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                                          <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: isCancelled ? '#f3f4f6' : '#e8f5e9', color: isCancelled ? '#6b7280' : '#2e7d32', fontWeight: 600 }}>
-                                            {isCancelled ? 'キャンセル済' : '確定'}
-                                          </span>
-                                          <span style={{ fontSize: '0.8rem', color: '#888' }}>{(order.created_at || '').slice(0, 16)}</span>
-                                        </div>
-                                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                                          <span style={{ fontWeight: 700, color: '#c8102e' }}>¥{order.total.toLocaleString()}</span>
-                                          {!isCancelled && (
-                                            <button
-                                              onClick={() => setReceiptOrder({ order, teamName: team.team_name, teamRegionBranch: team.team_region_branch, tournamentName: team.tournament_name })}
-                                              style={{ padding: '3px 12px', fontSize: '0.78rem', background: '#fff', border: '1px solid #c8102e', color: '#c8102e', cursor: 'pointer', fontWeight: 600 }}>
-                                              領収書
-                                            </button>
-                                          )}
-                                        </div>
-                                      </div>
+                            <td colSpan={10} style={{ padding: '0 12px 10px', background: '#f8f9fa' }}>
+                              <div>
+                              {team.orders.map((order, oi) => {
+                                const isCancelled = order.status === 'cancelled';
+                                const items = order.items || [];
+                                const namesUsed = [...new Set(items.filter(i => i.has_name && i.name).map(i => i.name))];
+                                return (
+                                  <div key={oi} style={{ marginTop: 6, padding: '6px 10px', background: isCancelled ? '#fafafa' : '#fff', border: '1px solid #e8e8e8', opacity: isCancelled ? 0.6 : 1 }}>
+                                    <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 4, flexWrap: 'wrap' }}>
+                                      <span style={{ fontSize: '0.72rem', padding: '1px 6px', background: isCancelled ? '#f3f4f6' : '#e8f5e9', color: isCancelled ? '#6b7280' : '#2e7d32', fontWeight: 600 }}>
+                                        {isCancelled ? 'キャンセル済' : '確定'}
+                                      </span>
+                                      <span style={{ fontSize: '0.75rem', color: '#888' }}>{(order.created_at || '').slice(0, 16)}</span>
+                                      <span style={{ fontWeight: 700, color: '#c8102e', fontSize: '0.82rem' }}>¥{order.total.toLocaleString()}</span>
                                       {namesUsed.length > 0 && (
-                                        <p style={{ fontSize: '0.85rem', margin: '0 0 6px', color: '#555' }}>
-                                          ネーム指定: <strong>{namesUsed.join('、')}</strong>
-                                        </p>
+                                        <span style={{ fontSize: '0.75rem', color: '#555' }}>ネーム: <strong>{namesUsed.join('、')}</strong></span>
                                       )}
-                                      <OrderDetailTable items={items} />
-                                      {/* 変更差分 */}
-                                      <OrderDiffTable history={order.history} />
                                     </div>
-                                  );
-                                })}
+                                    <OrderDetailTable items={items} />
+                                    <OrderDiffTable history={order.history} />
+                                  </div>
+                                );
+                              })}
                               </div>
                             </td>
                           </tr>
@@ -662,6 +1006,25 @@ export default function ShopOrdersAdmin() {
             </>
           )}
           </>}
+
+          {/* 送付済み領収証お知らせ */}
+          {activeTab === 'orders' && (
+            <div style={{ marginTop: 40 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:12 }}>
+                <h3 style={{ margin:0, fontSize:'1rem', fontWeight:700 }}>送付済み領収証お知らせ</h3>
+                <button onClick={loadReceiptNotices}
+                  style={{ padding:'4px 14px', background:'#f5f5f5', border:'1px solid #ddd', fontSize:'0.82rem', cursor:'pointer' }}>
+                  再読み込み
+                </button>
+              </div>
+              <ReceiptNoticeList
+                tournamentId={selectedTournamentId}
+                notices={receiptNotices}
+                loading={noticesLoading}
+                onDelete={handleDeleteNotice}
+              />
+            </div>
+          )}
         </main>
       </div>
       {receiptOrder && (
@@ -673,7 +1036,72 @@ export default function ShopOrdersAdmin() {
           onClose={() => setReceiptOrder(null)}
         />
       )}
+
+      {showNoticeModal && (() => {
+        const selectedTeams = [...selectedForPrint].map(ti => {
+          const team = teamSummary[ti];
+          const confirmedOrder = (team.orders || []).find(o => o.status !== 'cancelled');
+          return {
+            team_id: confirmedOrder?.team_id || ti,
+            team_name: team.team_name,
+            team_email: team.team_email || '',
+            tournament_id: confirmedOrder?.tournament_id || team.tournament_id || selectedTournamentId,
+            tournament_name: team.tournament_name || selectedTournamentName,
+            total: team.total,
+          };
+        }).filter(t => t.total > 0);
+        return (
+          <ReceiptNoticeModal
+            teams={selectedTeams}
+            tournamentId={selectedTournamentId}
+            tournamentName={selectedTournamentName}
+            onClose={() => setShowNoticeModal(false)}
+            onSent={() => { loadReceiptNotices(); setSelectedForPrint(new Set()); }}
+          />
+        );
+      })()}
     </>
+  );
+}
+
+// ==========================================
+// 送付済み領収証お知らせ一覧
+// ==========================================
+function ReceiptNoticeList({ tournamentId, notices, loading, onDelete }) {
+  if (loading) return <p style={{ color:'#888', fontSize:'0.85rem' }}>読み込み中...</p>;
+  if (!notices.length) return <p style={{ color:'#aaa', fontSize:'0.85rem' }}>送付済みのお知らせはありません</p>;
+  const th = { padding:'6px 10px', textAlign:'left', fontSize:'0.78rem', color:'#555', fontWeight:600, borderBottom:'2px solid #eee' };
+  const td = { padding:'8px 10px', fontSize:'0.82rem', borderBottom:'1px solid #f0f0f0' };
+  return (
+    <table style={{ width:'100%', borderCollapse:'collapse' }}>
+      <thead>
+        <tr>
+          <th style={th}>チーム名</th>
+          <th style={th}>金額</th>
+          <th style={th}>送付日時</th>
+          <th style={th}></th>
+        </tr>
+      </thead>
+      <tbody>
+        {notices.map(n => (
+          <tr key={n.id}>
+            <td style={td}>{n.team_name}</td>
+            <td style={td}>
+              {n.amounts.length === 1
+                ? `¥${n.amounts[0].toLocaleString()}`
+                : n.amounts.map((a, i) => `第${i+1}: ¥${a.toLocaleString()}`).join(' / ')}
+            </td>
+            <td style={{ ...td, color:'#888', fontSize:'0.76rem' }}>{(n.created_at || '').slice(0,16)}</td>
+            <td style={td}>
+              <button onClick={() => onDelete(n.id)}
+                style={{ padding:'3px 10px', background:'#fff', border:'1px solid #ddd', color:'#c62828', fontSize:'0.78rem', cursor:'pointer' }}>
+                削除
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 

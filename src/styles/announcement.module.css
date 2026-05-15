@@ -1,35 +1,39 @@
+/* ベース */
 .container {
   min-height: 100vh;
-  background: #f5f7fa;
+  background: #fff;
 }
 
 .main {
-  max-width: 760px;
+  max-width: 720px;
   margin: 0 auto;
-  /* flush header: top:0 + height:56px */
-  padding: 88px 20px 60px;
+  padding: 88px 24px 80px;
 }
+
+.scrollArea {}
 
 /* ヘッダー部分 */
 .header {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 28px;
+  margin-bottom: 40px;
   flex-wrap: wrap;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #001e62;
 }
 
 .headerLeft {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .pulse {
   flex-shrink: 0;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   background: #ef4444;
   border-radius: 50%;
   animation: pulseAnim 1.6s ease-in-out infinite;
@@ -37,89 +41,161 @@
 
 @keyframes pulseAnim {
   0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
-  70%  { box-shadow: 0 0 0 9px rgba(239, 68, 68, 0); }
+  70%  { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
   100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+}
+
+.refreshBtn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: #001e62;
+  line-height: 0;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.refreshBtnSpinning svg {
+  animation: spin 0.6s linear;
+}
+
+@media (max-width: 640px) {
+  .titleRow {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .refreshBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: fixed;
+    right: 16px;
+    top: 96px;
+    z-index: 100;
+  }
+
+  .refreshLabel {
+    font-size: 12px;
+    font-weight: 600;
+    color: #001e62;
+    letter-spacing: 0.04em;
+  }
 }
 
 .headerSub {
   font-size: 11px;
-  color: #9ca3af;
-  letter-spacing: 0.06em;
+  color: #767676;
+  letter-spacing: 0.1em;
   font-weight: 500;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
 }
 
 .headerTitle {
-  font-size: 20px;
-  font-weight: 800;
-  color: #1a3a6b;
-  letter-spacing: 0.02em;
+  font-size: 24px;
+  font-weight: 700;
+  color: #001e62;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
 }
 
 .updated {
   font-size: 12px;
-  color: #9ca3af;
+  color: #767676;
   white-space: nowrap;
-  padding-top: 4px;
+  line-height: 1.6;
 }
 
-/* 投稿一覧 */
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+/* リスト */
+.card {}
+
+.divider {
+  border: none;
+  border-top: 1px solid #e8e8e8;
+  margin: 0;
 }
 
 .item {
-  background: #fff;
-  padding: 24px;
-  border-bottom: 1px solid #e5e7eb;
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 0 28px;
+  padding: 28px 0;
 }
 
 .date {
   font-size: 12px;
-  color: #9ca3af;
-  margin-bottom: 6px;
+  color: #001e62;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  padding-top: 2px;
+}
+
+.itemBody {
+  min-width: 0;
 }
 
 .title {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
-  color: #1a3a6b;
-  margin-bottom: 12px;
-  line-height: 1.4;
+  color: #111;
+  margin-bottom: 10px;
+  line-height: 1.55;
 }
 
 .content {
-  font-size: 15px;
-  color: #374151;
-  line-height: 1.8;
+  font-size: 14px;
+  color: #444;
+  line-height: 1.9;
 }
 
-.content p  { margin-bottom: 0.5em; }
+.content p  { margin-bottom: 0.6em; }
 .content ul,
-.content ol { margin-left: 1.5em; margin-bottom: 0.5em; }
+.content ol { margin-left: 1.5em; margin-bottom: 0.6em; }
 .content h2 { font-size: 1.1em; font-weight: 700; margin: 0.8em 0 0.3em; }
 .content h3 { font-size: 1em;   font-weight: 700; margin: 0.6em 0 0.3em; }
 
 .empty {
   text-align: center;
   padding: 60px 20px;
-  color: #9ca3af;
+  color: #767676;
   font-size: 15px;
-  background: #fff;
-  border-radius: 10px;
+}
+
+.simpleFooter {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 12px;
+  color: #aaa;
 }
 
 @media (max-width: 640px) {
   .main {
-    /* SP: flush header top:0 + height:56px → padding-top 56px + 余白 */
-    padding: 76px 14px 48px;
+    padding: 76px 20px 60px;
   }
   .headerTitle {
-    font-size: 17px;
+    font-size: 19px;
   }
   .item {
-    padding: 18px 16px;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 20px 0;
   }
 }

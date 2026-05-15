@@ -2,51 +2,30 @@
 // チームポータル 大会詳細（書類提出 / ショップ / 活動履歴）
 // URL: /portal/tournament?id={tournamentId}
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import {
   FaBaseballBall,
   FaChevronLeft,
-  FaDownload,
-  FaUpload,
   FaShoppingCart,
-  FaClipboardList,
   FaFileAlt,
   FaCheckCircle,
   FaTimesCircle,
   FaTrash,
   FaEdit,
   FaUsers,
-  FaInbox,
+  FaClipboardList,
 } from 'react-icons/fa';
 import { usePortalAuth } from '../../contexts/PortalAuthContext';
 import {
   fetchTeamTournaments,
-  fetchTournamentDocuments,
-  fetchTeamSubmissions,
-  submitDocument,
-  uploadFile,
   fetchTournamentProducts,
   fetchTeamOrders,
   placeOrder,
   updateOrderSecure,
-  fetchTeamActivities,
-  fetchMasters,
 } from '../../lib/portal-api';
 import styles from '../../styles/portal/PortalTournament.module.css';
-
-const TABS = [
-  { id: 'documents',   label: '書類ダウンロード', Icon: FaDownload },
-  { id: 'submissions', label: '書類提出',         Icon: FaUpload },
-];
-
-const SUB_STATUS = {
-  pending:   { label: '審査中',   cls: 'subStatus_pending' },
-  approved:  { label: '承認済',   cls: 'subStatus_approved' },
-  rejected:  { label: '差し戻し', cls: 'subStatus_rejected' },
-  cancelled: { label: '取消',     cls: 'subStatus_cancelled' },
-};
 
 const ACT_ICONS = {
   submission_upload:    { bg: '#e3f2fd', Icon: FaFileAlt,      color: '#1565c0' },
@@ -78,6 +57,150 @@ function StatusBadge({ status }) {
 // ============================================================
 
 const TSHIRT_SIZES = ['120', '130', '140', '150', 'SS', 'S', 'M', 'L', 'LL', '3L', '4L', '5L'];
+
+// ============================================================
+// バックプリント名入力（IME変換中はフィルターを止める）
+// ============================================================
+function NameTextInput({ value, onChange, maxLength, placeholder, className }) {
+  const composing = useRef(false);
+  return (
+    <input
+      type="text"
+      value={value}
+      className={className}
+      placeholder={placeholder}
+      maxLength={maxLength}
+      autoCapitalize="characters"
+      autoCorrect="off"
+      autoComplete="off"
+      spellCheck={false}
+      onCompositionStart={() => { composing.current = true; }}
+      onCompositionEnd={e => {
+        composing.current = false;
+        const v = e.target.value.toUpperCase().replace(/[^A-Z0-9 ]/g, '');
+        onChange(v);
+      }}
+      onChange={e => {
+        if (composing.current) return;
+        const v = e.target.value.toUpperCase().replace(/[^A-Z0-9 ]/g, '');
+        onChange(v);
+      }}
+    />
+  );
+}
+
+// ============================================================
+// 商品画像ギャラリー（PC: 横並び最大4枚 / SP: スライダー）＋ライトボックス
+// ============================================================
+function ProductImageGallery({ images, name, styles }) {
+  const [lightbox, setLightbox] = useState(null); // 拡大表示中のindex
+  const [sliderIdx, setSliderIdx] = useState(0);
+  const total = images.length;
+
+  // SP用 10秒自動切り替え
+  useEffect(() => {
+    if (total <= 1) return;
+    const t = setInterval(() => setSliderIdx(i => (i + 1) % total), 10000);
+    return () => clearInterval(t);
+  }, [total]);
+
+  if (!total) return null;
+
+  function prevSlide(e) { e.stopPropagation(); setSliderIdx(i => (i - 1 + total) % total); }
+  function nextSlide(e) { e.stopPropagation(); setSliderIdx(i => (i + 1) % total); }
+  function prevLight(e) { e.stopPropagation(); setLightbox(i => (i - 1 + total) % total); }
+  function nextLight(e) { e.stopPropagation(); setLightbox(i => (i + 1) % total); }
+
+  return (
+    <>
+      {/* PC: 横並びサムネイル（最大4枚/行、クリックで拡大） */}
+      <div className={styles.pcImageGrid}>
+        {images.map((src, i) => (
+          <img key={i} src={src} alt={`${name} ${i + 1}`}
+            className={styles.pcImageThumb}
+            onClick={() => setLightbox(i)} />
+        ))}
+      </div>
+
+      {/* SP: スライダー */}
+      <div className={styles.sliderWrap}>
+        <img src={images[sliderIdx]} alt={`${name} ${sliderIdx + 1}`}
+          className={styles.sliderImg}
+          onClick={() => setLightbox(sliderIdx)} />
+        {total > 1 && (
+          <>
+            <button className={styles.sliderBtn} style={{ left: 0 }} onClick={prevSlide}>‹</button>
+            <button className={styles.sliderBtn} style={{ right: 0 }} onClick={nextSlide}>›</button>
+            <div className={styles.sliderDots}>
+              {images.map((_, i) => (
+                <span key={i}
+                  className={i === sliderIdx ? styles.sliderDotActive : styles.sliderDot}
+                  onClick={() => setSliderIdx(i)} />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* ライトボックス */}
+      {lightbox !== null && (
+        <div
+          style={{ position: 'fixed', inset: 0, zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'lbBgIn 0.25s ease forwards' }}
+          onClick={() => setLightbox(null)}
+        >
+          <style>{`
+            @keyframes lbBgIn {
+              from { background: rgba(0,0,0,0); }
+              to   { background: rgba(0,0,0,0.88); }
+            }
+            @keyframes lbImgIn {
+              from { opacity: 0; transform: scale(0.88); }
+              to   { opacity: 1; transform: scale(1); }
+            }
+            @keyframes lbImgSwitch {
+              from { opacity: 0; transform: scale(0.96); }
+              to   { opacity: 1; transform: scale(1); }
+            }
+          `}</style>
+          <img
+            key={lightbox}
+            src={images[lightbox]}
+            alt={`${name} ${lightbox + 1}`}
+            style={{ maxWidth: '90vw', maxHeight: '85vh', objectFit: 'contain', display: 'block', boxShadow: '0 8px 48px rgba(0,0,0,0.6)', animation: 'lbImgIn 0.3s cubic-bezier(0.34,1.3,0.64,1) forwards' }}
+            onClick={e => e.stopPropagation()}
+          />
+          {total > 1 && (
+            <>
+              <button onClick={prevLight}
+                style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', fontSize: '2.5rem', width: 48, height: 64, cursor: 'pointer', borderRadius: 4, transition: 'background 0.15s' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
+              >‹</button>
+              <button onClick={nextLight}
+                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', fontSize: '2.5rem', width: 48, height: 64, cursor: 'pointer', borderRadius: 4, transition: 'background 0.15s' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
+              >›</button>
+            </>
+          )}
+          <button onClick={() => setLightbox(null)}
+            style={{ position: 'absolute', top: 14, right: 16, background: 'rgba(255,255,255,0.12)', border: 'none', color: '#fff', fontSize: '1.6rem', width: 40, height: 40, cursor: 'pointer', lineHeight: 1, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.15s' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.28)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
+          >×</button>
+          {total > 1 && (
+            <div style={{ position: 'absolute', bottom: 18, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 8 }}>
+              {images.map((_, i) => (
+                <span key={i} onClick={e => { e.stopPropagation(); setLightbox(i); }}
+                  style={{ width: i === lightbox ? 10 : 7, height: i === lightbox ? 10 : 7, borderRadius: '50%', background: i === lightbox ? '#fff' : 'rgba(255,255,255,0.4)', cursor: 'pointer', display: 'inline-block', transition: 'all 0.2s' }} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </>
+  );
+}
 
 function computeOrderDiff(oldItems, newItems) {
   const key = i => `${i.color}|${i.size}|${i.has_name ? 1 : 0}`;
@@ -157,48 +280,64 @@ function OrderItemsTable({ items, styles }) {
 }
 
 function OrderDiffTable({ history, styles }) {
-  const updated = (history || []).filter(h => h.action === 'updated');
+  const [openIdx, setOpenIdx] = useState(null);
+  const updated = (history || []).filter(h => h.action === 'updated').slice().reverse();
   if (!updated.length) return null;
   return (
-    <>
+    <div style={{ marginTop: 8 }}>
       {updated.map((h, hi) => {
         const diff = computeOrderDiff(h.old_items, h.new_items);
         if (!diff.length) return null;
+        const isOpen = openIdx === hi;
         return (
-          <div key={hi} className={styles.orderDiffSection}>
-            <p className={styles.orderSectionLabel} style={{ color: '#e65100' }}>変更履歴</p>
-            <p className={styles.orderDiffTitle}>
-              {(h.date || '').slice(0, 16)} → ¥{(h.new_total || 0).toLocaleString()}
-            </p>
-            <table className={styles.diffTable}>
-              <thead>
-                <tr>
-                  <th className={styles.diffTh} style={{ width: 44 }}>区分</th>
-                  <th className={styles.diffTh}>カラー・サイズ・ネーム</th>
-                  <th className={styles.diffTh} style={{ width: 90, textAlign: 'right' }}>数量</th>
-                </tr>
-              </thead>
-              <tbody>
-                {diff.map((d, di) => {
-                  const { type, item, oldQty } = d;
-                  const label = [item.color, item.size, item.has_name ? 'ネームあり' : 'ネームなし', item.has_name && item.name ? `「${item.name}」` : ''].filter(Boolean).join(' ');
-                  const qtyStr = type === 'changed' ? `${oldQty}枚→${item.quantity}枚` : `×${item.quantity}枚`;
-                  const tag = type === 'added' ? '追加' : type === 'removed' ? '削除' : '変更';
-                  const rowCls = type === 'added' ? styles.diffRowAdded : type === 'removed' ? styles.diffRowRemoved : styles.diffRowChanged;
-                  return (
-                    <tr key={di} className={rowCls}>
-                      <td className={styles.diffTd} style={{ textAlign: 'center', fontWeight: 700 }}>{tag}</td>
-                      <td className={`${styles.diffTd} ${type === 'removed' ? styles.diffStrike : ''}`}>{label}</td>
-                      <td className={`${styles.diffTd} ${type === 'removed' ? styles.diffStrike : ''}`} style={{ textAlign: 'right' }}>{qtyStr}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div key={hi} style={{ marginTop: 4, border: '1px solid #e8e8e8', borderRadius: 4, overflow: 'hidden' }}>
+            <button
+              onClick={() => setOpenIdx(isOpen ? null : hi)}
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '8px 12px', background: '#fdf6f0', border: 'none', cursor: 'pointer',
+                fontSize: '0.8rem', textAlign: 'left', gap: 8,
+              }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <span style={{ color: '#e65100', fontWeight: 700 }}>変更履歴</span>
+                <span style={{ color: '#666' }}>{(h.date || '').slice(0, 16)}</span>
+                <span style={{ color: '#333', fontWeight: 600 }}>→ ¥{(h.new_total || 0).toLocaleString()}</span>
+                <span style={{ color: '#aaa', fontSize: '0.74rem' }}>（{diff.length}件）</span>
+              </span>
+              <span style={{ fontSize: '0.72rem', color: '#aaa', flexShrink: 0 }}>{isOpen ? '▲ 閉じる' : '▼ 詳細'}</span>
+            </button>
+            {isOpen && (
+              <table className={styles.diffTable} style={{ margin: 0 }}>
+                <thead>
+                  <tr>
+                    <th className={styles.diffTh} style={{ width: 44 }}>区分</th>
+                    <th className={styles.diffTh}>カラー・サイズ・ネーム</th>
+                    <th className={styles.diffTh} style={{ width: 90, textAlign: 'right' }}>数量</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {diff.map((d, di) => {
+                    const { type, item, oldQty } = d;
+                    const label = [item.color, item.size, item.has_name ? 'ネームあり' : 'ネームなし', item.has_name && item.name ? `「${item.name}」` : ''].filter(Boolean).join(' ');
+                    const qtyStr = type === 'changed' ? `${oldQty}枚→${item.quantity}枚` : `×${item.quantity}枚`;
+                    const tag = type === 'added' ? '追加' : type === 'removed' ? '削除' : '変更';
+                    const rowCls = type === 'added' ? styles.diffRowAdded : type === 'removed' ? styles.diffRowRemoved : styles.diffRowChanged;
+                    return (
+                      <tr key={di} className={rowCls}>
+                        <td className={styles.diffTd} style={{ textAlign: 'center', fontWeight: 700 }}>{tag}</td>
+                        <td className={`${styles.diffTd} ${type === 'removed' ? styles.diffStrike : ''}`}>{label}</td>
+                        <td className={`${styles.diffTd} ${type === 'removed' ? styles.diffStrike : ''}`} style={{ textAlign: 'right' }}>{qtyStr}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
           </div>
         );
       })}
-    </>
+    </div>
   );
 }
 
@@ -320,7 +459,17 @@ function ShopTab({ tournamentId, teamId, tournament, session, isDeadlinePassed }
     setNameText(prev => ({ ...prev, [product.id]: '' }));
   }
 
+  function isProductDeadlinePassed(product) {
+    if (isDeadlinePassed) return true;
+    if (product.cancel_deadline && new Date(product.cancel_deadline) < new Date()) return true;
+    return false;
+  }
+
   async function handleOrder(product) {
+    if (isProductDeadlinePassed(product)) {
+      setErr('申込期限が過ぎているため、注文・変更はできません。');
+      return;
+    }
     const items = buildItems(product);
     if (!items.length) { setErr('数量を1つ以上入力してください'); return; }
     const name = (nameText[product.id] || '').trim();
@@ -359,6 +508,7 @@ function ShopTab({ tournamentId, teamId, tournament, session, isDeadlinePassed }
     try {
       const updated = await updateOrderSecure(orderId, teamId, { action: 'cancel' });
       setOrders(prev => prev.map(o => o.id === orderId ? updated : o));
+      setMsg('注文をキャンセルしました。');
     } catch (e) {
       alert(e.message || 'キャンセルに失敗しました');
     }
@@ -410,7 +560,69 @@ function ShopTab({ tournamentId, teamId, tournament, session, isDeadlinePassed }
           申込期限が過ぎているため、新規注文はできません。
         </div>
       )}
-      {msg && <div className={styles.successMessage}>{msg}</div>}
+      {msg && (
+        <div
+          onClick={() => setMsg('')}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(0,0,0,0.55)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            animation: 'fadeInOverlay 0.25s ease',
+            padding: '16px',
+          }}
+        >
+          <style>{`
+            @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+            @keyframes popIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+          `}</style>
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: '#fff',
+              borderRadius: 12,
+              padding: '40px 32px 32px',
+              maxWidth: 420,
+              width: '100%',
+              textAlign: 'center',
+              boxShadow: '0 8px 40px rgba(0,0,0,0.25)',
+              animation: 'popIn 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+            }}
+          >
+            <div style={{
+              width: 72, height: 72, borderRadius: '50%',
+              background: msg.includes('キャンセル') ? '#ffebee' : '#e8f5e9',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              margin: '0 auto 20px',
+              fontSize: '2.2rem',
+            }}>
+              {msg.includes('キャンセル') ? '✕' : '✓'}
+            </div>
+            <div style={{
+              fontSize: '1.35rem', fontWeight: 800, letterSpacing: 0.5,
+              color: msg.includes('キャンセル') ? '#c62828' : '#1b5e20',
+              marginBottom: 10,
+            }}>{msg}</div>
+            {!msg.includes('キャンセル') && (
+              <div style={{ fontSize: '0.88rem', color: '#666', marginBottom: 24 }}>
+                確認メールをお送りします
+              </div>
+            )}
+            <button
+              onClick={() => setMsg('')}
+              style={{
+                marginTop: 8,
+                width: '100%', padding: '14px 0',
+                background: msg.includes('キャンセル') ? '#c62828' : '#1b5e20',
+                color: '#fff', border: 'none', borderRadius: 6,
+                fontSize: '1rem', fontWeight: 700, cursor: 'pointer',
+                letterSpacing: 1,
+              }}
+            >
+              閉じる
+            </button>
+          </div>
+        </div>
+      )}
       {err && <div className={styles.errorMessage}>{err}</div>}
 
       {products.length === 0 ? (
@@ -426,6 +638,7 @@ function ShopTab({ tournamentId, teamId, tournament, session, isDeadlinePassed }
           sizes.some(s => product.colors.some(c => (qty[product.id]?.[s]?.[c]?.yes || 0) > 0));
 
         const isEditing = !!editingOrderId && Object.keys(originalQty)[0] == product.id;
+        const productDeadlinePassed = isProductDeadlinePassed(product);
         // 確定済み注文（未キャンセル）が存在するか
         const existingOrder = orders.find(o =>
           o.status !== 'cancelled' &&
@@ -437,37 +650,37 @@ function ShopTab({ tournamentId, teamId, tournament, session, isDeadlinePassed }
             className={`${styles.productSection} ${isEditing ? styles.productSectionEditing : ''}`}>
 
             {/* 商品ヘッダー */}
-            <div className={styles.productSectionHeader}>
-              <div style={{ flex: 1 }}>
-                <p className={styles.productName}>{product.name}</p>
-                <p className={styles.productPrice}>
-                  &yen;{(product.price || 0).toLocaleString()}／枚
-                  {product.has_name && product.name_price > 0 && (
-                    <span className={styles.namePriceNote}>
-                      　バックプリント（ネーム）+&yen;{product.name_price.toLocaleString()}／枚
-                    </span>
+            {(() => {
+              const imgs = product.images?.length > 0
+                ? product.images
+                : product.image_url ? [product.image_url] : [];
+              return (
+                <div className={styles.productSectionHeader}>
+                  {imgs.length > 0 && (
+                    <ProductImageGallery images={imgs} name={product.name} styles={styles} />
                   )}
-                </p>
-                {product.description && (
-                  <p className={styles.productDesc} style={{ whiteSpace: 'pre-line' }}>{product.description}</p>
-                )}
-                {product.cancel_deadline && (
-                  <p className={styles.cancelDeadlineNote}>
-                    変更・キャンセル期限: {formatDate(product.cancel_deadline)}
-                  </p>
-                )}
-              </div>
-              {(product.images?.length > 0) && (
-                <div className={styles.productImages}>
-                  {product.images.map((img, i) => (
-                    <img key={i} src={img} alt={`${product.name} ${i + 1}`} className={styles.productThumb} />
-                  ))}
+                  <div className={styles.productSectionText}>
+                    <p className={styles.productName}>{product.name}</p>
+                    <p className={styles.productPrice}>
+                      &yen;{(product.price || 0).toLocaleString()}／枚
+                      {product.has_name && product.name_price > 0 && (
+                        <span className={styles.namePriceNote}>
+                          　バックプリント（ネーム）+&yen;{product.name_price.toLocaleString()}／枚
+                        </span>
+                      )}
+                    </p>
+                    {product.description && (
+                      <p className={styles.productDesc}>{product.description}</p>
+                    )}
+                    {product.cancel_deadline && (
+                      <p className={styles.cancelDeadlineNote}>
+                        変更・キャンセル期限: {formatDate(product.cancel_deadline)}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              )}
-              {product.image_url && !product.images?.length && (
-                <img src={product.image_url} alt={product.name} className={styles.productThumb} />
-              )}
-            </div>
+              );
+            })()}
 
             {/* 編集モードバナー */}
             {isEditing && (
@@ -481,47 +694,65 @@ function ShopTab({ tournamentId, teamId, tournament, session, isDeadlinePassed }
             {/* 注文履歴（既存注文・未編集時） */}
             {existingOrder && !isEditing && (
               <div className={`${styles.orderHistoryItem} ${styles.existingOrderPanel}`}>
-                <div className={styles.orderHistoryHeader}>
-                  <div className={styles.orderHistoryActions}>
-                    <span className={`${styles.orderStatusBadge} ${styles.orderStatus_confirmed}`}>確定</span>
-                    <span className={styles.orderHistoryDate}>{formatDate(existingOrder.created_at)}</span>
-                  </div>
-                  <span className={styles.orderHistoryTotal}>&yen;{existingOrder.total.toLocaleString()}</span>
-                </div>
 
-                <p className={styles.orderSectionLabel}>注文内容</p>
-                <OrderItemsTable items={existingOrder.items || []} styles={styles} />
-
-                {/* ネーム（チーム名）表示 */}
+                {/* 注文サマリーカード */}
                 {(() => {
+                  const totalQty = (existingOrder.items || []).reduce((s, i) => s + (i.quantity || 0), 0);
                   const nameItem = (existingOrder.items || []).find(i => i.has_name && i.name);
-                  return nameItem ? (
-                    <p className={styles.existingOrderName}>
-                      バックプリント チーム名: <strong>{nameItem.name}</strong>
-                    </p>
-                  ) : null;
+                  const dt = existingOrder.created_at ? new Date(existingOrder.created_at) : null;
+                  const dtStr = dt
+                    ? `${dt.getFullYear()}年${String(dt.getMonth()+1).padStart(2,'0')}月${String(dt.getDate()).padStart(2,'0')}日 ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}`
+                    : '';
+                  return (
+                    <div className={styles.orderSummaryCard}>
+                      <div className={styles.orderSummaryRow}>
+                        <span className={styles.orderSummaryLabel}>チーム名</span>
+                        <span className={styles.orderSummaryValue}>{session?.teamName || '—'}</span>
+                      </div>
+                      {nameItem && (
+                        <div className={styles.orderSummaryRow}>
+                          <span className={styles.orderSummaryLabel}>バックプリント名</span>
+                          <span className={styles.orderSummaryValue}><strong>{nameItem.name}</strong></span>
+                        </div>
+                      )}
+                      <div className={styles.orderSummaryRow}>
+                        <span className={styles.orderSummaryLabel}>注文枚数</span>
+                        <span className={styles.orderSummaryValue}><strong>{totalQty}</strong> 枚</span>
+                      </div>
+                      <div className={styles.orderSummaryRow}>
+                        <span className={styles.orderSummaryLabel}>注文合計金額</span>
+                        <span className={`${styles.orderSummaryValue} ${styles.orderSummaryTotal}`}>¥{existingOrder.total.toLocaleString()}</span>
+                      </div>
+                      <div className={styles.orderSummaryRow}>
+                        <span className={styles.orderSummaryLabel}>注文確定日時</span>
+                        <span className={styles.orderSummaryValue}>{dtStr}</span>
+                      </div>
+                    </div>
+                  );
                 })()}
 
-                <OrderDiffTable history={existingOrder.history} styles={styles} />
-
-                {!isDeadlinePassed && (
-                  <div className={styles.existingOrderActions}>
-                    <button className={styles.orderActionButton} onClick={() => startEdit(existingOrder)}>
-                      <FaEdit size={12} style={{ marginRight: 4 }} /> 変更
-                    </button>
-                    <button
-                      className={`${styles.orderActionButton} ${styles.orderActionDanger}`}
-                      onClick={() => handleCancelOrder(existingOrder.id)}
-                    >
-                      <FaTrash size={12} style={{ marginRight: 4 }} /> キャンセル
+                {productDeadlinePassed && (
+                  <div className={styles.errorMessage} style={{ marginTop: 10, marginBottom: 0 }}>
+                    変更・キャンセル期限が過ぎているため、変更はできません。
+                  </div>
+                )}
+                {!productDeadlinePassed && (
+                  <div className={styles.orderActionRow}>
+                    <button className={styles.orderActionEdit} onClick={() => startEdit(existingOrder)}>
+                      <FaEdit size={14} /> 注文を変更する
                     </button>
                   </div>
                 )}
+
+                <p className={styles.orderSectionLabel} style={{ marginTop: 14 }}>注文内容</p>
+                <OrderItemsTable items={existingOrder.items || []} styles={styles} />
+
+                <OrderDiffTable history={existingOrder.history} styles={styles} />
               </div>
             )}
 
             {/* カラー×サイズ グリッド */}
-            {hasColors && !isDeadlinePassed && (!existingOrder || isEditing) && (
+            {hasColors && !productDeadlinePassed && (!existingOrder || isEditing) && (
               <>
                 <div className={styles.tshirtTableWrap}>
                   <table className={styles.tshirtTable}>
@@ -665,16 +896,12 @@ function ShopTab({ tournamentId, teamId, tournament, session, isDeadlinePassed }
                         ? `（半角大文字英字・数字、${product.name_max_chars}文字以内）`
                         : '（半角大文字英字・数字）'}
                     </label>
-                    <input
-                      type="text"
+                    <NameTextInput
                       value={nameText[product.id] || ''}
                       className={styles.nameTextInput}
                       placeholder="例: FUKUOKA HAWKS"
                       maxLength={product.name_max_chars || 30}
-                      onChange={e => {
-                        const v = e.target.value.toUpperCase().replace(/[^A-Z0-9 ]/g, '');
-                        setNameText(prev => ({ ...prev, [product.id]: v }));
-                      }}
+                      onChange={v => setNameText(prev => ({ ...prev, [product.id]: v }))}
                     />
                     <p className={styles.nameHint}>
                       ※ネームなし枚数にはネーム不要です。ネームありの全商品に同じチーム名が印刷されます。
@@ -741,7 +968,7 @@ function ShopTab({ tournamentId, teamId, tournament, session, isDeadlinePassed }
 }
 
 // ============================================================
-// メインページ
+// メインページ（ショップのみ）
 // ============================================================
 export default function TournamentPage() {
   const router = useRouter();
@@ -749,21 +976,7 @@ export default function TournamentPage() {
   const { session, loading: authLoading, isAuthenticated } = usePortalAuth();
 
   const [tournament, setTournament] = useState(null);
-  const [documents, setDocuments] = useState([]);
-  const [submissions, setSubmissions] = useState([]);
-  const [activities, setActivities] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
-  const [activeTab, setActiveTab] = useState('documents');
-  const [docTypes, setDocTypes] = useState(['メンバー表', '参加申込書', '申請書', 'その他']);
-
-  const [docType, setDocType] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [comment, setComment] = useState('');
-  const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [submitMsg, setSubmitMsg] = useState('');
-  const [submitError, setSubmitError] = useState('');
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) router.replace('/portal');
@@ -777,47 +990,11 @@ export default function TournamentPage() {
         const allT = await fetchTeamTournaments(session.teamId);
         const found = allT.find((t) => String(t.id) === String(tournamentId));
         if (found) setTournament(found);
-        const [docs, subs, acts] = await Promise.allSettled([
-          fetchTournamentDocuments(tournamentId),
-          fetchTeamSubmissions(tournamentId, session.teamId),
-          fetchTeamActivities(session.teamId, { tournamentId, limit: 50 }),
-        ]);
-        if (docs.status === 'fulfilled') setDocuments(docs.value || []);
-        if (subs.status === 'fulfilled') setSubmissions(subs.value || []);
-        if (acts.status === 'fulfilled') setActivities(acts.value || []);
-        // 書類種別マスタ
-        try {
-          const masters = await fetchMasters();
-          if (masters?.document_types?.length) setDocTypes(masters.document_types);
-        } catch (_) {}
       } catch (_) {}
       setLoadingData(false);
     }
     load();
   }, [isAuthenticated, session, tournamentId]);
-
-  async function handleSubmitDocument(e) {
-    e.preventDefault();
-    if (!selectedFile) { setSubmitError('ファイルを選択してください'); return; }
-    setSubmitting(true); setSubmitError(''); setSubmitMsg('');
-    try {
-      setUploadProgress('アップロード中...');
-      const uploaded = await uploadFile(selectedFile);
-      setUploadProgress('');
-      const s = await submitDocument(tournamentId, session.teamId, {
-        document_type: docType,
-        file_url: uploaded.url,
-        file_name: uploaded.filename,
-        comment,
-      });
-      setSubmissions((prev) => [s, ...prev]);
-      setSelectedFile(null); setDocType(''); setComment('');
-      setSubmitMsg('書類を提出しました');
-    } catch (err) {
-      setUploadProgress('');
-      setSubmitError(err.message || '提出に失敗しました');
-    } finally { setSubmitting(false); }
-  }
 
   if (authLoading || !isAuthenticated) return null;
 
@@ -851,12 +1028,24 @@ export default function TournamentPage() {
               <FaChevronLeft size={11} style={{ marginRight: 4 }} /> マイページに戻る
             </button>
 
-            {/* 大会ヘッダー */}
             {loadingData ? (
               <p className={styles.loadingText}>読み込み中...</p>
             ) : tournament ? (
               <div className={styles.tournamentHeader}>
-                <h2>{tournament.name}</h2>
+                <h2 className={styles.tournamentTitle}>
+                  {(() => {
+                    const name = tournament.name || '';
+                    const idx = name.indexOf('旗');
+                    if (idx === -1) return name;
+                    return (
+                      <>
+                        <span className={styles.titlePart1}>{name.slice(0, idx + 1)}</span>
+                        <span className={styles.titleSep}> </span>
+                        <span className={styles.titlePart2}>{name.slice(idx + 1)}</span>
+                      </>
+                    );
+                  })()}
+                </h2>
                 <div className={styles.tournamentMeta}>
                   <StatusBadge status={tournament.status} />
                 </div>
@@ -870,7 +1059,6 @@ export default function TournamentPage() {
               <div className={styles.emptyState}>大会情報が見つかりません</div>
             )}
 
-            {/* ショップ（タブ外・最上部） */}
             {tournament && (
               <ShopTab
                 tournamentId={tournamentId}
@@ -880,146 +1068,6 @@ export default function TournamentPage() {
                 isDeadlinePassed={isDeadlinePassed}
               />
             )}
-
-            {/* タブ */}
-            <div className={styles.tabs}>
-              {TABS.map(({ id, label, Icon }) => (
-                <button
-                  key={id}
-                  className={`${styles.tab} ${activeTab === id ? styles.tabActive : ''}`}
-                  onClick={() => setActiveTab(id)}
-                >
-                  <Icon className={styles.tabIcon} size={15} />
-                  {label}
-                </button>
-              ))}
-            </div>
-
-            <div className={styles.tabContent}>
-              {/* 書類ダウンロード */}
-              {activeTab === 'documents' && (
-                loadingData ? <p className={styles.loadingText}>読み込み中...</p>
-                : documents.length === 0 ? (
-                  <div className={styles.emptyState}>
-                    <FaInbox size={40} color="#ccc" style={{ marginBottom: 12 }} />
-                    <p>配布書類はまだありません</p>
-                  </div>
-                ) : (
-                  <div className={styles.documentList}>
-                    {documents.map((doc) => (
-                      <div key={doc.id} className={styles.documentItem}>
-                        <FaFileAlt className={styles.docIconMaterial} size={22} color="#c8102e" />
-                        <div className={styles.docInfo}>
-                          <p className={styles.docName}>{doc.name}</p>
-                          {doc.category && <span className={styles.docCategory}>{doc.category}</span>}
-                          {doc.description && <p className={styles.docDesc}>{doc.description}</p>}
-                        </div>
-                        {doc.file_url && (
-                          <a href={doc.file_url} target="_blank" rel="noopener noreferrer"
-                            className={styles.downloadButton}>
-                            <FaDownload className={styles.btnIcon} size={13} /> ダウンロード
-                          </a>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )
-              )}
-
-              {/* 書類提出 */}
-              {activeTab === 'submissions' && (
-                <div>
-                  {!isDeadlinePassed && tournament?.status === 'active' && (
-                    <div className={styles.uploadSection}>
-                      <div className={styles.uploadForm}>
-                        <h3 style={{ margin: '0 0 16px', fontSize: '1rem', fontWeight: 700 }}>
-                          書類を提出する
-                        </h3>
-                        <form onSubmit={handleSubmitDocument}>
-                          {submitMsg && <div className={styles.successMessage}>{submitMsg}</div>}
-                          {submitError && <div className={styles.errorMessage}>{submitError}</div>}
-                          {uploadProgress && (
-                            <div className={styles.uploadProgress}>{uploadProgress}</div>
-                          )}
-                          <div className={styles.formGroup}>
-                            <label className={styles.formLabel}>書類種別</label>
-                            <select className={styles.formSelect} value={docType}
-                              onChange={(e) => setDocType(e.target.value)}>
-                              <option value="">選択してください</option>
-                              {docTypes.map(t => <option key={t} value={t}>{t}</option>)}
-                            </select>
-                          </div>
-                          <div className={styles.formGroup}>
-                            <label className={styles.formLabel}>ファイル *</label>
-                            <input className={styles.formInput} type="file"
-                              accept=".pdf,.xlsx,.xls,.docx,.doc,.png,.jpg,.jpeg"
-                              onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} />
-                            <p style={{ fontSize: '0.8rem', color: '#888', marginTop: 4 }}>
-                              PDF・Excel・Word・画像（最大20MB）
-                            </p>
-                            {selectedFile && (
-                              <p style={{ fontSize: '0.85rem', color: '#333', marginTop: 4 }}>
-                                選択中: {selectedFile.name}
-                              </p>
-                            )}
-                          </div>
-                          <div className={styles.formGroup}>
-                            <label className={styles.formLabel}>コメント（任意）</label>
-                            <textarea className={styles.formTextarea}
-                              placeholder="連絡事項があれば記入してください"
-                              value={comment} onChange={(e) => setComment(e.target.value)} />
-                          </div>
-                          <button className={styles.submitButton} type="submit"
-                            disabled={submitting || !selectedFile}>
-                            {submitting ? (uploadProgress || '送信中...') : '提出する'}
-                          </button>
-                        </form>
-                      </div>
-                    </div>
-                  )}
-                  {isDeadlinePassed && (
-                    <div className={styles.errorMessage} style={{ marginBottom: 24 }}>
-                      申込期限が過ぎているため、書類の提出はできません。
-                    </div>
-                  )}
-                  <h3 style={{ fontSize: '1rem', fontWeight: 700, margin: '0 0 12px' }}>提出済み書類</h3>
-                  {loadingData ? <p className={styles.loadingText}>読み込み中...</p>
-                  : submissions.length === 0 ? (
-                    <div className={styles.emptyState}>
-                      <FaInbox size={40} color="#ccc" style={{ marginBottom: 12 }} />
-                      <p>提出済みの書類はありません</p>
-                    </div>
-                  ) : (
-                    <div className={styles.submissionList}>
-                      {submissions.map((sub) => {
-                        const st = SUB_STATUS[sub.status] || { label: sub.status, cls: '' };
-                        return (
-                          <div key={sub.id} className={styles.submissionItem}>
-                            <div style={{ flex: 1 }}>
-                              <p className={styles.subFileName}>{sub.file_name || sub.document_type || '書類'}</p>
-                              {sub.document_type && <p className={styles.subDate}>{sub.document_type}</p>}
-                              <p className={styles.subDate}>{formatDate(sub.created_at)}</p>
-                              {sub.comment && <p className={styles.subComment}>コメント: {sub.comment}</p>}
-                              {sub.admin_comment && (
-                                <p className={styles.adminComment}>管理者コメント: {sub.admin_comment}</p>
-                              )}
-                            </div>
-                            <span className={`${styles.subStatus} ${styles[st.cls]}`}>{st.label}</span>
-                            {sub.file_url && (
-                              <a href={sub.file_url} target="_blank" rel="noopener noreferrer"
-                                className={styles.downloadButton} style={{ marginLeft: 8 }}>
-                                確認
-                              </a>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
-
-            </div>
           </div>
         </main>
 

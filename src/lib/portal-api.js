@@ -184,6 +184,34 @@ export async function fetchReceipts() {
 }
 
 // ============================================
+// 領収証お知らせ
+// ============================================
+
+/** 領収証お知らせを送付（管理者） */
+export async function sendReceiptNotices(notices) {
+  return portalFetch(`${API_URL_CUSTOM}/portal/admin/receipt-notices`, {
+    method: 'POST',
+    body: JSON.stringify({ notices }),
+  });
+}
+
+/** 領収証お知らせ一覧取得（管理者） */
+export async function fetchAdminReceiptNotices(tournamentId) {
+  const qs = tournamentId ? `?tournament_id=${tournamentId}` : '';
+  return portalFetch(`${API_URL_CUSTOM}/portal/admin/receipt-notices${qs}`);
+}
+
+/** 領収証お知らせを削除（管理者） */
+export async function deleteReceiptNotice(noticeId) {
+  return portalFetch(`${API_URL_CUSTOM}/portal/admin/receipt-notices/${noticeId}`, { method: 'DELETE' });
+}
+
+/** チームの領収証お知らせを取得（チーム側） */
+export async function fetchTeamReceiptNotices(teamId) {
+  return portalFetch(`${API_URL_CUSTOM}/portal/team/${teamId}/receipt-notices`);
+}
+
+// ============================================
 // 管理者用
 // ============================================
 

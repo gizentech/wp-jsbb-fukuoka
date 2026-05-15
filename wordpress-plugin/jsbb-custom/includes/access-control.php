@@ -2,18 +2,25 @@
 if (!defined('ABSPATH')) exit;
 
 // ==========================================
-// CORS設定: フロントエンド（静的サイト）からのAPI呼び出し許可
+// CORS設定: フロントエンド（静的サイト）からのAPI呼び出し許可 v2
 // ==========================================
+function jsbb_is_allowed_origin($origin) {
+    if (empty($origin)) return false;
+    $allowed = array(
+        'https://jsbb-fukuoka.com',
+        'https://www.jsbb-fukuoka.com',
+    );
+    if (in_array($origin, $allowed, true)) return true;
+    // localhost は任意ポートを許可（開発環境用）
+    if (preg_match('/^http:\/\/localhost(:\d+)?$/', $origin)) return true;
+    return false;
+}
+
 add_action('rest_api_init', function () {
     remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
     add_filter('rest_pre_serve_request', function ($value) {
         $origin = get_http_origin();
-        $allowed = array(
-            'https://jsbb-fukuoka.com',
-            'https://www.jsbb-fukuoka.com',
-            'http://localhost:3000',
-        );
-        if (in_array($origin, $allowed, true)) {
+        if (jsbb_is_allowed_origin($origin)) {
             header('Access-Control-Allow-Origin: ' . esc_url_raw($origin));
             header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
             header('Access-Control-Allow-Headers: Content-Type, Accept, Authorization, X-Portal-Key');
@@ -27,12 +34,7 @@ add_action('rest_api_init', function () {
 add_action('init', function () {
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
         $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
-        $allowed = array(
-            'https://jsbb-fukuoka.com',
-            'https://www.jsbb-fukuoka.com',
-            'http://localhost:3000',
-        );
-        if (in_array($origin, $allowed, true)) {
+        if (jsbb_is_allowed_origin($origin)) {
             header('Access-Control-Allow-Origin: ' . esc_url_raw($origin));
             header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
             header('Access-Control-Allow-Headers: Content-Type, Accept, Authorization, X-Portal-Key');

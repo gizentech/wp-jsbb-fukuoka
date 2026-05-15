@@ -13,7 +13,7 @@ const Column = dynamic(() => import('../components/Column/Column'))
 const FAQ = dynamic(() => import('../components/FAQ/FAQ'))
 
 import { fetchNews, fetchInterviews, fetchMemberById, fetchInstagramPosts, fetchHeroSettings } from '../lib/wp-api-client'
-import TournamentAnnouncement from '../components/TournamentAnnouncement/TournamentAnnouncement'
+
 
 export default function Home() {
   const [latestItems, setLatestItems] = useState([])
@@ -176,7 +176,7 @@ export default function Home() {
         </script>
       </Head>
       <Header />
-      <TournamentAnnouncement />
+
 
       <main className={styles.main}>
         <HeroSlider latestItem={latestItems.length > 0 ? latestItems[0] : null} heroSettings={heroSettings} />

@@ -35,7 +35,6 @@ const menuItems = [
     { label: '関連団体', href: '/about/affiliated' },
     { label: 'スポーツ・ハラスメント', href: '/jspo-no' },
   ]},
-  { label: '福岡県連ポータル', href: '/portal' },
   { label: '九州大会', href: '/kyushu' },
 ]
 
@@ -46,9 +45,25 @@ export default function Header({ visible = true, flush = false }) {
   const [megaClosing, setMegaClosing] = useState(false);
   const [visibleMega, setVisibleMega] = useState(null);
   const [openMobileSub, setOpenMobileSub] = useState(null);
+  const [hasTodayAnnouncement, setHasTodayAnnouncement] = useState(false);
   const savedScrollRef = useRef(0);
   const megaRef = useRef(null);
   const router = useRouter();
+
+  useEffect(() => {
+    fetch('https://wp.jsbb-fukuoka.com/wp-json/jsbb/v1/announcements', { headers: { Accept: 'application/json' } })
+      .then((r) => r.ok ? r.json() : [])
+      .then((data) => {
+        if (!Array.isArray(data)) return
+        const today = new Date().toDateString()
+        const hasToday = data.some((ann) => {
+          const d = new Date((ann.modified || ann.date).replace(' ', 'T') + '+09:00')
+          return d.toDateString() === today
+        })
+        setHasTodayAnnouncement(hasToday)
+      })
+      .catch(() => {})
+  }, []);
 
   const lockScroll = () => {
     const currentScroll = window.scrollY;
@@ -228,6 +243,11 @@ export default function Header({ visible = true, flush = false }) {
                   )}
                 </li>
               ))}
+              <li className={styles.mobileMenuItemContact}>
+                <Link href="/contact" onClick={handleLinkClick} className={styles.mobileContactLink}>
+                  お問い合わせ
+                </Link>
+              </li>
             </ul>
           </div>
         </nav>
@@ -246,7 +266,13 @@ export default function Header({ visible = true, flush = false }) {
               <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
             </svg>
           </a>
-          <Link href="/teams/login" className={styles.iconLink} aria-label="ログイン">
+          <Link href="/announcement" className={styles.iconLink} aria-label="お知らせ" style={hasTodayAnnouncement ? { color: '#ef4444' } : {}}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+          </Link>
+          <Link href="/portal" className={`${styles.iconLink} ${styles.iconLinkUser}`} aria-label="ポータル">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="8" r="4"/>
               <path d="M20 21a8 8 0 1 0-16 0"/>
