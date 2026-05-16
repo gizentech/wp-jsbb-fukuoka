@@ -19,16 +19,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form_type = $_POST['form_type'] ?? 'prefecture';
     $sort      = (int)($_POST['sort_order'] ?? 0);
     $active    = isset($_POST['is_active']) ? 1 : 0;
+    $deadline_raw = trim($_POST['entry_deadline'] ?? '');
+    // datetime-local → MySQL DATETIME（例: "2026-05-31T23:59" → "2026-05-31 23:59:00"）
+    $deadline  = $deadline_raw ? str_replace('T', ' ', $deadline_raw) . ':00' : null;
 
     if (!$name) {
         $msg = '大会名を入力してください';
     } else {
         if ($id) {
-            $pdo->prepare("UPDATE jsbb_tournaments SET name=?,form_type=?,sort_order=?,is_active=? WHERE id=?")
-                ->execute([$name, $form_type, $sort, $active, $id]);
+            $pdo->prepare("UPDATE jsbb_tournaments SET name=?,form_type=?,sort_order=?,is_active=?,entry_deadline=? WHERE id=?")
+                ->execute([$name, $form_type, $sort, $active, $deadline, $id]);
         } else {
-            $pdo->prepare("INSERT INTO jsbb_tournaments (name,form_type,sort_order,is_active) VALUES (?,?,?,?)")
-                ->execute([$name, $form_type, $sort, $active]);
+            $pdo->prepare("INSERT INTO jsbb_tournaments (name,form_type,sort_order,is_active,entry_deadline) VALUES (?,?,?,?,?)")
+                ->execute([$name, $form_type, $sort, $active, $deadline]);
         }
         header('Location: index.php');
         exit;
@@ -39,6 +42,9 @@ $name      = $_POST['name']      ?? ($row['name'] ?? '');
 $form_type = $_POST['form_type'] ?? ($row['form_type'] ?? 'prefecture');
 $sort      = $_POST['sort_order'] ?? ($row['sort_order'] ?? 0);
 $active    = isset($_POST['is_active']) ? (bool)$_POST['is_active'] : (($row['is_active'] ?? 1) == 1);
+// DB値 "2026-05-31 23:59:00" → datetime-local入力値 "2026-05-31T23:59"
+$deadline_db  = $row['entry_deadline'] ?? '';
+$deadline_val = $deadline_db ? substr(str_replace(' ', 'T', $deadline_db), 0, 16) : '';
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -90,6 +96,11 @@ input[type=checkbox]{width:18px;height:18px;cursor:pointer}
       <div class="field">
         <label>表示順（小さい順に表示）</label>
         <input type="number" name="sort_order" value="<?= (int)$sort ?>" min="0" style="max-width:100px">
+      </div>
+      <div class="field">
+        <label>申込期限（この日時を過ぎると一覧から自動非表示）</label>
+        <input type="datetime-local" name="entry_deadline" value="<?= htmlspecialchars($deadline_val) ?>">
+        <p class="note">空欄 = 期限なし（手動で「公開中」チェックを外すまで表示）</p>
       </div>
       <div class="field">
         <div class="check-row">

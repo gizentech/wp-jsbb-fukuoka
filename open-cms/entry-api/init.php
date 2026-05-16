@@ -4,13 +4,21 @@ require __DIR__ . '/config.php';
 $pdo = db();
 
 $pdo->exec("CREATE TABLE IF NOT EXISTS jsbb_tournaments (
-    id         INT AUTO_INCREMENT PRIMARY KEY,
-    name       VARCHAR(255) NOT NULL,
-    form_type  VARCHAR(50)  NOT NULL DEFAULT 'prefecture' COMMENT 'prefecture=県大会, city=市大会',
-    is_active  TINYINT(1)   NOT NULL DEFAULT 1,
-    sort_order INT          NOT NULL DEFAULT 0,
-    created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id             INT AUTO_INCREMENT PRIMARY KEY,
+    name           VARCHAR(255) NOT NULL,
+    form_type      VARCHAR(50)  NOT NULL DEFAULT 'prefecture' COMMENT 'prefecture=県大会, city=市大会',
+    is_active      TINYINT(1)   NOT NULL DEFAULT 1,
+    sort_order     INT          NOT NULL DEFAULT 0,
+    entry_deadline DATETIME     NULL     COMMENT '申込期限（NULL=期限なし）',
+    created_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+// 既存テーブルへのカラム追加（初回以降のアップグレード対応）
+try {
+    $pdo->exec("ALTER TABLE jsbb_tournaments ADD COLUMN entry_deadline DATETIME NULL COMMENT '申込期限（NULL=期限なし）' AFTER sort_order");
+} catch (PDOException $e) {
+    // カラムが既に存在する場合は無視
+}
 
 $pdo->exec("CREATE TABLE IF NOT EXISTS jsbb_entries (
     id             INT AUTO_INCREMENT PRIMARY KEY,

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>申込書作成 | 福岡トヨタ杯第10回記念福岡県学童軟式野球春季大会</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #f0f2f5; font-family: 'Meiryo', 'Yu Gothic', sans-serif; color: #222; font-size: 14px; padding-bottom: 80px; }
+
+/* === ヘッダー === */
+.page-hdr {
+  background: #1a3a70;
+  color: #fff;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+}
+.page-hdr .bc { font-size: 11px; color: #8ab0e0; white-space: nowrap; }
+.page-hdr h1 { font-size: 14px; font-weight: 600; line-height: 1.4; }
+
+/* === コンテナ === */
+.container { max-width: 960px; margin: 0 auto; padding: 20px 16px; }
+
+/* === セクション === */
+.section {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.1);
+}
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a3a70;
+  border-left: 3px solid #1a3a70;
+  padding-left: 8px;
+  margin-bottom: 16px;
+  letter-spacing: 0.5px;
+}
+
+/* === フォームグリッド === */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+.form-full { grid-column: 1 / -1; }
+.form-field { display: flex; flex-direction: column; gap: 4px; }
+.form-field label { font-size: 11px; color: #555; font-weight: 600; }
+.form-field input,
+.form-field textarea {
+  border: 1px solid #d0d5dd;
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color .15s;
+  background: #fff;
+}
+.form-field input:focus,
+.form-field textarea:focus { border-color: #1a3a70; outline: none; background: #fafcff; }
+.form-field textarea { resize: vertical; }
+.inline-wrap { display: flex; align-items: center; gap: 6px; }
+.inline-wrap input { flex: 1; }
+.suffix { font-size: 13px; color: #444; white-space: nowrap; }
+.prefix { font-size: 14px; color: #444; }
+
+/* === スタッフ === */
+.staff-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.staff-card {
+  border: 1px solid #e4e8ef;
+  border-radius: 6px;
+  padding: 12px;
+  background: #f8faff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.staff-card h3 {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1a3a70;
+  background: #e8f0fb;
+  border-radius: 3px;
+  padding: 4px 8px;
+  text-align: center;
+}
+.staff-card .form-field { margin: 0; }
+.staff-card label { font-size: 10px; }
+.staff-card input {
+  font-size: 13px;
+  padding: 5px 8px;
+  border-radius: 4px;
+}
+.age-wrap { display: flex; align-items: center; gap: 4px; }
+.age-wrap input { width: 56px !important; }
+.age-wrap span { font-size: 12px; color: #444; }
+
+/* === 選手表 === */
+.section-note { font-size: 12px; color: #666; margin-bottom: 12px; padding: 6px 10px; background: #fffbe6; border-left: 3px solid #f0a500; border-radius: 0 4px 4px 0; }
+.table-wrap { overflow-x: auto; }
+.player-tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.player-tbl th {
+  background: #1a3a70;
+  color: #fff;
+  padding: 6px 4px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #2a4a80;
+  white-space: nowrap;
+}
+.player-tbl td {
+  border: 1px solid #d8dee8;
+  padding: 1px 2px;
+  vertical-align: middle;
+}
+.player-tbl tr.cap-row td { background: #fffbe6; }
+.player-tbl tr:hover td { background: #f5f8ff; }
+.player-tbl tr.cap-row:hover td { background: #fff5cc; }
+.pi { width: 100%; border: none; background: transparent; font-size: 12px; font-family: inherit; padding: 4px 5px; outline: none; }
+.pi:focus { background: #fffde7; }
+.pi-c { text-align: center; }
+.num { text-align: center; font-size: 11px; color: #666; padding: 0 4px; width: 30px; min-width: 30px; }
+.jersey-fixed { text-align: center; font-size: 11px; color: #333; width: 55px; padding: 2px 0; line-height: 1.2; }
+.jersey-fixed small { display: block; font-size: 9px; color: #888; }
+
+/* === アクションバー === */
+.actions {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #fff;
+  border-top: 1px solid #dde3ef;
+  padding: 10px 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 -2px 10px rgba(0,0,0,.1);
+  z-index: 200;
+}
+.save-note { font-size: 11px; color: #aaa; margin-right: 4px; }
+.btn-primary {
+  background: #1a3a70;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 11px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.5px;
+}
+.btn-primary:hover { background: #244fa0; }
+.btn-secondary {
+  background: #fff;
+  color: #555;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-secondary:hover { background: #f5f5f5; }
+
+/* === レスポンシブ === */
+@media (max-width: 768px) {
+  .staff-grid { grid-template-columns: 1fr 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-full { grid-column: 1; }
+  .page-hdr h1 { font-size: 12px; }
+}
+@media (max-width: 480px) {
+  .staff-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="page-hdr">
+  <span class="bc">申込フォーム</span>
+  <h1>福岡トヨタ杯第10回記念 福岡県学童軟式野球春季大会 申込書作成</h1>
+</header>
+
+<div class="container">
+
+  <!-- ① チーム基本情報 -->
+  <section class="section">
+    <h2 class="section-title">① チーム基本情報・連絡先</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label>チーム名（フリガナ）</label>
+        <input type="text" name="team_kana" placeholder="カタカナで入力">
+      </div>
+      <div class="form-field">
+        <label>チーム名（正式名称）</label>
+        <input type="text" name="team_name" placeholder="正式名称">
+      </div>
+      <div class="form-field">
+        <label>所属支部名</label>
+        <div class="inline-wrap">
+          <input type="text" name="branch" placeholder="例：福岡" style="max-width:160px">
+          <span class="suffix">支部</span>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>郵便番号</label>
+        <div class="inline-wrap">
+          <span class="prefix">〒</span>
+          <input type="text" name="postal" placeholder="000-0000" style="max-width:140px">
+        </div>
+      </div>
+      <div class="form-field form-full">
+        <label>チーム所在地（住所）</label>
+        <input type="text" name="address" placeholder="住所を入力">
+      </div>
+      <div class="form-field">
+        <label>ＴＥＬ（自宅）</label>
+        <input type="tel" name="tel_home" placeholder="000-0000-0000">
+      </div>
+      <div class="form-field">
+        <label>ＴＥＬ（携帯）</label>
+        <input type="tel" name="tel_mobile" placeholder="000-0000-0000">
+      </div>
+    </div>
+  </section>
+
+  <!-- ② スタッフ情報 -->
+  <section class="section">
+    <h2 class="section-title">② 指導者・スタッフ情報</h2>
+    <div class="staff-grid">
+      <!-- 監督 -->
+      <div class="staff-card">
+        <h3>監督（背番号 30）</h3>
+        <div class="form-field"><label>氏名</label><input type="text" name="kantoku_name" placeholder="監督　氏名"></div>
+        <div class="form-field"><label>年齢</label>
+          <div class="age-wrap"><input type="text" name="kantoku_age" placeholder="45"><span>歳</span></div>
+        </div>
+        <div class="form-field"><label>指導者資格名</label><input type="text" name="qual_1a" placeholder="資格名"></div>
+        <div class="form-field"><label>資格登録番号</label><input type="text" name="qual_1b" placeholder="登録番号"></div>
+      </div>
+      <!-- コーチ1 -->
+      <div class="staff-card">
+        <h3>コーチ（背番号 29）</h3>
+        <div class="form-field"><label>氏名</label><input type="text" name="coach1_name" placeholder="コーチ　氏名"></div>
+        <div class="form-field"><label>年齢</label>
+          <div class="age-wrap"><input type="text" name="coach1_age" placeholder="40"><span>歳</span></div>
+        </div>
+        <div class="form-field"><label>指導者資格名</label><input type="text" name="qual_2a" placeholder="資格名"></div>
+        <div class="form-field"><label>資格登録番号</label><input type="text" name="qual_2b" placeholder="登録番号"></div>
+      </div>
+      <!-- コーチ2 -->
+      <div class="staff-card">
+        <h3>コーチ（背番号 28）</h3>
+        <div class="form-field"><label>氏名</label><input type="text" name="coach2_name" placeholder="コーチ　氏名"></div>
+        <div class="form-field"><label>年齢</label>
+          <div class="age-wrap"><input type="text" name="coach2_age" placeholder="38"><span>歳</span></div>
+        </div>
+        <div class="form-field"><label>指導者資格名</label><input type="text" name="qual_3a" placeholder="資格名"></div>
+        <div class="form-field"><label>資格登録番号</label><input type="text" name="qual_3b" placeholder="登録番号"></div>
+      </div>
+      <!-- マネージャー -->
+      <div class="staff-card">
+        <h3>マネージャー（１名）</h3>
+        <div class="form-field"><label>氏名</label><input type="text" name="manager_name" placeholder="マネージャー　氏名"></div>
+        <div class="form-field"><label>年齢</label>
+          <div class="age-wrap"><input type="text" name="manager_age" placeholder="35"><span>歳</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ 選手名簿 -->
+  <section class="section">
+    <h2 class="section-title">③ 選手登録名簿（最大 25 名）</h2>
+    <p class="section-note">※ 背番号の若い順に記入してください。№1 はキャプテン（背番号 10）固定です。</p>
+    <div class="table-wrap">
+      <table class="player-tbl">
+        <thead>
+          <tr>
+            <th style="width:30px">№</th>
+            <th style="width:55px">背番号</th>
+            <th style="width:90px">守備位置</th>
+            <th>氏　　　　名</th>
+            <th style="width:60px">学年</th>
+            <th>フリガナ</th>
+          </tr>
+        </thead>
+        <tbody id="player-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ④ チーム紹介・署名欄 -->
+  <section class="section">
+    <h2 class="section-title">④ チーム紹介・署名欄</h2>
+    <div class="form-grid">
+      <div class="form-field form-full">
+        <label>チーム紹介（自由記述）</label>
+        <textarea name="team_intro" rows="3" placeholder="チームの紹介文を入力してください"></textarea>
+      </div>
+      <div class="form-field">
+        <label>チーム代表者氏名</label>
+        <input type="text" name="rep_name" placeholder="代表者氏名">
+      </div>
+      <div class="form-field">
+        <label>申込年月日（２０２６年）</label>
+        <div class="inline-wrap">
+          <input type="text" name="date_month" placeholder="5" style="max-width:60px">
+          <span class="suffix">月</span>
+          <input type="text" name="date_day" placeholder="16" style="max-width:60px">
+          <span class="suffix">日</span>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>（一社）福岡県軟式野球連盟　支部名</label>
+        <div class="inline-wrap">
+          <input type="text" name="branch_name" placeholder="支部名">
+          <span class="suffix">支部</span>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>支部長氏名</label>
+        <input type="text" name="branch_head" placeholder="支部長氏名">
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- アクションバー -->
+<div class="actions">
+  <span class="save-note" id="saveNote">● 自動保存済み</span>
+  <button class="btn-secondary" onclick="clearAll()">入力クリア</button>
+  <button class="btn-primary" onclick="generateAndOpen()">📄 申込書を作成・印刷</button>
+</div>
+
+<script>
+/* ━━━━━━━━━━━━━━━━━━━━━━━━
+   ① 選手行を生成
+━━━━━━━━━━━━━━━━━━━━━━━━ */
+(function () {
+  var tb = document.getElementById('player-tbody');
+
+  // 選手1（キャプテン固定）
+  var r1 = document.createElement('tr');
+  r1.className = 'cap-row';
+  r1.innerHTML =
+    '<td class="num">1</td>' +
+    '<td class="jersey-fixed">10<small>主将</small></td>' +
+    '<td><input type="text" name="p1_pos" class="pi" placeholder="守備位置"></td>' +
+    '<td><input type="text" name="p1_name" class="pi" placeholder="氏名（姓　名）"></td>' +
+    '<td><input type="text" name="p1_grade" class="pi pi-c" placeholder="6"></td>' +
+    '<td><input type="text" name="p1_kana" class="pi" placeholder="フリガナ"></td>';
+  tb.appendChild(r1);
+
+  // 選手2〜25
+  for (var i = 2; i <= 25; i++) {
+    var r = document.createElement('tr');
+    r.innerHTML =
+      '<td class="num">' + i + '</td>' +
+      '<td><input type="text" name="p' + i + '_jersey" class="pi pi-c"></td>' +
+      '<td><input type="text" name="p' + i + '_pos" class="pi"></td>' +
+      '<td><input type="text" name="p' + i + '_name" class="pi"></td>' +
+      '<td><input type="text" name="p' + i + '_grade" class="pi pi-c"></td>' +
+      '<td><input type="text" name="p' + i + '_kana" class="pi"></td>';
+    tb.appendChild(r);
+  }
+})();
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━
+   ② localStorage 自動保存
+━━━━━━━━━━━━━━━━━━━━━━━━ */
+var SAVE_KEY = 'ft_entry_v2';
+
+function saveForm() {
+  var data = {};
+  document.querySelectorAll('input, textarea').forEach(function (el) {
+    if (el.name) data[el.name] = el.value;
+  });
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); } catch (e) {}
+  var n = document.getElementById('saveNote');
+  if (n) n.textContent = '● 保存済み';
+}
+
+function loadForm() {
+  try {
+    var saved = localStorage.getItem(SAVE_KEY);
+    if (!saved) return;
+    var data = JSON.parse(saved);
+    Object.keys(data).forEach(function (name) {
+      var el = document.querySelector('[name="' + name + '"]');
+      if (el) el.value = data[name];
+    });
+  } catch (e) {}
+}
+
+function clearAll() {
+  if (!confirm('入力内容をすべてクリアしますか？')) return;
+  document.querySelectorAll('input, textarea').forEach(function (el) { el.value = ''; });
+  try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
+}
+
+document.addEventListener('input', saveForm);
+window.addEventListener('load', loadForm);
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━
+   ③ データ収集
+━━━━━━━━━━━━━━━━━━━━━━━━ */
+function g(name) {
+  var el = document.querySelector('[name="' + name + '"]');
+  return el ? el.value : '';
+}
+
+function collectData() {
+  var players = [];
+  for (var i = 1; i <= 25; i++) {
+    players.push({
+      jersey: i === 1 ? '10' : g('p' + i + '_jersey'),
+      pos:    g('p' + i + '_pos'),
+      name:   g('p' + i + '_name'),
+      grade:  g('p' + i + '_grade'),
+      kana:   g('p' + i + '_kana')
+    });
+  }
+  return {
+    team_kana:    g('team_kana'),
+    team_name:    g('team_name'),
+    branch:       g('branch'),
+    postal:       g('postal'),
+    address:      g('address'),
+    tel_home:     g('tel_home'),
+    tel_mobile:   g('tel_mobile'),
+    kantoku_name: g('kantoku_name'),
+    kantoku_age:  g('kantoku_age'),
+    coach1_name:  g('coach1_name'),
+    coach1_age:   g('coach1_age'),
+    coach2_name:  g('coach2_name'),
+    coach2_age:   g('coach2_age'),
+    manager_name: g('manager_name'),
+    manager_age:  g('manager_age'),
+    qual_1a: g('qual_1a'), qual_1b: g('qual_1b'),
+    qual_2a: g('qual_2a'), qual_2b: g('qual_2b'),
+    qual_3a: g('qual_3a'), qual_3b: g('qual_3b'),
+    team_intro:   g('team_intro'),
+    rep_name:     g('rep_name'),
+    date_month:   g('date_month'),
+    date_day:     g('date_day'),
+    branch_name:  g('branch_name'),
+    branch_head:  g('branch_head'),
+    players:      players
+  };
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━
+   ④ 申込書HTML生成
+   （A4縦・1ページ収まる高さ設計）
+━━━━━━━━━━━━━━━━━━━━━━━━ */
+function esc(v) {
+  return String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/* 氏名縦書き画像（base64） */
+var IMG_B64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAABLCAYAAACIsVzYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAC/SURBVGhD7dEBCoMwEETR3P/SKQEX6mDC7Jp2EOfDUi3Gl7StCzMuybgk45KMSzIuybgk45Kej7fWTsOWwhGJqZbGMeOV0jg7TLdPPmIxzDjVCqlsoIyPa7yP2I2kcUS/i++34isQSz17fEp6Ls7+vLPKq+O/xclUwmfIz/HZCbPwiF6B6Ow6U23VEW4oW3nlHTRKvyFOuxo26kl88QrYjmPGr/oLvhq2Er4r45KMSzIuybgk45KMSzIu6a147x9kuhLanHl+1wAAAABJRU5ErkJggg==';
+
+function generatePrintHTML(d) {
+
+  /* 選手行を生成 */
+  var pRows = '';
+
+  /* 選手1（キャプテン・10番固定） */
+  var p0 = d.players[0] || {};
+  pRows +=
+    '<tr style="height:19pt">' +
+    '<td class="nc" style="border-left:1px solid black;border-bottom:1px solid black" colspan="2">1</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-bottom:1px solid black;font-size:8pt;white-space:normal;line-height:1.2" colspan="2"><span>１０<br><span style="font-size:6pt">主将</span></span></td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:medium double black;border-right:1px solid black;border-bottom:1px solid black" colspan="4">' + esc(p0.pos) + '</td>' +
+    '<td class="nl" style="border-left:1px solid black;border-top:medium double black;border-right:1px solid black;border-bottom:1px solid black" colspan="11">' + esc(p0.name) + '</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:medium double black;border-bottom:1px solid black" colspan="2">' + esc(p0.grade) + '</td>' +
+    '<td class="nl" style="border-right:1px solid black;border-bottom:1px solid black;font-size:8pt">年</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:medium double black;border-right:1px solid black;border-bottom:1px solid black" colspan="12">' + esc(p0.kana) + '</td>' +
+    '</tr>';
+
+  /* 選手2〜25 */
+  for (var i = 1; i < 25; i++) {
+    var p = d.players[i] || {};
+    pRows +=
+      '<tr style="height:15pt">' +
+      '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black" colspan="2">' + (i + 1) + '</td>' +
+      '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black" colspan="2">' + esc(p.jersey) + '</td>' +
+      '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black" colspan="4">' + esc(p.pos) + '</td>' +
+      '<td class="nl" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black" colspan="11">' + esc(p.name) + '</td>' +
+      '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black" colspan="2">' + esc(p.grade) + '</td>' +
+      '<td class="nl" style="border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black;font-size:8pt">年</td>' +
+      '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black" colspan="12">' + esc(p.kana) + '</td>' +
+      '</tr>';
+  }
+
+  var css =
+    '* {box-sizing:border-box;margin:0;padding:0}' +
+    'body {background:#888;font-family:"Meiryo",sans-serif;padding:8px;text-align:center}' +
+    '.tb {display:inline-flex;gap:10px;justify-content:center;align-items:center;padding:8px;margin-bottom:6px}' +
+    '.tb button {padding:8px 22px;font-size:13px;cursor:pointer;border:none;border-radius:4px;background:#1a3a70;color:#fff;font-family:inherit}' +
+    '.tb button:hover {background:#244fa0}' +
+    '.tb small {font-size:11px;color:#ddd}' +
+    '.sheet {display:inline-block;background:#fff;width:794px;height:1123px;box-sizing:border-box;padding:6mm 5mm;overflow:hidden;text-align:left}' +
+    /* 表 */
+    '.mt {table-layout:fixed;border-collapse:collapse;border-spacing:0;border:1px solid black;width:100%}' +
+    '.mt td {overflow:hidden;padding:0 1pt;border:none}' +
+    /* テキストクラス */
+    '.ntit{font-family:"ＭＳ 明朝",serif;font-size:14pt;font-weight:bold;text-align:center;vertical-align:middle;white-space:nowrap}' +
+    '.ntn {font-family:"ＭＳ Ｐ明朝",serif;font-size:11pt;font-weight:bold;text-align:center;vertical-align:middle;white-space:nowrap}' +
+    '.nb  {font-family:"ＭＳ Ｐ明朝",serif;font-size:12pt;font-weight:bold;text-align:center;vertical-align:middle;white-space:nowrap}' +
+    '.nc  {font-family:"ＭＳ Ｐ明朝",serif;font-size:9pt;text-align:center;vertical-align:middle;white-space:nowrap}' +
+    '.nl  {font-family:"ＭＳ Ｐ明朝",serif;font-size:9pt;text-align:left;vertical-align:middle;white-space:nowrap}' +
+    '.nm  {font-family:"ＭＳ 明朝",serif;font-size:9pt;text-align:left;vertical-align:middle;white-space:nowrap}' +
+    '.ns  {font-family:"ＭＳ 明朝",serif;font-size:8pt;text-align:center;vertical-align:middle;white-space:nowrap}' +
+    '.n11 {font-family:"ＭＳ 明朝",serif;font-size:9pt;text-align:center;vertical-align:middle;white-space:normal}' +
+    '.n17 {font-family:"ＭＳ 明朝",serif;font-size:5.5pt;text-align:center;vertical-align:middle;white-space:normal}' +
+    '.seal{text-align:center;font-size:9pt;font-weight:bold;border:2px solid black !important}' +
+    /* 印刷 */
+    '@media print {' +
+    'body {background:white;display:block;padding:0;gap:0}' +
+    '.tb {display:none !important}' +
+    '.sheet {width:100%;height:auto;overflow:visible;padding:0}' +
+    '@page {size:A4 portrait;margin:5mm}' +
+    '}';
+
+  return '<!DOCTYPE html>\n<html lang="ja">\n<head>\n<meta charset="UTF-8">\n<title>申込書</title>\n' +
+    '<style>' + css + '</style>\n</head>\n<body>\n' +
+
+    /* ツールバー */
+    '<div class="tb" id="tb">' +
+    '<button onclick="window.print()">🖨&nbsp;印刷 / PDF保存</button>' +
+    '<small>※ 代表者印・支部長印は印刷後に押印してください</small>' +
+    '</div>\n' +
+
+    '<div class="sheet">\n' +
+    '<table class="mt">\n' +
+
+    /* 列幅（34列・合計≈557pt≈196mm・A4縦に収まる） */
+    '<col style="width:23pt"><col style="width:23pt">' +
+    '<col style="width:16pt"><col style="width:16pt">' +
+    '<col style="width:5pt">' +
+    '<col style="width:17pt"><col style="width:17pt">' +
+    '<col style="width:6pt">' +
+    '<col style="width:16pt">' +
+    '<col style="width:14pt"><col style="width:14pt"><col style="width:14pt">' +
+    '<col style="width:14pt"><col style="width:14pt"><col style="width:14pt">' +
+    '<col style="width:14pt"><col style="width:14pt"><col style="width:14pt">' +
+    '<col style="width:21pt">' +
+    '<col style="width:16pt"><col style="width:16pt"><col style="width:16pt"><col style="width:16pt">' +
+    '<col style="width:20pt">' +
+    '<col style="width:14pt"><col style="width:14pt"><col style="width:14pt"><col style="width:14pt">' +
+    '<col style="width:21pt"><col style="width:21pt"><col style="width:21pt">' +
+    '<col style="width:21pt"><col style="width:21pt"><col style="width:21pt">' +
+    '<tr style="display:none"><td colspan="34"></td></tr>\n' +
+
+    /* タイトル */
+    '<tr style="height:26pt"><td class="ntit" style="border-bottom:1px solid black" colspan="34">福岡トヨタ杯第10回記念福岡県学童軟式野球春季大会申込書</td></tr>\n' +
+
+    /* フリガナ行 */
+    '<tr style="height:14pt">' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px none black;font-size:8pt" colspan="7">（フリガナ）</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black" colspan="16">' + esc(d.team_kana) + '</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black;font-size:8pt" colspan="4" rowspan="2">所属支部</td>' +
+    '<td class="nb" style="border-left:1px none black;border-top:1px solid black;border-bottom:1px solid black;font-size:12pt" colspan="5" rowspan="2">' + esc(d.branch) + '</td>' +
+    '<td class="nc" style="border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black;font-size:8pt" colspan="2" rowspan="2">支 部</td>' +
+    '</tr>\n' +
+
+    /* チーム名行 */
+    '<tr style="height:21pt">' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black;font-size:8pt" colspan="7">チ&nbsp;ー&nbsp;ム&nbsp;名</td>' +
+    '<td class="ntn" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black" colspan="16">' + esc(d.team_name) + '</td>' +
+    '</tr>\n' +
+
+    /* 所在地行 */
+    '<tr style="height:15pt">' +
+    '<td class="nm" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px none black;font-size:8pt" colspan="7">チーム所在地</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black" colspan="2">〒</td>' +
+    '<td class="nc" style="border-top:1px solid black;border-bottom:1px solid black" colspan="5">' + esc(d.postal) + '</td>' +
+    '<td class="nm" style="border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black;padding-left:3pt" colspan="20">' + esc(d.address) + '</td>' +
+    '</tr>\n' +
+
+    /* TEL行 */
+    '<tr style="height:15pt">' +
+    '<td class="nm" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:medium double black;font-size:8pt" colspan="7">監督・連絡先</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-bottom:medium double black;font-size:8pt" colspan="5">ＴＥＬ（自宅）</td>' +
+    '<td class="nc" style="border-top:1px solid black;border-bottom:medium double black" colspan="9">' + esc(d.tel_home) + '</td>' +
+    '<td style="border-top:1px solid black;border-bottom:medium double black"></td>' +
+    '<td class="nc" style="border-top:1px solid black;border-bottom:medium double black;font-size:8pt" colspan="2">（携帯）</td>' +
+    '<td style="border-top:1px solid black;border-bottom:medium double black"></td>' +
+    '<td class="nc" style="border-top:1px solid black;border-right:1px solid black;border-bottom:medium double black" colspan="9">' + esc(d.tel_mobile) + '</td>' +
+    '</tr>\n' +
+
+    /* スタッフヘッダー（氏名 rowspan=3） */
+    '<tr style="height:12pt">' +
+    '<td class="n11" style="border-left:1px solid black;border-top:medium double black;border-right:1px solid black;border-bottom:1px solid black;padding:0;vertical-align:middle" rowspan="3">' +
+    '<img src="' + IMG_B64 + '" alt="氏名" style="display:block;margin:auto;border:none;width:21pt;height:44pt"></td>' +
+    '<td class="ns" style="border-left:1px solid black;border-top:medium double black;border-right:1px solid black;border-bottom:1px none black" colspan="9">監督　背番号　30</td>' +
+    '<td class="ns" style="border-left:1px solid black;border-top:medium double black;border-right:1px solid black;border-bottom:1px none black" colspan="9">コーチ　背番号　29</td>' +
+    '<td class="ns" style="border-left:1px solid black;border-top:medium double black;border-right:1px solid black;border-bottom:1px none black" colspan="9">コーチ　背番号　28</td>' +
+    '<td class="ns" style="border-left:1px none black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px none black" colspan="6">マネージャー(１名)</td>' +
+    '</tr>\n' +
+
+    /* スタッフ氏名 */
+    '<tr style="height:19pt">' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black;font-size:10pt" colspan="9">' + esc(d.kantoku_name) + '</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black;font-size:10pt" colspan="9">' + esc(d.coach1_name) + '</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black;font-size:10pt" colspan="9">' + esc(d.coach2_name) + '</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black;font-size:10pt" colspan="6">' + esc(d.manager_name) + '</td>' +
+    '</tr>\n' +
+
+    /* 年齢行 */
+    '<tr style="height:12pt">' +
+    '<td class="ns" style="border-left:1px solid black;border-bottom:1px solid black;text-align:right" colspan="2">年齢</td>' +
+    '<td class="nc" style="border-top:1px solid black;border-bottom:1px solid black" colspan="5">' + esc(d.kantoku_age) + '</td>' +
+    '<td class="ns" style="border-right:1px solid black;border-bottom:1px solid black" colspan="2">歳</td>' +
+    '<td class="ns" style="border-left:1px solid black;border-bottom:1px solid black;text-align:right" colspan="2">年齢</td>' +
+    '<td class="nc" style="border-top:1px solid black;border-bottom:1px solid black" colspan="5">' + esc(d.coach1_age) + '</td>' +
+    '<td class="ns" style="border-right:1px solid black;border-bottom:1px solid black" colspan="2">歳</td>' +
+    '<td class="ns" style="border-left:1px solid black;border-bottom:1px solid black;text-align:right" colspan="2">年齢</td>' +
+    '<td class="nc" style="border-top:1px solid black;border-bottom:1px solid black" colspan="5">' + esc(d.coach2_age) + '</td>' +
+    '<td class="ns" style="border-right:1px solid black;border-bottom:1px solid black" colspan="2">歳</td>' +
+    '<td class="ns" style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;text-align:right" colspan="2">年齢</td>' +
+    '<td class="nc" style="border-top:1px solid black;border-bottom:1px solid black" colspan="3">' + esc(d.manager_age) + '</td>' +
+    '<td class="ns" style="border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black">歳</td>' +
+    '</tr>\n' +
+
+    /* 指導者資格行 */
+    '<tr style="height:17pt">' +
+    '<td class="n17" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:medium double black" colspan="2">指導者資格名・資格登録番号</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:medium double black;font-size:8pt" colspan="4">' + esc(d.qual_1a) + '</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:medium double black;font-size:8pt" colspan="4">' + esc(d.qual_1b) + '</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:medium double black;font-size:8pt" colspan="3">' + esc(d.qual_2a) + '</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:medium double black;font-size:8pt" colspan="6">' + esc(d.qual_2b) + '</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:medium double black;font-size:8pt" colspan="3">' + esc(d.qual_3a) + '</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:medium double black;font-size:8pt" colspan="6">' + esc(d.qual_3b) + '</td>' +
+    '<td style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:medium double black" colspan="2"></td>' +
+    '<td style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;border-bottom:medium double black" colspan="4"></td>' +
+    '</tr>\n' +
+
+    /* 選手ヘッダー行 */
+    '<tr style="height:16pt">' +
+    '<td class="nc" style="border-left:1px solid black;border-top:medium double black;border-bottom:medium double black;font-size:9pt" colspan="2">№</td>' +
+    '<td class="ns" style="border-left:1px solid black;border-top:medium double black;border-right:1px solid black;border-bottom:medium double black" colspan="2">背番号</td>' +
+    '<td class="ns" style="border-left:1px solid black;border-top:medium double black;border-right:1px solid black;border-bottom:medium double black" colspan="4">守備位置</td>' +
+    '<td class="nm" style="border-left:1px solid black;border-top:medium double black;border-right:1px solid black;border-bottom:medium double black;font-size:8pt" colspan="11">氏　　　　名</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:medium double black;border-right:1px solid black;border-bottom:medium double black;font-size:8pt" colspan="3">学年</td>' +
+    '<td class="nc" style="border-left:1px solid black;border-top:medium double black;border-right:1px solid black;border-bottom:medium double black;font-size:8pt" colspan="12">フ&nbsp;リ&nbsp;ガ&nbsp;ナ</td>' +
+    '</tr>\n' +
+
+    /* 選手行 */
+    pRows +
+
+    /* 誓約文 */
+    '<tr style="height:44pt">' +
+    '<td style="border:1px solid black;vertical-align:top;padding:2pt 4pt;font-size:7pt;font-family:\'ＭＳ Ｐ明朝\',serif;line-height:1.8" colspan="34">' +
+    '※背番号の若い順に記入すること<br>' +
+    '　全日本軟式野球連盟の規定に従い健康診断書（健康管理）並びに保護者の同意・傷害事故・その他に関して全責任を負うことを誓約し、また大会を通して肖像の使用を承諾し参加申込みいたします。' +
+    '</td></tr>\n' +
+
+    /* チーム紹介ラベル */
+    '<tr style="height:11pt">' +
+    '<td style="border-left:1px solid black;border-top:1px solid black;border-right:1px solid black;font-size:7pt;font-family:\'ＭＳ Ｐ明朝\',serif;padding-left:4pt;text-align:left;vertical-align:bottom" colspan="34">（チーム紹介）</td>' +
+    '</tr>\n' +
+
+    /* チーム紹介 */
+    '<tr style="height:29pt">' +
+    '<td style="border:1px solid black;vertical-align:top;padding:2pt 4pt;font-size:9pt;font-family:\'ＭＳ Ｐ明朝\',serif;white-space:pre-wrap" colspan="34">' + esc(d.team_intro) + '</td>' +
+    '</tr>\n' +
+
+    /* チーム代表者 */
+    '<tr style="height:18pt">' +
+    '<td style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black"></td>' +
+    '<td style="border-top:1px solid black;border-bottom:1px solid black;font-size:8pt;font-family:\'ＭＳ Ｐ明朝\',serif;text-align:center;vertical-align:middle" colspan="5">チーム代表者</td>' +
+    '<td style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;font-size:10pt;font-family:\'ＭＳ Ｐ明朝\',serif;text-align:center;vertical-align:middle" colspan="9">' + esc(d.rep_name) + '</td>' +
+    '<td style="border-top:1px solid black;border-bottom:1px solid black"></td>' +
+    '<td class="seal">印</td>' +
+    '<td colspan="17" style="border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black"></td>' +
+    '</tr>\n' +
+
+    /* 年月日 */
+    '<tr style="height:16pt">' +
+    '<td style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black"></td>' +
+    '<td style="border-top:1px solid black;border-bottom:1px solid black;font-size:9pt;font-family:\'ＭＳ Ｐ明朝\',serif;text-align:center;vertical-align:middle" colspan="4">２０２６</td>' +
+    '<td style="border-top:1px solid black;border-bottom:1px solid black;font-size:9pt;font-family:\'ＭＳ Ｐ明朝\',serif;text-align:center;vertical-align:middle">年</td>' +
+    '<td style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;font-size:9pt;font-family:\'ＭＳ Ｐ明朝\',serif;text-align:center;vertical-align:middle" colspan="2">' + esc(d.date_month) + '</td>' +
+    '<td style="border-top:1px solid black;border-bottom:1px solid black;font-size:9pt;font-family:\'ＭＳ Ｐ明朝\',serif;text-align:center;vertical-align:middle">月</td>' +
+    '<td style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;font-size:9pt;font-family:\'ＭＳ Ｐ明朝\',serif;text-align:center;vertical-align:middle" colspan="2">' + esc(d.date_day) + '</td>' +
+    '<td style="border-top:1px solid black;border-bottom:1px solid black;font-size:9pt;font-family:\'ＭＳ Ｐ明朝\',serif;text-align:center;vertical-align:middle">日</td>' +
+    '<td colspan="22" style="border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black"></td>' +
+    '</tr>\n' +
+
+    /* 支部長 */
+    '<tr style="height:18pt">' +
+    '<td style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black"></td>' +
+    '<td style="border-top:1px solid black;border-bottom:1px solid black;font-size:7pt;font-family:\'ＭＳ Ｐ明朝\',serif;text-align:center;vertical-align:middle" colspan="10">（一社）福岡県軟式野球連盟</td>' +
+    '<td style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;font-size:9pt;font-family:\'ＭＳ Ｐ明朝\',serif;text-align:center;vertical-align:middle" colspan="4">' + esc(d.branch_name) + '</td>' +
+    '<td style="border-top:1px solid black;border-bottom:1px solid black;font-size:9pt;font-family:\'ＭＳ Ｐ明朝\',serif;text-align:center;vertical-align:middle" colspan="2">支部</td>' +
+    '<td style="border-top:1px solid black;border-bottom:1px solid black" colspan="3"></td>' +
+    '<td style="border-top:1px solid black;border-bottom:1px solid black;font-size:9pt;font-family:\'ＭＳ Ｐ明朝\',serif;text-align:center;vertical-align:middle" colspan="3">支部長</td>' +
+    '<td style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;font-size:9pt;font-family:\'ＭＳ Ｐ明朝\',serif;text-align:center;vertical-align:middle" colspan="8">' + esc(d.branch_head) + '</td>' +
+    '<td class="seal">印</td>' +
+    '<td colspan="2" style="border-top:1px solid black;border-right:1px solid black;border-bottom:1px solid black"></td>' +
+    '</tr>\n' +
+
+    '</table>\n</div>\n</body>\n</html>';
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━
+   ⑤ ポップアップを開く
+━━━━━━━━━━━━━━━━━━━━━━━━ */
+function generateAndOpen() {
+  var d = collectData();
+  var html = generatePrintHTML(d);
+  var popup = window.open('', '_blank', 'width=870,height=760,scrollbars=yes,resizable=yes');
+  if (!popup) {
+    alert('ポップアップがブロックされました。\nブラウザの設定でこのサイトのポップアップを許可してから再度お試しください。');
+    return;
+  }
+  popup.document.write(html);
+  popup.document.close();
+}
+</script>
+</body>
+</html>

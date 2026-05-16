@@ -4,18 +4,28 @@ import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import styles from '../../styles/Entry.module.css'
 
-const API = 'https://wp.jsbb-fukuoka.com/open/entry-api'
-const FORM_PATH = { prefecture: '/entry/fukuoka-toyota', city: '/entry/city' }
+const API = 'https://wp.jsbb-fukuoka.com/wp-json/jsbb/v1/entry'
+const FORM_PATH = { prefecture: '/entry/form', city: '/entry/form' }
 
 export default function EntryPage() {
   const [tournaments, setTournaments] = useState([])
   const [loading, setLoading] = useState(true)
+  const [fetchError, setFetchError] = useState('')
 
   useEffect(() => {
-    fetch(`${API}/tournaments.php`)
-      .then(r => r.json())
-      .then(list => { setTournaments(list); setLoading(false) })
-      .catch(() => setLoading(false))
+    fetch(`${API}/tournaments`)
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.json()
+      })
+      .then(list => {
+        setTournaments(Array.isArray(list) ? list : [])
+        setLoading(false)
+      })
+      .catch(e => {
+        setFetchError(e.message)
+        setLoading(false)
+      })
   }, [])
 
   return (
@@ -37,11 +47,16 @@ export default function EntryPage() {
               大会名をクリックすると申込書の入力フォームが開きます。必要事項を入力後、印刷またはPDF保存してください。
             </p>
             {loading && <p style={{ color: '#999', padding: '20px 0' }}>読み込み中…</p>}
+            {fetchError && (
+              <p style={{ color: '#c00', padding: '10px 0', fontSize: 13 }}>
+                ⚠ データ取得エラー: {fetchError}
+              </p>
+            )}
             <ul className={styles.list}>
               {tournaments.map(t => (
                 <li key={t.id} className={styles.item}>
                   <a
-                    href={FORM_PATH[t.form_type] || '/entry/fukuoka-toyota'}
+                    href={`${FORM_PATH[t.form_type] || '/entry/form'}?tname=${encodeURIComponent(t.name)}`}
                     className={styles.link}
                   >
                     <span className={styles.badge}>申込受付中</span>
@@ -50,7 +65,7 @@ export default function EntryPage() {
                   </a>
                 </li>
               ))}
-              {!loading && tournaments.length === 0 && (
+              {!loading && !fetchError && tournaments.length === 0 && (
                 <li style={{ padding: '20px 0', color: '#999' }}>現在受付中の大会はありません</li>
               )}
             </ul>

@@ -4,7 +4,7 @@ import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 
 const SAVE_KEY = 'ft_entry_v3'
-const API = 'https://wp.jsbb-fukuoka.com/open/entry-api'
+const API = 'https://wp.jsbb-fukuoka.com/wp-json/jsbb/v1/entry'
 
 const BRANCH_LIST = ['行橋','苅田','豊前','北九州','中遠','直鞍','嘉飯','田川','古賀','粕屋','宗像','福岡','筑紫','大野城','久留米','朝倉','八女','浮羽','小郡','柳川','大川大木','筑後','大牟田']
 const QUAL_LIST = ['①学童C','②SC','③CA','④C1','⑤C3','⑥U-12']
@@ -234,7 +234,7 @@ export default function FukuokaToyotaEntry() {
       if (saved.tid) setSelectedTid(String(saved.tid))
       if (saved.code) setEntryCode(saved.code)
     } catch {}
-    fetch(`${API}/tournaments.php`)
+    fetch(`${API}/tournaments`)
       .then(r => r.json())
       .then(list => setTournaments(list))
       .catch(() => {})
@@ -249,7 +249,7 @@ export default function FukuokaToyotaEntry() {
     if (!selectedTid) { alert('大会を選択してください'); return }
     setSaving(true)
     try {
-      const res = await fetch(`${API}/save.php`, {
+      const res = await fetch(`${API}/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tournament_id: Number(selectedTid), form_data: { form, players }, entry_code: entryCode }),
@@ -270,7 +270,7 @@ export default function FukuokaToyotaEntry() {
     const code = loadCode.trim().toUpperCase()
     if (!code) { alert('保存コードを入力してください'); return }
     try {
-      const res = await fetch(`${API}/load.php?code=${encodeURIComponent(code)}`)
+      const res = await fetch(`${API}/load?code=${encodeURIComponent(code)}`)
       if (!res.ok) { alert('データが見つかりません'); return }
       const json = await res.json()
       const fd = json.form_data || {}

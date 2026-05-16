@@ -9,6 +9,10 @@ function jsbb_activate_plugin() {
     flush_rewrite_rules();
     // 初期データ作成フラグを設定
     add_option('jsbb_need_init_data', '1');
+    // 大会申込テーブルの作成・マイグレーション
+    if (function_exists('jsbb_entry_create_tables')) {
+        jsbb_entry_create_tables();
+    }
 }
 // ==========================================
 // 初回アクセス時に既存データを作成

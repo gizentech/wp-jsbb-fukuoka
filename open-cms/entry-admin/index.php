@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delet
     $msg = "エントリー {$code} を削除しました";
 }
 
-$tournaments = $pdo->query("SELECT * FROM jsbb_tournaments ORDER BY sort_order, id")->fetchAll();
+$tournaments = $pdo->query("SELECT *, (entry_deadline IS NOT NULL AND entry_deadline <= NOW()) AS is_expired FROM jsbb_tournaments ORDER BY sort_order, id")->fetchAll();
 
 // フィルター
 $filter_tid = (int)($_GET['tid'] ?? 0);
@@ -90,14 +90,25 @@ tr:hover td{background:#f8f9ff}
     <a class="btn btn-primary btn-sm" href="tournament-form.php">+ 大会を追加</a>
   </div>
   <table>
-    <thead><tr><th>ID</th><th>大会名</th><th>様式</th><th>状態</th><th>操作</th></tr></thead>
+    <thead><tr><th>ID</th><th>大会名</th><th>様式</th><th>状態</th><th>申込期限</th><th>操作</th></tr></thead>
     <tbody>
     <?php foreach ($tournaments as $t): ?>
     <tr>
       <td><?= $t['id'] ?></td>
       <td><?= htmlspecialchars($t['name']) ?></td>
       <td><span class="badge <?= $t['form_type']==='prefecture'?'badge-p':'badge-c' ?>"><?= $TYPE_LABEL[$t['form_type']] ?? $t['form_type'] ?></span></td>
-      <td><?= $t['is_active'] ? '<span class="badge badge-p">公開中</span>' : '<span class="badge badge-off">非公開</span>' ?></td>
+      <td>
+        <?php if (!$t['is_active']): ?>
+          <span class="badge badge-off">非公開</span>
+        <?php elseif ($t['is_expired']): ?>
+          <span class="badge badge-off">期限切れ</span>
+        <?php else: ?>
+          <span class="badge badge-p">公開中</span>
+        <?php endif ?>
+      </td>
+      <td style="white-space:nowrap;font-size:12px">
+        <?= $t['entry_deadline'] ? htmlspecialchars(substr($t['entry_deadline'], 0, 16)) : '<span style="color:#999">—</span>' ?>
+      </td>
       <td style="white-space:nowrap">
         <a class="btn btn-secondary btn-sm" href="tournament-form.php?id=<?= $t['id'] ?>">編集</a>
         &nbsp;
